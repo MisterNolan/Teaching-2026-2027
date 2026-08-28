@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HWIS Semester 1 — Interruptions by Grade</title>
+<style>
+  :root{
+    --ink:#1c2b33;
+    --paper:#f7f4ee;
+    --panel:#ffffff;
+    --rule:#d8d2c4;
+    --definite:#b8452f;
+    --definite-bg:#f6ddd5;
+    --maybe:#c48a1f;
+    --maybe-bg:#f4e8cc;
+    --accent:#2c5f5a;
+    --muted:#6b6259;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    font-family:'Iowan Old Style','Georgia',serif;
+    color:var(--ink);
+    padding:32px 20px 60px;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+  header{margin-bottom:26px;border-bottom:3px solid var(--ink);padding-bottom:16px;}
+  h1{
+    font-family:'Futura','Trebuchet MS',sans-serif;
+    font-weight:700;
+    letter-spacing:0.5px;
+    font-size:28px;
+    margin:0 0 6px;
+    text-transform:uppercase;
+  }
+  .sub{
+    font-family:'Trebuchet MS',sans-serif;
+    color:var(--muted);
+    font-size:14px;
+    margin:0;
+  }
+  .controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin:20px 0 8px;
+    align-items:center;
+  }
+  .controls span.label{
+    font-family:'Trebuchet MS',sans-serif;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--muted);
+    margin-right:4px;
+  }
+  button.grade-btn{
+    font-family:'Trebuchet MS',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    padding:8px 16px;
+    border:2px solid var(--ink);
+    background:var(--panel);
+    color:var(--ink);
+    border-radius:3px;
+    cursor:pointer;
+    transition:all .12s ease;
+  }
+  button.grade-btn:hover{background:#eee7d8;}
+  button.grade-btn.active{
+    background:var(--ink);
+    color:var(--paper);
+  }
+  .level-tag{
+    font-size:11px;
+    font-family:'Trebuchet MS',sans-serif;
+    color:var(--muted);
+    margin-left:2px;
+  }
+  .legend{
+    display:flex;
+    gap:22px;
+    flex-wrap:wrap;
+    font-family:'Trebuchet MS',sans-serif;
+    font-size:13px;
+    margin:14px 0 30px;
+    color:var(--ink);
+  }
+  .legend .sw{display:inline-flex;align-items:center;gap:6px;}
+  .legend .dot{width:12px;height:12px;border-radius:3px;display:inline-block;}
+  .dot.definite{background:var(--definite);}
+  .dot.maybe{background:var(--maybe);}
+  .empty-note, .load-note{
+    font-family:'Trebuchet MS',sans-serif;
+    font-style:italic;
+    color:var(--muted);
+    font-size:14px;
+    text-align:center;
+    padding:14px;
+  }
+  .empty-note{display:none;}
+  .month{margin-bottom:34px;}
+  .month h2{
+    font-family:'Futura','Trebuchet MS',sans-serif;
+    font-size:16px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--accent);
+    border-bottom:1px solid var(--rule);
+    padding-bottom:6px;
+    margin:0 0 10px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:4px;
+  }
+  .dow{
+    font-family:'Trebuchet MS',sans-serif;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    color:var(--muted);
+    text-align:center;
+    padding-bottom:2px;
+  }
+  .cell{
+    background:var(--panel);
+    border:1px solid var(--rule);
+    border-radius:3px;
+    min-height:56px;
+    padding:4px 5px;
+    position:relative;
+  }
+  .cell.blank{background:transparent;border-color:transparent;}
+  .cell .num{
+    font-family:'Trebuchet MS',sans-serif;
+    font-size:11px;
+    color:var(--muted);
+  }
+  .cell.has-def{background:var(--definite-bg);border-color:var(--definite);}
+  .cell.has-maybe-only{background:var(--maybe-bg);border-color:var(--maybe);}
+  .cell .marks{display:flex;gap:3px;margin-top:2px;flex-wrap:wrap;}
+  .cell .marks .m{width:7px;height:7px;border-radius:50%;}
+  .cell .marks .m.definite{background:var(--definite);}
+  .cell .marks .m.maybe{background:var(--maybe);}
+  .agenda{margin-top:10px;}
+  .agenda-item{
+    display:flex;
+    gap:10px;
+    align-items:baseline;
+    padding:5px 0;
+    border-bottom:1px dotted var(--rule);
+    font-size:14px;
+  }
+  .agenda-item:last-child{border-bottom:none;}
+  .agenda-date{
+    font-family:'Trebuchet MS',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    color:var(--muted);
+    min-width:78px;
+  }
+  .agenda-badge{
+    font-family:'Trebuchet MS',sans-serif;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    padding:2px 7px;
+    border-radius:9px;
+    color:#fff;
+    white-space:nowrap;
+  }
+  .agenda-badge.definite{background:var(--definite);}
+  .agenda-badge.maybe{background:var(--maybe);}
+  .footer-note{
+    margin-top:40px;
+    padding-top:14px;
+    border-top:1px solid var(--rule);
+    font-family:'Trebuchet MS',sans-serif;
+    font-size:12px;
+    color:var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Semester 1 Interruptions</h1>
+    <p class="sub">Hong Wen International School &middot; 2026&ndash;2027 Academic Calendar</p>
+  </header>
+
+  <div class="controls" id="gradeButtons">
+    <span class="label">Select grade:</span>
+  </div>
+  <div class="legend">
+    <span class="sw"><span class="dot definite"></span> Definitely disrupted</span>
+    <span class="sw"><span class="dot maybe"></span> Maybe disrupted</span>
+  </div>
+
+  <p class="load-note" id="loadNote">Loading calendar data&hellip;</p>
+  <div id="calendarRoot"></div>
+  <p class="empty-note" id="emptyNote">Select a grade above to see its interruptions.</p>
+
+  <div class="footer-note">
+    Source: HWIS 2026&ndash;2027 Academic Calendar (Semester 1). Junior = G7&ndash;G9, Senior = G10&ndash;G12.
+    Only events categorised as "definitely" or "maybe" disruptive are shown &mdash; homework deadlines,
+    grading-cycle admin, non-interhouse sports fixtures, staff-only admin, and academic competitions
+    were reviewed and intentionally left out of this view. Calendar data lives in
+    <code>events.json</code> in this repo &mdash; edit that file to update.
+  </div>
+</div>
+
+<script>
+const JUNIOR = ["G7","G8","G9"];
+const SENIOR = ["G10","G11","G12"];
+const WHOLE = ["G7","G8","G9","G10","G11","G12"];
+
+const MONTHS = [
+  {y:2026,m:9,label:"September 2026"},
+  {y:2026,m:10,label:"October 2026"},
+  {y:2026,m:11,label:"November 2026"},
+  {y:2026,m:12,label:"December 2026"},
+  {y:2027,m:1,label:"January 2027"},
+  {y:2027,m:2,label:"February 2027"},
+  {y:2027,m:3,label:"March 2027"},
+];
+const DOW = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+let EVENTS = [];
+let currentGrade = null;
+
+function resolveGrades(g){
+  if(g === "WHOLE") return WHOLE;
+  if(g === "JUNIOR") return JUNIOR;
+  if(g === "SENIOR") return SENIOR;
+  return g; // already an array like ["G8"]
+}
+
+function pad(n){return n<10 ? "0"+n : ""+n;}
+function toISO(y,m,d){return `${y}-${pad(m)}-${pad(d)}`;}
+function daysInMonth(y,m){return new Date(y,m,0).getDate();}
+function mondayIndex(y,m,d){
+  const js = new Date(y,m-1,d).getDay();
+  return (js+6)%7;
+}
+function dateInRange(dateISO, startISO, endISO){
+  return dateISO >= startISO && dateISO <= endISO;
+}
+function formatShort(iso){
+  const [y,m,d] = iso.split("-").map(Number);
+  const dt = new Date(y,m-1,d);
+  return dt.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+
+function buildGradeButtons(){
+  const el = document.getElementById("gradeButtons");
+  const grades = [
+    {code:"G7",level:"Jr"},{code:"G8",level:"Jr"},{code:"G9",level:"Jr"},
+    {code:"G10",level:"Sr"},{code:"G11",level:"Sr"},{code:"G12",level:"Sr"}
+  ];
+  grades.forEach(g=>{
+    const btn = document.createElement("button");
+    btn.className = "grade-btn";
+    btn.innerHTML = g.code + ` <span class="level-tag">(${g.level})</span>`;
+    btn.onclick = ()=>{
+      currentGrade = g.code;
+      document.querySelectorAll(".grade-btn").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      render();
+    };
+    el.appendChild(btn);
+  });
+}
+
+function eventsForGrade(grade){
+  return EVENTS.filter(e=>e.grades.includes(grade));
+}
+
+function render(){
+  const root = document.getElementById("calendarRoot");
+  const emptyNote = document.getElementById("emptyNote");
+  root.innerHTML = "";
+
+  if(!currentGrade){
+    emptyNote.style.display = "block";
+    return;
+  }
+  emptyNote.style.display = "none";
+
+  const evts = eventsForGrade(currentGrade);
+  const relevantMonths = MONTHS.filter(mo=>{
+    const start = toISO(mo.y,mo.m,1);
+    const end = toISO(mo.y,mo.m,daysInMonth(mo.y,mo.m));
+    return evts.some(e=> e.start<=end && e.end>=start );
+  });
+
+  relevantMonths.forEach(mo=>{
+    const monthDiv = document.createElement("div");
+    monthDiv.className = "month";
+    const h2 = document.createElement("h2");
+    h2.textContent = mo.label;
+    monthDiv.appendChild(h2);
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    DOW.forEach(d=>{
+      const dd = document.createElement("div");
+      dd.className = "dow";
+      dd.textContent = d;
+      grid.appendChild(dd);
+    });
+
+    const firstOffset = mondayIndex(mo.y,mo.m,1);
+    for(let i=0;i<firstOffset;i++){
+      const blank = document.createElement("div");
+      blank.className = "cell blank";
+      grid.appendChild(blank);
+    }
+
+    const dim = daysInMonth(mo.y,mo.m);
+    const monthEvents = [];
+    for(let d=1; d<=dim; d++){
+      const iso = toISO(mo.y,mo.m,d);
+      const dayEvents = evts.filter(e=>dateInRange(iso,e.start,e.end));
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      const hasDef = dayEvents.some(e=>e.tier==="definite");
+      const hasMaybe = dayEvents.some(e=>e.tier==="maybe");
+      if(hasDef) cell.classList.add("has-def");
+      else if(hasMaybe) cell.classList.add("has-maybe-only");
+      const num = document.createElement("div");
+      num.className = "num";
+      num.textContent = d;
+      cell.appendChild(num);
+      if(dayEvents.length){
+        const marks = document.createElement("div");
+        marks.className = "marks";
+        dayEvents.forEach(e=>{
+          const m = document.createElement("span");
+          m.className = "m " + e.tier;
+          marks.appendChild(m);
+        });
+        cell.appendChild(marks);
+      }
+      grid.appendChild(cell);
+
+      dayEvents.forEach(e=>{
+        if(e.start===iso){
+          monthEvents.push({date:iso, ...e});
+        }
+      });
+    }
+    monthDiv.appendChild(grid);
+
+    if(monthEvents.length){
+      const agenda = document.createElement("div");
+      agenda.className = "agenda";
+      monthEvents.forEach(e=>{
+        const item = document.createElement("div");
+        item.className = "agenda-item";
+        const dateLabel = e.start===e.end
+          ? formatShort(e.start)
+          : formatShort(e.start)+" \u2013 "+formatShort(e.end);
+        item.innerHTML = `<span class="agenda-date">${dateLabel}</span>
+          <span class="agenda-badge ${e.tier}">${e.tier}</span>
+          <span>${e.title}</span>`;
+        agenda.appendChild(item);
+      });
+      monthDiv.appendChild(agenda);
+    }
+
+    root.appendChild(monthDiv);
+  });
+}
+
+fetch('events.json')
+  .then(r=>{
+    if(!r.ok) throw new Error('events.json not found (status '+r.status+')');
+    return r.json();
+  })
+  .then(data=>{
+    const definite = (data.definite||[]).map(e=>({...e, grades:resolveGrades(e.grades), tier:'definite'}));
+    const maybe = (data.maybe||[]).map(e=>({...e, grades:resolveGrades(e.grades), tier:'maybe'}));
+    EVENTS = definite.concat(maybe);
+    document.getElementById('loadNote').style.display = 'none';
+    buildGradeButtons();
+    render();
+  })
+  .catch(err=>{
+    document.getElementById('loadNote').textContent =
+      'Could not load events.json (' + err.message + '). Make sure it sits in the same folder as this page.';
+  });
+</script>
+</body>
+</html>

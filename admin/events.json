@@ -1,0 +1,39 @@
+{
+  "_readme": "Edit this file to update the calendar. grades: use WHOLE, JUNIOR (G7-9), SENIOR (G10-12), or a specific list like [\"G8\"]. tier: 'definite' or 'maybe'. Dates are YYYY-MM-DD. After editing, commit the change on GitHub and the live page updates automatically.",
+
+  "definite": [
+    {"title":"Whole-School BBQ Day", "start":"2026-09-16", "end":"2026-09-16", "grades":"WHOLE"},
+    {"title":"Senior Interhouse Sports Day", "start":"2026-09-23", "end":"2026-09-23", "grades":"SENIOR"},
+    {"title":"Moon Festival Holiday", "start":"2026-09-25", "end":"2026-09-25", "grades":"WHOLE"},
+    {"title":"Teacher's Day", "start":"2026-09-28", "end":"2026-09-28", "grades":"WHOLE"},
+    {"title":"Junior Interhouse Sports Day", "start":"2026-09-29", "end":"2026-09-29", "grades":"JUNIOR"},
+    {"title":"Double Ten Day", "start":"2026-10-09", "end":"2026-10-09", "grades":"WHOLE"},
+    {"title":"Taiwan Restoration Day", "start":"2026-10-26", "end":"2026-10-26", "grades":"WHOLE"},
+    {"title":"Midterm Exams", "start":"2026-11-11", "end":"2026-11-13", "grades":"WHOLE"},
+    {"title":"Junior Inter-house Sports Day", "start":"2026-11-23", "end":"2026-11-23", "grades":"JUNIOR"},
+    {"title":"Senior Interhouse Sports Day", "start":"2026-11-27", "end":"2026-11-27", "grades":"SENIOR"},
+    {"title":"Junior Field Trip", "start":"2026-12-03", "end":"2026-12-04", "grades":"JUNIOR"},
+    {"title":"Senior Field Trip", "start":"2026-12-17", "end":"2026-12-18", "grades":"SENIOR"},
+    {"title":"Taiwan Retrocession Day", "start":"2026-12-25", "end":"2026-12-25", "grades":"WHOLE"},
+    {"title":"New Year's Day", "start":"2027-01-01", "end":"2027-01-01", "grades":"WHOLE"},
+    {"title":"Final Exams", "start":"2027-01-15", "end":"2027-01-20", "grades":"WHOLE"},
+    {"title":"G12 Graduation Trip", "start":"2027-02-25", "end":"2027-03-03", "grades":["G12"]}
+  ],
+
+  "maybe": [
+    {"title":"University Fair", "start":"2026-09-03", "end":"2026-09-03", "grades":"SENIOR"},
+    {"title":"University Visit", "start":"2026-09-14", "end":"2026-09-14", "grades":"SENIOR"},
+    {"title":"P4 Earthquake Drill", "start":"2026-09-17", "end":"2026-09-17", "grades":"WHOLE"},
+    {"title":"G8 Vaccinations", "start":"2026-09-17", "end":"2026-09-17", "grades":["G8"]},
+    {"title":"Fire & Earthquake Drill", "start":"2026-09-21", "end":"2026-09-21", "grades":"WHOLE"},
+    {"title":"G7-9 Check Up", "start":"2026-09-22", "end":"2026-09-24", "grades":"JUNIOR"},
+    {"title":"G10 Check Up", "start":"2026-09-30", "end":"2026-09-30", "grades":["G10"]},
+    {"title":"G11 & 12 Check Up", "start":"2026-10-06", "end":"2026-10-08", "grades":["G11","G12"]},
+    {"title":"G7-9 & Staff Flu Vaccination", "start":"2026-10-20", "end":"2026-10-20", "grades":"JUNIOR"},
+    {"title":"PSAT", "start":"2026-10-22", "end":"2026-10-22", "grades":["G8","G9","G10","G11"]},
+    {"title":"Map Testing", "start":"2026-12-07", "end":"2026-12-11", "grades":"WHOLE"},
+    {"title":"G7 Health Check (Urine)", "start":"2026-12-18", "end":"2026-12-18", "grades":["G7"]},
+    {"title":"G7 Health Check (Blood)", "start":"2026-12-22", "end":"2026-12-22", "grades":["G7"]},
+    {"title":"G7 Health Check Up", "start":"2026-12-31", "end":"2026-12-31", "grades":["G7"]}
+  ]
+}
