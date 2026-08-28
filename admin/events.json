@@ -21,6 +21,7 @@
   ],
 
   "maybe": [
+    {"title":"Halloween Activity", "start":"2026-10-30", "end":"2026-10-30", "grades":"WHOLE"},
     {"title":"University Fair", "start":"2026-09-03", "end":"2026-09-03", "grades":"SENIOR"},
     {"title":"University Visit", "start":"2026-09-14", "end":"2026-09-14", "grades":"SENIOR"},
     {"title":"P4 Earthquake Drill", "start":"2026-09-17", "end":"2026-09-17", "grades":"WHOLE"},
