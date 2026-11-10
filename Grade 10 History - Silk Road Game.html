@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Grade 10 Thematic History: Silk Road Journeys</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;background:#101820;overflow:hidden;font-family:"Courier New",Courier,monospace}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{position:relative;width:min(100vw,177.78vh);height:min(56.25vw,100vh);font-size:16px}
+canvas{width:100%;height:100%;display:block;background:#000;image-rendering:pixelated;image-rendering:crisp-edges}
+.ov{position:absolute;inset:0;display:none;background:rgba(16,24,32,.9);align-items:center;justify-content:center;color:#283048}
+.ov.on{display:flex}
+.panel{box-sizing:border-box;background:#f8f0d8;border:.25em solid #283048;box-shadow:0 0 0 .2em #f8f0d8,0 0 0 .45em #283048;border-radius:.5em;padding:1em 1.4em;max-width:92%;max-height:90%;overflow:auto;font-weight:bold;font-size:1.05em;line-height:1.4}
+.panel h1{font-size:1.3em;margin:0 0 .4em;color:#b03020}
+.panel h2{font-size:1.05em;margin:.7em 0 .15em;color:#b03020}
+.panel ul{margin:.1em 0 .1em 1.1em;padding:0}
+.panel li{margin:.12em 0}
+.panel p{margin:.3em 0}
+.panel input{font:inherit;font-size:1.3em;padding:.2em .4em;border:.15em solid #283048;border-radius:.3em;background:#fff;color:#283048;width:12em;text-transform:none}
+.btn{font:inherit;font-weight:bold;background:#283048;color:#f8f0d8;border:0;border-radius:.35em;padding:.4em .8em;margin:.5em .4em 0 0;cursor:pointer}
+.btn:hover,.btn:focus{background:#b03020;outline:none}
+.btn.alt{background:#806030}
+.small{font-size:.8em;font-weight:normal}
+.sum{font-size:.82em}
+.sum .btn{margin-top:0}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:0 1.6em}
+table.keys td{padding:.1em .8em .1em 0;vertical-align:top}
+#print{display:none}
+@media print{
+ body{background:#fff;overflow:visible;height:auto}
+ #wrap{display:none}
+ #print{display:block;color:#000;font-family:"Courier New",monospace;font-size:11pt}
+ #print pre{white-space:pre-wrap;page-break-after:always;margin:0 0 2em}
+}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+<canvas id="c" width="640" height="360"></canvas>
+<div class="ov" id="ov"><div class="panel" id="panel"></div></div>
+</div></div>
+<div id="print"></div>
+<script>
+(()=>{'use strict';
+/* =========================================================
+   GRADE 10 THEMATIC HISTORY: SILK ROAD JOURNEYS  (set in 1165)
+   One self-contained file. No outside images, fonts or libraries.
+   ========================================================= */
+const W=640,H=360,TS=16,MW=190,MH=54,STEP=0.13;
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const stage=document.getElementById('stage'),ov=document.getElementById('ov'),panel=document.getElementById('panel');
+ctx.imageSmoothingEnabled=false;
+const R=p=>Math.random()<p;
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function fit(){stage.style.fontSize=(stage.clientHeight/30)+'px';}
+addEventListener('resize',fit);fit();
+
+/* ---------------- storage ---------------- */
+const store={
+ get(k,d){try{const v=localStorage.getItem('srj_'+k);return v?JSON.parse(v):d}catch(e){return d}},
+ set(k,v){try{localStorage.setItem('srj_'+k,JSON.stringify(v))}catch(e){}}
+};
+
+/* ---------------- colours ---------------- */
+const COL={ink:'#283048',paper:'#f8f0d8',red:'#b03020',grass:'#78c068',grass2:'#58a850',steppe:'#a8cc70',steppe2:'#88b058',
+ sand:'#e8d088',sand2:'#c8a858',rock:'#b09878',rock2:'#786858',snow:'#f8f8f0',sea:'#3888d0',sea2:'#70b8f0',road:'#c89858',road2:'#a87838',river:'#58a8e8'};
+const PAL={k:'#283048',s:'#f0c090',w:'#f8f8f0',b:'#805030',y:'#e8c860',g:'#a8a8b0',d:'#505868',u:'#3890d8',o:'#c84830',n:'#58a850',r:'#b03020',h:'#f8f8f0'};
+
+/* ---------------- sprites (16x16) ---------------- */
+const SP={
+front:["......kkkk......",".....khhhhk.....","....khhhhhhk....","....kssssssk....","....kskssksk....","....kssssssk....",".....kssssk.....","....krrrrrrk....","...krrrrrrrrk...","...ksrrrrrrsk...","...ksrrbbrrsk...","....krrrrrrk....","....krrrrrrk....","....krrkkrrk....","....kbbkkbbk....",".....kk..kk....."],
+back:["......kkkk......",".....khhhhk.....","....khhhhhhk....","....khhhhhhk....","....kddddddk....","....kddddddk....",".....kssssk.....","....krrrrrrk....","...krrrrrrrrk...","...ksrrrrrrsk...","...ksrrrrrrsk...","....krrrrrrk....","....krrrrrrk....","....krrkkrrk....","....kbbkkbbk....",".....kk..kk....."],
+side:["......kkkk......",".....khhhhk.....","....khhhhhhk....","....khhsssk.....","....khssksk.....","....khsssssk....",".....kssssk.....","....krrrrk......","...krrrrrrk.....","...krrrrrsk.....","...krrrrrsk.....","....krrrrk......","....krrrrk......","....krrrrk......","....kbbbbk......",".....kkkkk......"],
+cityE:["................",".......kk.......","......kook......","...kkkkookkkk...","..kooooooooook..","...kkyyyyyykk...","....kyykkyyk....","..kkkkkkkkkkkk..",".kooooooooooook.","..kkyyyyyyyykk..","...kyykyykyyk...","...kyykyykyyk...","...kyyyyyyyyk...","...kyyykkyyyk...","...kyyykkyyyk...","...kkkkkkkkkk..."],
+cityM:["................",".......kk.......",".......kk.......","......kuuk......",".....kuuuuk.....","....kuuuuuuk....","....kuuuuuuk....","..k.kkkkkkkk.k..",".kyk.kyyyyk.kyk.",".kyk.kyyyyk.kyk.",".kykkkyyyykkkyk.",".kyyyyykkyyyyyk.",".kyykyykkyykyyk.",".kyyyyykkyyyyyk.",".kyyyyykkyyyyyk.",".kkkkkkkkkkkkkk."],
+cityW:["................","......kkkk......",".....kooook.....","....kooooook....","....kkkkkkkk....",".....kggggk.....",".k.k.kgkkgk.k.k.",".kkk.kggggk.kkk.",".kgkkkggggkkkgk.",".kggggggggggggk.",".kgkggkkkkggkgk.",".kggggkbbkggggk.",".kggggkbbkggggk.",".kggggkbbkggggk.",".kggggkbbkggggk.",".kkkkkkkkkkkkkk."],
+bandit:["......kkkk......",".....kddddk.....","....kddddddk....","....kdsksksk....","....kddddddk....",".....kddddk.....","...kkoooookk..w.","..kooooooook.kw.","..kokoooooko.kw.","..kskooooksk.kw.","..kskoooookskkw.","....koooook.kbk.","....kookook.....","....kook.kook...","....kbbk.kbbk...","....kkkk.kkkk..."],
+knight:["......kkkk......",".....kggggk.....","....kggggggk....","....kgkkkkgk....","....kggggggk....",".....kggggk.....","...kkwwwwwwkk...","..kwwwwoowwwwk..","..kwkwoooowkwk..","..kgkwwoowwkgk..","..kgkwwoowwkgk..","....kwwwwwwk....","....kggkkggk....","....kggk.kggk...","....kggk.kggk...","....kkkk.kkkk..."],
+storm:["................","...yyyy.....yy..","..yyyyyyy.yyyy..",".yy....yyyy.....","......yyyyyyyy..","..yyyyyy....yyy.",".yyy..yyyyy.....",".....yyyyyyyyy..","..yyyyy....yyyy.",".yyy...yyyy.....","....yyyyyyyyy...","..yyyy.....yyy..",".yy...yyyyy.....","....yyyyyyyy....","..yyy......yy...","................"],
+snow:["................",".......kk.......","......kwwk......",".....kwwwwk.....",".....kwwwwk..w..","..w.kwwggwwk....","....kwggggwk....","...kwggggggwk...","...kggggggggk.w.",".w.kgggdggggk...","..kggggddggggk..","..kgggdddgggggk.",".kggggddddggggk.",".kgggdddddgggggk","kgggggdddddggggk","kkkkkkkkkkkkkkkk"],
+sun:[".......y........",".y.....y.....y..","..y....y....y...","...y.kkkkk.y....","....kyyyyyk.....","...kyyyyyyyk....","...kyyyyyyyk....","yyykyyyyyyykyyy.","...kyyyyyyyk....","...kyyyyyyyk....","....kyyyyyk.....","...y.kkkkk.y....","..y....y....y...",".y.....y.....y..",".......y........","................"],
+river:["................","................","..uu....uu....uu",".uuuu..uuuu..uuu","uu..uuuu..uuuu..","................","..uu....uu....uu",".uuuu..uuuu..uuu","uu..uuuu..uuuu..","................","..uu....uu....uu",".uuuu..uuuu..uuu","uu..uuuu..uuuu..","................","................","................"]
+};
+function spr(c,rows,x,y,sc,pal,flip){
+ pal=pal||PAL;
+ for(let j=0;j<rows.length;j++){const row=rows[j];
+  for(let i=0;i<row.length;i++){const ch=row[flip?row.length-1-i:i];if(ch==='.')continue;
+   c.fillStyle=pal[ch]||PAL[ch]||'#f0f';c.fillRect(x+i*sc,y+j*sc,sc,sc);}}
+}
+
+/* ---------------- cities ---------------- */
+const CITY={
+con:{lat:41.01,lon:28.98,n:'Constantinople',z:'君士坦丁堡',a:'now Istanbul',x:8,y:18,st:'W',pl:'the huge walled capital of the Byzantine Empire, on the sea between Europe and Asia',
+ info:'CONSTANTINOPLE 君士坦丁堡 (now Istanbul). Capital of the Byzantine Empire. Emperor Manuel I Komnenos rules here. Venetian merchants have their own quarter by the harbour.',
+ learn:'Constantinople was the capital of the Byzantine Empire, ruled in 1165 by Emperor Manuel I Komnenos'},
+kon:{lat:37.87,lon:32.48,n:'Konya',z:'科尼亞',a:'in Turkey',x:17,y:26,st:'M',pl:'the Seljuk capital on the high Anatolian plateau',
+ info:'KONYA 科尼亞 (in Turkey). Capital of the Seljuk Sultanate of Rum. Sultan Kilij Arslan II made peace with the Byzantine emperor in 1162.',
+ learn:'Konya was the capital of the Seljuk Sultanate of Rum; its sultan made peace with the Byzantines in 1162'},
+ale:{lat:36.2,lon:37.16,n:'Aleppo',z:'阿勒坡',a:'in Syria',x:29,y:31,st:'M',pl:'a walled trading city in northern Syria',
+ info:'ALEPPO 阿勒坡 (in Syria). A walled trading city in northern Syria, ruled by Nur ad-Din. Merchants from east and west meet in its inns.',
+ learn:'Aleppo and Damascus were both ruled by Nur ad-Din in 1165'},
+dam:{lat:33.51,lon:36.28,n:'Damascus',z:'大馬士革',a:'in Syria',x:27,y:38,st:'M',pl:'a green oasis city at the edge of the Syrian desert',
+ info:'DAMASCUS 大馬士革 (in Syria). Capital of Nur ad-Din since 1154. The city is known for its weapons and its luxury markets.',
+ learn:'Nur ad-Din took Damascus in 1154 and made it his capital; the city was known for making weapons'},
+bag:{lat:33.31,lon:44.37,n:'Baghdad',z:'巴格達',a:'in Iraq',x:48,y:38,st:'M',pl:'the great city of the caliph on the River Tigris',
+ info:'BAGHDAD 巴格達 (in Iraq). City of the Abbasid caliph, on the River Tigris. It is full of scholars, markets and hospitals.',
+ learn:'Baghdad was the city of the Abbasid caliph, the head of Sunni Islam'},
+mer:{lat:37.66,lon:62.19,n:'Merv',z:'梅爾夫',a:'in Turkmenistan',x:93,y:27,st:'M',pl:'a large oasis city between the desert and the mountains of Khorasan',
+ info:'MERV 梅爾夫 (in Turkmenistan). A great oasis city in Khorasan. Seljuk power fell apart after Sultan Sanjar died in 1157, so roads are less safe.',
+ learn:'Seljuk power in Khorasan fell apart after 1157, which made the roads around Merv more dangerous'},
+buk:{lat:39.77,lon:64.42,n:'Bukhara',z:'布哈拉',a:'in Uzbekistan',x:100,y:21,st:'M',pl:'a rich market city where roads from Samarkand, Merv and the steppe meet',
+ info:'BUKHARA 布哈拉 (in Uzbekistan). A rich market city. Roads from Samarkand, Merv and the northern steppe all meet here.',
+ learn:'Bukhara was a meeting point of roads, so goods and people from the steppe were sold there'},
+sam:{lat:39.65,lon:66.96,n:'Samarkand',z:'撒馬爾罕',a:'in Uzbekistan',x:107,y:22,st:'M',pl:'a famous city in a green river valley, known for its paper',
+ info:'SAMARKAND 撒馬爾罕 (in Uzbekistan). Under the Qara Khitai since their victory over the Seljuks in 1141. The city is famous for its paper.',
+ learn:'Samarkand came under the Qara Khitai after they beat the Seljuks near the city in 1141'},
+kas:{lat:39.47,lon:75.99,n:'Kashgar',z:'喀什',a:'in Xinjiang, China',x:130,y:22,st:'M',pl:'an oasis city where the mountain roads meet the desert roads',
+ info:'KASHGAR 喀什 (in Xinjiang, China). An oasis city under the Qara Khitai. Roads over the mountains meet the roads around the Taklamakan Desert here.',
+ learn:'Kashgar was under the Qara Khitai, whose rulers were Buddhist while most of their people were Muslim'},
+tur:{lat:42.95,lon:89.18,n:'Turfan',z:'吐魯番',a:'in Xinjiang, China',x:164,y:13,st:'E',pl:'a hot, low oasis in the Uyghur kingdom of Qocho, with grapes and cotton fields',
+ info:'TURFAN 吐魯番 (in Xinjiang, China). An oasis in Qocho, the kingdom of the Uyghurs. Most people are Buddhist. Grapes and cotton grow in the fields.',
+ learn:'Turfan belonged to Qocho, a mostly Buddhist Uyghur kingdom that answered to the Qara Khitai'},
+jer:{lat:31.77,lon:35.21,n:'Jerusalem',z:'耶路撒冷',a:'',x:27,y:43,st:'W',pl:'a holy city in the hills, capital of the Crusader kingdom',
+ info:'JERUSALEM 耶路撒冷. The Crusaders took the city in 1099. King Amalric I rules here now, and pilgrims from Europe fill the streets.',
+ learn:'Jerusalem was the capital of the Crusader kingdom, ruled in 1165 by King Amalric I'},
+dun:{lat:40.14,lon:94.66,n:'Dunhuang',z:'敦煌',a:'in Gansu, China',x:179,y:21,st:'E',pl:'a desert oasis with Buddhist cave temples cut into the cliffs',
+ info:'DUNHUANG 敦煌 (in Gansu, China). A desert oasis ruled by the Tanguts of Western Xia. Buddhist cave temples are cut into the cliffs nearby.',
+ learn:'Dunhuang was ruled by the Tanguts of Western Xia, who were Buddhist and looked after its cave temples'}
+};
+const VILL=[['Homs',28,34],['Rayy (near Tehran)',66,33],['Kucha',148,17],['Hami',176,13]];
+const ROADS=[
+ ['con',[12,22],'kon'],['kon',[21,27],[23,28],[25,29],[27,30],'ale'],['ale',[28,34],'dam'],['dam',[27,40],'jer'],
+ ['ale',[33,31],[38,33],[44,36],'bag'],['bag',[53,36],[58,34],[66,33],[76,32],[85,31],[89,29],'mer'],
+ ['mer',[95,25],[98,23],'buk'],['buk',[104,22],'sam'],['sam',[110,21],[113,20],[118,20],[122,20],[126,20],'kas'],
+ ['kas',[135,20],[141,18],[148,17],[156,16],[160,14],'tur'],['tur',[176,13],[178,17],'dun']];
+const RIVERS=[
+ [[32,28],[36,34],[45,37],[56,45]],            // Euphrates
+ [[39,27],[44,30],[48,38],[56,45]],            // Tigris
+ [[114,28],[98,23],[87,11]],                   // Oxus (Amu Darya)
+ [[117,19],[109,17],[92,6]]];                  // Syr Darya
+const LEG={
+ 'con-kon':[20,'the high, dry plateau of Anatolia'],
+ 'ale-kon':[18,'the Taurus Mountains by a narrow pass, then down to the plains of Syria'],
+ 'dam-jer':[7,'the hills of Galilee and the valley of the River Jordan'],
+ 'ale-dam':[10,'the road through Syria past Homs, with mountains on one side and desert on the other'],
+ 'ale-bag':[25,'the River Euphrates and the dry country beside it'],
+ 'bag-mer':[60,'the Zagros Mountains and the Iranian plateau, past Hamadan, Rayy (near Tehran) and Nishapur'],
+ 'buk-mer':[12,'the Karakum desert and the River Oxus'],
+ 'buk-sam':[8,'a green river valley with farms and villages'],
+ 'kas-sam':[40,'the Ferghana valley and the high, snowy passes of the Tian Shan mountains'],
+ 'kas-tur':[45,'the oasis towns of Aksu and Kucha, between the Tian Shan mountains and the Taklamakan Desert'],
+ 'dun-tur':[25,'the Gobi desert, past the oasis of Hami']};
+const legOf=(a,b)=>LEG[[a,b].sort().join('-')];
+
+/* ---------------- map ---------------- */
+const terr=[],road=[],riv=[],cityAt={},villAt={};
+const ell=(x,y,cx,cy,rx,ry)=>{const a=(x-cx)/rx,b=(y-cy)/ry;return a*a+b*b<=1};
+const hsh=(x,y)=>{let n=Math.imul(x,374761393)+Math.imul(y,668265263);n=Math.imul(n^(n>>>13),1274126177);return((n^(n>>>16))>>>0)/4294967296};
+function genT(x,y){
+ if(ell(x,y,23,10,18,6.5))return 4;                 // Black Sea
+ if(x<25&&y>30)return 4;                            // Mediterranean
+ if(x<3&&y>15)return 4;                             // Aegean
+ if(ell(x,y,5,20.5,3.2,1.2))return 4;               // Marmara
+ if(ell(x,y,63,15,6,14))return 4;                   // Caspian
+ if(ell(x,y,87.5,8,4.5,4))return 4;                 // Aral
+ if(ell(x,y,66,54,10,6))return 4;                   // Gulf
+ if(ell(x,y,133,14.5,2.5,1))return 4;               // Issyk Kul
+ const tb=14.5-(x-140)*0.16;
+ if(x>=112&&x<=176&&y<=tb&&y>=tb-4)return 3;        // Tian Shan
+ if(x>=125&&x<=127&&y>=17&&y<=22)return 3;          // pass wall
+ if(ell(x,y,123,27,8,6))return 3;                   // Pamir
+ const kb=x>150?29-(x-150)*0.1:29;
+ if(x>=131&&y>=kb)return 3;                         // Kunlun / Tibet
+ if(ell(x,y,110,33,10,3))return 3;                  // Hindu Kush
+ if(y>=26&&y<=47&&Math.abs(x-(21+y))<=1.5)return 3; // Zagros
+ if(y>=30&&y<=31&&x>=56&&x<=74)return 3;            // Elburz
+ if(ell(x,y,81,26.5,6,1.5))return 3;                // Kopet Dag
+ if(ell(x,y,47,13.5,12,1.5))return 3;               // Caucasus
+ if(y>=28&&y<=29&&x>=9&&x<=27)return 3;             // Taurus
+ if(ell(x,y,27,19.5,13,1))return 3;                 // Pontic
+ if(ell(x,y,41,24,5,2.5))return 3;                  // Armenian highlands
+ if(ell(x,y,152,23,20,5))return 2;                  // Taklamakan
+ if(x>=158&&y>=6)return 2;                          // Gobi
+ if(ell(x,y,86,20,11,6))return 2;                   // Karakum
+ if(ell(x,y,98,14,8,5))return 2;                    // Kyzylkum
+ if(ell(x,y,76,35,9,2.5))return 2;
+ if(ell(x,y,84,40,6,5))return 2;
+ if(ell(x,y,38,42,11,8))return 2;                   // Syrian desert
+ if(y>=45&&x>=25&&x<=56)return 2;
+ return y<11?1:0;
+}
+function line(x0,y0,x1,y1){const p=[[x0,y0]];const dx=Math.abs(x1-x0),dy=Math.abs(y1-y0),sx=x1>x0?1:-1,sy=y1>y0?1:-1;let x=x0,y=y0,ix=0,iy=0;
+ while(ix<dx||iy<dy){if((0.5+ix)/dx<(0.5+iy)/dy){x+=sx;ix++}else{y+=sy;iy++}p.push([x,y])}return p}
+function buildMap(){
+ for(let y=0;y<MH;y++){terr.push([]);road.push([]);riv.push([]);for(let x=0;x<MW;x++){terr[y].push(genT(x,y));road[y].push(0);riv[y].push(0)}}
+ for(const r of RIVERS)for(let i=0;i<r.length-1;i++)for(const[x,y]of line(r[i][0],r[i][1],r[i+1][0],r[i+1][1]))if(terr[y][x]!==4)riv[y][x]=1;
+ for(const r of ROADS){const pts=r.map(p=>typeof p==='string'?[CITY[p].x,CITY[p].y]:p);
+  for(let i=0;i<pts.length-1;i++)for(const[x,y]of line(pts[i][0],pts[i][1],pts[i+1][0],pts[i+1][1]))road[y][x]=1}
+ for(const k in CITY){const c=CITY[k];cityAt[c.x+','+c.y]=k;road[c.y][c.x]=1;riv[c.y][c.x]=0}
+ for(const v of VILL)villAt[v[1]+','+v[2]]=v[0];
+}
+const pass=(x,y)=>x>=0&&y>=0&&x<MW&&y<MH&&(road[y][x]||(terr[y][x]!==4&&terr[y][x]!==3&&!riv[y][x]));
+let mapCv;
+function drawTile(c,x,y){
+ const px=x*TS,py=y*TS,t=terr[y][x],h=hsh(x,y),h2=hsh(x+91,y+17);
+ const base=[COL.grass,COL.steppe,COL.sand,COL.rock,COL.sea][t];
+ c.fillStyle=base;c.fillRect(px,py,TS,TS);
+ if(t===0||t===1){c.fillStyle=t?COL.steppe2:COL.grass2;const a=2+(h*10|0),b=2+(h2*10|0);c.fillRect(px+a,py+b,2,1);c.fillRect(px+a+1,py+b-1,1,1);if(h>.5){c.fillRect(px+b,py+a+2,2,1);c.fillRect(px+b,py+a+1,1,1)}}
+ else if(t===2){c.fillStyle=COL.sand2;const a=1+(h*11|0),b=3+(h2*9|0);c.fillRect(px+a,py+b,3,1);c.fillRect(px+a+1,py+b-1,2,1);if(h2>.6)c.fillRect(px+b,py+a+3,2,1)}
+ else if(t===3){c.fillStyle=COL.rock2;for(let i=0;i<7;i++)c.fillRect(px+7-i,py+2+i*2,2+2*i,2);c.fillStyle='#584838';for(let i=1;i<7;i++)c.fillRect(px+8,py+2+i*2,1+i,2);
+  c.fillStyle=COL.snow;c.fillRect(px+7,py+2,2,2);c.fillRect(px+6,py+4,4,1)}
+ else if(t===4){c.fillStyle=COL.sea2;const a=1+(h*9|0),b=2+(h2*10|0);c.fillRect(px+a,py+b,4,1);if(h>.4)c.fillRect(px+b,py+((a+7)%13)+1,3,1)}
+ const rv=(xx,yy)=>xx>=0&&yy>=0&&xx<MW&&yy<MH&&(riv[yy][xx]||terr[yy][xx]===4);
+ if(riv[y][x]&&t!==4){c.fillStyle=COL.river;c.fillRect(px+5,py+5,6,6);if(rv(x-1,y))c.fillRect(px,py+5,5,6);if(rv(x+1,y))c.fillRect(px+11,py+5,5,6);if(rv(x,y-1))c.fillRect(px+5,py,6,5);if(rv(x,y+1))c.fillRect(px+5,py+11,6,5)}
+ const rd=(xx,yy)=>xx>=0&&yy>=0&&xx<MW&&yy<MH&&road[yy][xx];
+ if(road[y][x]){c.fillStyle=riv[y][x]?'#906838':COL.road;c.fillRect(px+4,py+4,8,8);if(rd(x-1,y))c.fillRect(px,py+4,4,8);if(rd(x+1,y))c.fillRect(px+12,py+4,4,8);if(rd(x,y-1))c.fillRect(px+4,py,8,4);if(rd(x,y+1))c.fillRect(px+4,py+12,8,4);
+  c.fillStyle=COL.road2;if(h>.5)c.fillRect(px+6+(h2*3|0),py+6+(h*3|0),1,1)}
+ const v=villAt[x+','+y];
+ if(v){c.fillStyle=COL.ink;c.fillRect(px+2,py+6,6,7);c.fillRect(px+9,py+4,5,9);c.fillStyle='#e8c860';c.fillRect(px+3,py+7,4,5);c.fillRect(px+10,py+5,3,7);c.fillStyle=COL.red;c.fillRect(px+2,py+5,6,1);c.fillRect(px+9,py+3,5,1)}
+ const ck=cityAt[x+','+y];
+ if(ck)spr(c,SP['city'+CITY[ck].st],px,py,1);
+}
+function renderMap(){
+ mapCv=document.createElement('canvas');mapCv.width=MW*TS;mapCv.height=MH*TS;const c=mapCv.getContext('2d');
+ for(let y=0;y<MH;y++)for(let x=0;x<MW;x++)drawTile(c,x,y);
+}
+
+/* ---------------- audio ---------------- */
+const TR={
+ east:{bpm:88,v:[
+  {w:'triangle',vol:.22,len:.9,s:[[69,2],[72,2],[74,4],[72,2],[69,2],[67,4],[64,2],[67,2],[69,4],[67,2],[64,2],[62,4],[60,2],[62,2],[64,4],[67,2],[69,2],[72,4],[74,2],[72,2],[69,2],[67,2],[69,8]]},
+  {w:'sine',vol:.16,len:1,s:[[48,8],[55,8],[45,8],[52,8],[48,8],[55,8],[45,8],[52,8]]}]},
+ middle:{bpm:100,v:[
+  {w:'square',vol:.07,len:.8,s:[[62,2],[63,2],[66,2],[67,2],[69,4],[67,2],[66,2],[63,2],[66,2],[63,2],[62,2],[62,8],[69,2],[70,2],[72,2],[74,2],[72,4],[70,2],[69,2],[67,2],[66,2],[63,2],[66,2],[62,8]]},
+  {w:'triangle',vol:.18,len:1,s:[[38,16],[38,16],[38,16],[38,16]]},
+  {drum:1,vol:.1,s:[[1,3],[1,3],[1,2],[1,3],[1,3],[1,2]]}]},
+ west:{bpm:84,v:[
+  {w:'square',vol:.06,len:.9,s:[[62,4],[65,2],[67,2],[69,4],[67,2],[65,2],[64,4],[62,2],[64,2],[65,8],[69,4],[72,2],[71,2],[69,4],[67,2],[65,2],[64,2],[65,2],[64,2],[60,2],[62,8]]},
+  {w:'triangle',vol:.14,len:1,s:[[38,32],[38,32]]},
+  {w:'triangle',vol:.1,len:1,s:[[45,32],[45,32]]}]},
+ battle:{bpm:150,v:[
+  {w:'square',vol:.05,len:.7,s:[57,60,64,69,57,60,64,69,57,60,64,69,57,60,64,69,53,57,60,65,53,57,60,65,53,57,60,65,53,57,60,65,55,59,62,67,55,59,62,67,55,59,62,67,55,59,62,67,52,56,59,64,52,56,59,64,52,56,59,64,52,56,59,64].map(m=>[m,1])},
+  {w:'triangle',vol:.2,len:.8,s:[[76,4],[72,4],[69,4],[72,4],[77,4],[72,4],[69,4],[65,4],[79,4],[74,4],[71,4],[74,4],[76,4],[71,4],[68,4],[64,4]]},
+  {drum:1,vol:.08,s:[[1,2],[1,2],[1,1],[1,1],[1,2]]}]}
+};
+const Snd={ac:null,mute:false,cur:null,vs:[],
+ init(){if(this.ac){if(this.ac.state==='suspended')this.ac.resume();return}
+  try{const A=window.AudioContext||window.webkitAudioContext;this.ac=new A();this.master=this.ac.createGain();this.master.gain.value=this.mute?0:.6;this.master.connect(this.ac.destination);
+   const n=this.ac.sampleRate*.15|0,b=this.ac.createBuffer(1,n,this.ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;this.noise=b;
+   setInterval(()=>this.tick(),70)}catch(e){this.ac=null}},
+ tone(m,t,dur,w,vol){const a=this.ac,o=a.createOscillator(),g=a.createGain();o.type=w;o.frequency.value=440*Math.pow(2,(m-69)/12);
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+Math.max(.05,dur));o.connect(g);g.connect(this.master);o.start(t);o.stop(t+dur+.05)},
+ hit(t,vol){const a=this.ac,s=a.createBufferSource(),g=a.createGain();s.buffer=this.noise;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);s.connect(g);g.connect(this.master);s.start(t)},
+ play(name){if(this.cur===name)return;this.cur=name;if(!this.ac||!name){this.vs=[];return}const t=this.ac.currentTime+.08;this.vs=TR[name].v.map(v=>({v,i:0,t}))},
+ tick(){if(!this.ac||!this.cur)return;if(!this.vs.length&&this.cur){const n=this.cur;this.cur=null;this.play(n)}const u=60/TR[this.cur].bpm/4,now=this.ac.currentTime;
+  for(const q of this.vs){if(q.t<now)q.t=now+.02;while(q.t<now+.25){const[m,l]=q.v.s[q.i];if(m){if(q.v.drum)this.hit(q.t,q.v.vol);else this.tone(m,q.t,l*u*q.v.len,q.v.w,q.v.vol)}q.t+=l*u;q.i=(q.i+1)%q.v.s.length}}},
+ fx(k){if(!this.ac)return;const t=this.ac.currentTime;
+  if(k==='blip')this.tone(84,t,.05,'square',.05);
+  else if(k==='ok'){this.tone(76,t,.07,'square',.06);this.tone(83,t+.07,.1,'square',.06)}
+  else if(k==='no')this.tone(45,t,.15,'square',.08);
+  else if(k==='bump')this.tone(40,t,.06,'triangle',.15);
+  else if(k==='good'){[72,76,79,84].forEach((m,i)=>this.tone(m,t+i*.09,.14,'square',.06))}
+  else if(k==='bad'){[64,60,57,52].forEach((m,i)=>this.tone(m,t+i*.12,.2,'square',.06))}
+  else if(k==='dead'){[57,56,55,50,45].forEach((m,i)=>this.tone(m,t+i*.28,.5,'triangle',.25))}
+  else if(k==='city'){[67,72,76,72,79].forEach((m,i)=>this.tone(m,t+i*.1,.16,'triangle',.2))}},
+ toggle(){this.mute=!this.mute;if(this.master)this.master.gain.value=this.mute?0:.6}
+};
+
+/* =========================================================
+   EVENTS
+   outcome: {x:[text boxes], fx:{hp,co,su,d,add,rem,lose,safe}, log:{g,l,dg,m}, die:{cause,dx,lx,lfx}}
+   ========================================================= */
+const o=(x,fx,log,die)=>({x:Array.isArray(x)?x:[x],fx:fx||{},log:log||{},die});
+const VAL={'cotton cloth':15,'raisins and wine':12,'Khotan jade':30,'Samarkand paper':20,'medicines':15,'medical books':20,'Damascus swords':25,'Damascus paper':20,'fine cloth':15,'Byzantine silk':30,'purple silk':60,'enslaved captives':40,'Chinese silk':30};
+
+function bandits(id,who,where,foe,pre){const w=/^(Turkmen|Crusader)/.test(who)?who:who.charAt(0).toLowerCase()+who.slice(1);
+ return{id,t:who.toUpperCase()+'!',foe:foe||'bandit',dg:1,
+ x:(pre?[pre]:[]).concat([`${who} block the road near ${where}. They want everything you carry.`]),
+ c:[
+ ['FIGHT',()=>R(.4)?o('You and the camel drivers fight hard. The attackers give up and ride away.',{hp:-1},{dg:`Fought off ${w} near ${where}`})
+  :o('You draw your knife, but there are too many of them.',{},{dg:`Attacked by ${w} near ${where}`},{cause:`was killed by ${w} near ${where}`,dx:'A blade cuts you down beside your camels.',lx:'They beat you and take half your coins. You live.',lfx:{hp:-2,co:'half'}})],
+ ['PAY THEM',()=>o('You hand over a bag of coins. They count it, laugh, and let you pass.',{co:-25},{dg:`Paid ${w} near ${where} to let me pass`})],
+ ['HIDE',()=>R(.5)?o('You pull the camels behind some rocks and wait in silence. The riders pass by.',{d:1},{dg:`Hid from ${w} near ${where}`})
+  :o('A camel cries out. They find you, hit you and take one load of goods.',{lose:1,hp:-1},{dg:`Robbed by ${w} near ${where}`})],
+ ['RUN',()=>R(.5)?o('You drive the camels hard until dark. At last the riders give up.',{su:-1,d:1},{dg:`Escaped from ${w} near ${where}`})
+  :o('Loaded camels are slow. The riders catch you and take half your coins.',{co:'half',hp:-1},{dg:`Robbed by ${w} near ${where}`})]]}}
+function storm(id,where){return{id,t:'SANDSTORM!',foe:'storm',dg:1,
+ x:[`The sky turns yellow. A {sandstorm|strong wind full of sand} is rolling across ${where} towards you.`],
+ c:[
+ ['PUSH ON',()=>R(.4)?o('You wrap your face in cloth and keep walking. By evening the air is clear.',{su:-1},{dg:`Walked through a sandstorm in ${where}`})
+  :o('Sand hides the road. You walk in circles and the water runs low.',{},{dg:`Lost in a sandstorm in ${where}`},{cause:`was lost in a sandstorm in ${where}`,dx:'Nobody from your caravan is seen again.',lx:'After two terrible days you find the road again.',lfx:{hp:-2,su:-2,d:2}})],
+ ['SHELTER BEHIND THE CAMELS',()=>o('You make the camels kneel and hide behind them. The storm passes over you.',{d:1,su:-1},{dg:`Sheltered from a sandstorm in ${where}`})],
+ ['GO BACK TO THE LAST WELL',()=>o('You turn round and reach the well before the storm. Three days are lost.',{d:3},{dg:`Turned back from a sandstorm in ${where}`})]]}}
+function thirst(id,where){return{id,t:'NO WATER!',foe:'sun',dg:1,
+ x:[`The well is dry. The next water in ${where} is three days away, and the sun is fierce.`],
+ c:[
+ ['SHARE OUT THE WATER',s=>s.sup>=3?o('You have enough water skins. Everyone gets a little each day, and you reach the next well.',{su:-2},{dg:`Ran short of water in ${where}`})
+  :o('There is not enough water to share.',{},{dg:`Almost died of thirst in ${where}`},{cause:`died of thirst in ${where}`,dx:'One by one, people and camels fall and do not get up.',lx:'You reach the next well half dead.',lfx:{hp:-3,su:-2}})],
+ ['TRAVEL ONLY AT NIGHT',()=>o('You rest in the heat and walk under the stars. It is slow, but you use less water.',{su:-1,d:2},{dg:`Crossed part of ${where} by night to save water`})],
+ ['BUY WATER FROM HERDERS',()=>o('Herders sell you water from their own skins at a high price.',{co:-15},{dg:`Had to buy water in ${where}`}),15]]}}
+function snow(id,where){return{id,t:'SNOW!',foe:'snow',dg:1,
+ x:[`Snow is falling on ${where}. The path ahead is white and the wind cuts like a knife.`],
+ c:[
+ ['PUSH THROUGH',()=>R(.5)?o('You fight through the snow all day and come down the other side, frozen but alive.',{hp:-1,d:1},{dg:`Crossed ${where} in deep snow`})
+  :o('The snow gets deeper. You cannot see the path.',{},{dg:`Trapped by snow on ${where}`},{cause:`froze to death in the snow on ${where}`,dx:'Night comes, and the cold takes you.',lx:'You dig a hole in the snow and live through the night.',lfx:{hp:-2,d:3}})],
+ ['SEND THE ANIMALS AHEAD',()=>o('You drive the animals in front to stamp down the snow. Caravans often do this in winter.',{d:2},{dg:`Snow on ${where}`,l:'In winter, caravans drove animals ahead of them to clear snow from the road'})],
+ ['WAIT BELOW FOR BETTER WEATHER',()=>o('You wait in a village until the pass opens. It takes six days and a lot of food.',{d:6,su:-1},{dg:`Waited six days for snow to clear on ${where}`})]]}}
+function ill(id,where){return{id,t:'FEVER',foe:'sick',dg:1,
+ x:[`At ${where} you wake up hot and shaking. You have a {fever|high body temperature from illness}.`],
+ c:[
+ ['REST FOR A WEEK',()=>o('You lie in the shade and drink clean water. After a week you can travel again.',{d:7},{dg:`Fell ill with fever at ${where}`})],
+ ['KEEP TRAVELLING',()=>R(.4)?o('You tie yourself to the saddle. Slowly the fever goes.',{hp:-1},{dg:`Travelled on with a fever from ${where}`})
+  :o('The fever gets worse with every mile.',{},{dg:`Very ill with fever after ${where}`},{cause:`died of fever on the road after ${where}`,dx:'One morning you do not wake up.',lx:'Strangers carry you to shelter and you slowly get better.',lfx:{hp:-3,d:5}})],
+ ['PAY A PHYSICIAN',()=>o('A local {physician|doctor} gives you bitter medicine. In three days you are on your feet.',{co:-15,d:3},{dg:`Fell ill at ${where} and paid a physician`}),15]]}}
+function cross(id,where){return{id,t:'A SHORTER ROAD?',foe:'guide',dg:1,
+ x:[`A man you hired at the last town says he knows a faster way through ${where}. Nobody else has heard of it.`],
+ c:[
+ ['FOLLOW HIM',()=>R(.4)?o('His path is real. You save three days.',{d:-3},{l:'Local guides knew paths that strangers could not find'})
+  :o('He leads you into a dry valley where armed men are waiting. You have been {double-crossed|cheated by someone you trusted}.',{},{dg:`Double-crossed by a guide in ${where}`},{cause:`was double-crossed by a guide and killed in ${where}`,dx:'They take everything and leave no one alive.',lx:'They take one load of goods and half your coins, then let you go.',lfx:{lose:1,co:'half',hp:-1}})],
+ ['STAY ON THE MAIN ROAD',()=>o('You stay on the road everyone knows. The man looks angry but says nothing.',{},{dg:`A guide tried to lead me off the road in ${where}`})],
+ ['PAY HIM AND SEND HIM AWAY',()=>o('You pay his wages and tell him to leave. That night you sleep better.',{co:-5},{dg:`Sent away a guide I did not trust in ${where}`})]]}}
+function river(id,name){return{id,t:'THE RIVER',foe:'river',dg:1,
+ x:[`You reach ${name}. It is wide and brown and fast. The ferrymen want a high price.`],
+ c:[
+ ['PAY THE FERRYMEN',()=>o('Their flat boats take the whole caravan over, a few camels at a time.',{co:-10,d:1},{dg:`Crossed ${name} by ferry`}),10],
+ ['SWIM THE CAMELS ACROSS',()=>R(.4)?o('You find a shallow place. Wet and cold, everyone gets across.',{},{dg:`Swam the camels across ${name}`})
+  :o('Halfway over, the water pulls a camel off its feet.',{},{dg:`Nearly drowned crossing ${name}`},{cause:`drowned crossing ${name}`,dx:'You go under with it and do not come up.',lx:'You lose one load of goods to the river.',lfx:{lose:1,hp:-1}})],
+ ['WAIT FOR LOWER WATER',()=>o('You camp by the river for four days until the water drops.',{d:4,su:-1},{dg:`Waited four days to cross ${name}`})]]}}
+
+const hireGuide=['HIRE A TRUSTY GUIDE',()=>o('An old guide who knows every well joins you.',{co:-15,safe:1},{g:'Hired a trusty guide'}),15];
+const buyWater=['BUY EXTRA WATER SKINS',()=>o('You load two more skins of water and a sack of dried food.',{co:-8,su:2},{g:'Bought extra water and food'}),8];
+const hireGuards=['HIRE CARAVAN GUARDS',()=>o('Four armed riders agree to travel with you.',{co:-15,safe:1},{g:'Hired caravan guards'}),15];
+const has=(s,n)=>s.goods.some(g=>g.n===n);
+
+const EV={
+/* ---- start events ---- */
+s_dun:[{id:'s_dun',t:'DUNHUANG',city:'dun',
+ x:['The {abbot|head of a monastery} gives you {scriptures|holy books} printed from carved wooden blocks. "Take them west," he says.'],
+ c:[['PRAY AT THE CAVE TEMPLES FIRST',()=>o('Tangut {pilgrims|people on a religious journey} have written their names on the cave walls. You add a prayer of your own.',{d:1},{l:'Tangut pilgrims prayed at the cave temples near Dunhuang and left writing on the walls'})],
+  ['JOIN A MERCHANT CARAVAN',()=>o('For a small fee, a caravan with guards lets you walk with them.',{co:-10,safe:1},{g:'Paid to travel with a guarded caravan'}),10],buyWater]}],
+s_tur:[{id:'s_tur',t:'TURFAN',city:'tur',
+ x:['Your camels carry rolls of cotton cloth. In Turfan, cotton cloth is so trusted that people use it as money.'],
+ c:[['BUY RAISINS AND WINE TOO',()=>o('Turfan grapes are famous. You add dried grapes and wine to your loads.',{co:-12,add:'raisins and wine'},{g:'Bought raisins and wine in Turfan'}),12],hireGuide,buyWater]}],
+s_kas:[{id:'s_kas',t:'KASHGAR',city:'kas',
+ x:['You carry {jade|a hard green or white stone} from Khotan. For centuries, traders have taken Khotan jade east, where Chinese buyers love it.'],
+ c:[['BUY ONE MORE LOAD OF JADE',()=>o('You choose smooth river stones, white and green.',{co:-30,add:'Khotan jade'},{g:'Bought more Khotan jade in Kashgar'}),30],hireGuide,buyWater]}],
+s_sam:[{id:'s_sam',t:'SAMARKAND',city:'sam',
+ x:['Samarkand paper is famous. Workers rub every sheet with a smooth stone until it shines.'],
+ c:[['BUY EXTRA PAPER',()=>o('You buy one more camel-load of the best sheets.',{co:-20,add:'Samarkand paper'},{g:'Bought extra Samarkand paper'}),20],hireGuards,buyWater]}],
+s_bag:[{id:'s_bag',t:'BAGHDAD',city:'bag',
+ x:['You work in Baghdad\'s great hospital, where the caliph pays for everyone\'s medicine. Now you want paper and books from the east.'],
+ c:[['PACK MEDICAL BOOKS TO TRADE',()=>o('You pack copies of medical books. Scholars in the east will pay well for them.',{co:-20,add:'medical books'},{g:'Packed medical books to trade'}),20],hireGuards,
+  ['PACK EXTRA MEDICINE',()=>o('You fill another chest with medicines.',{co:-10,add:'medicines'},{g:'Packed extra medicines'}),10]]}],
+s_dam:[{id:'s_dam',t:'DAMASCUS',city:'dam',
+ x:['Damascus is known for its weapons. Your camels carry swords made in the city\'s workshops.'],
+ c:[['BUY MORE SWORDS',()=>o('You add one more load of fine blades.',{co:-25,add:'Damascus swords'},{g:'Bought more Damascus swords'}),25],
+  ['BUY FINE CLOTH',()=>o('The luxury market sells cloth fit for an {emir|Muslim ruler or commander}. You buy a load.',{co:-15,add:'fine cloth'},{g:'Bought fine cloth in Damascus'}),15],hireGuards]}],
+s_con:[{id:'s_con',t:'CONSTANTINOPLE',city:'con',
+ x:['You are from Venice, but you live in Constantinople\'s Venetian quarter. The finest purple silk here is kept for the emperor\'s court.'],
+ c:[['BUY ORDINARY SILK',()=>o('City workshops sell you a load of patterned silk. It is legal, and still worth a lot.',{co:-30,add:'Byzantine silk'},{g:'Bought Byzantine silk in Constantinople'}),30],
+  ['BRIBE AN OFFICIAL FOR PURPLE SILK',()=>R(.5)?o('At night a palace official passes you a roll of purple silk.',{co:-40,add:'purple silk'},{g:'Bribed an official for forbidden purple silk'})
+   :o('He takes your coins, then says he will report you. You have been {double-crossed|cheated by someone you trusted}.',{co:-40},{dg:'Double-crossed by a palace official in Constantinople'}),40],
+  ['LISTEN TO THE NEWS FIRST',()=>o('Old traders still talk about 1162, when the Seljuk sultan visited. At the races, a man jumped from a tower and tried to fly.',{},{l:'In 1162 the Seljuk sultan visited Constantinople and signed a peace treaty with the emperor'})]]}],
+
+/* ---- city events ---- */
+c_tur:[
+ {id:'tur_caves',t:'THE CAVE MONASTERY',city:'tur',
+ x:['Near Turfan, Buddhist caves are cut into a cliff. Uyghur monks here translate {scriptures|holy books} from Chinese into their own language.'],
+ c:s=>has(s,'printed scriptures')?[
+  ['LET THEM COPY YOUR SCRIPTURES',()=>o('For six days the monks copy your books by hand. Now the words will stay in Turfan too.',{d:6,su:1},{l:'Uyghur monks in Turfan translated and copied Buddhist scriptures by hand',m:'Buddhist scriptures: copied by hand by Uyghur monks in Turfan'})],
+  ['SWAP A PRAYER FOR SUPPLIES',()=>o('You chant with the monks. They fill your bags with food and water.',{su:2,d:1},{l:'Buddhist monasteries on the road gave travellers food and shelter'})],
+  ['HURRY ON',()=>o('You bow at the gate and keep walking.',{},{})]]:[
+  ['STAY AND WATCH THE TRANSLATORS',()=>o('A monk shows you one text in three scripts. Ideas change language as they travel.',{d:2},{l:'Uyghur monks in Turfan translated Buddhist scriptures from Chinese into Uyghur',m:'Buddhist ideas: translated from Chinese into Uyghur by monks in Turfan'})],
+  ['SELL TO THE MONASTERY',s=>s.goods.some(g=>VAL[g.n])?o('The monastery is rich. It buys one of your loads at a good price.',{sell1:1.5},{g:'Sold one load of goods to a monastery near Turfan'}):o('You have nothing they want.',{},{})],
+  ['HURRY ON',()=>o('You have no time for monks. You water the camels and leave.',{},{})]]},
+ {id:'tur_mkt',t:'TURFAN MARKET',city:'tur',
+ x:['Turfan\'s market sells grapes, wine and cotton cloth. People here even pay for things with rolls of cotton.'],
+ c:[['BUY COTTON CLOTH',()=>o('You buy a load of strong white cotton.',{co:-15,add:'cotton cloth'},{g:'Bought cotton cloth in Turfan',l:'In Turfan, cotton cloth was used as money'}),15],
+  ['BUY RAISINS AND WINE',()=>o('You buy dried grapes and wine to sell further on.',{co:-12,add:'raisins and wine'},{g:'Bought raisins and wine in Turfan',l:'In Turfan, cotton cloth was used as money'}),12],
+  ['JUST EAT AND REST',()=>o('You eat sweet grapes in the shade for two days and feel stronger.',{hp:1,d:2},{l:'In Turfan, cotton cloth was used as money'})]]}],
+c_kas:[
+ {id:'kas_faith',t:'THREE FAITHS',city:'kas',
+ x:['In Kashgar the call to prayer sounds from the mosque. But the Qara Khitai rulers are Buddhist, and Christian traders pray here too.'],
+ c:[['ASK A MUSLIM {SAGE|wise person}',()=>o('"Our rulers follow the Buddha," he says. "They take their tax and leave our mosques alone."',{},{l:'The Buddhist Qara Khitai did not force their Muslim subjects to change religion'})],
+  ['VISIT THE CHRISTIAN TRADERS',()=>o('They show you a small church. Christians of the eastern church live safely under the Qara Khitai.',{},{l:'Christians, Muslims and Buddhists all lived under Qara Khitai rule'})],
+  ['GO STRAIGHT TO THE MARKET',s=>s.goods.some(g=>VAL[g.n])?o('Prices are good today. You sell one load at once.',{sell1:1.5},{g:'Sold one load of goods in Kashgar'}):o('You look round the stalls but buy nothing.',{},{})]]},
+ {id:'kas_mkt',t:'KASHGAR MARKET',city:'kas',
+ x:['Kashgar\'s market is full of goods from both sides of the mountains. This is the place to get ready for a hard road.'],
+ c:[['BUY KHOTAN JADE',()=>o('Jade comes here from Khotan, to the south-east. You buy a load.',{co:-30,add:'Khotan jade'},{g:'Bought Khotan jade in Kashgar',l:'Jade from Khotan was traded along the Silk Road and was loved in China'}),30],hireGuide,buyWater,
+  ['REST AND WATER THE CAMELS',()=>o('You rest for two days beside the wells and feel stronger.',{d:2,hp:1},{})]]}],
+c_buk:[
+ {id:'buk_slave',t:'BUKHARA MARKET',city:'buk',
+ x:['In Bukhara\'s market, Turkic {captives|people taken by force} from the steppe are sold as slaves. Many will become soldiers in armies further west.'],
+ c:s=>(s.route.id==='paper'?[['BUY CAPTIVES TO SELL IN BAGHDAD',()=>o('You pay the dealer. The captives will walk west with your caravan.',{co:-30,add:'enslaved captives'},{g:'Bought enslaved Turkic captives in Bukhara to sell in Baghdad',l:'Turkic captives from the steppe were sold as slaves in Bukhara; many became soldiers'}),30]]:[]).concat([
+  ['ASK WHO BUYS THEM',()=>o('"Rulers," says the dealer. "They train the boys as slave soldiers. Some rise to be commanders."',{},{l:'Turkic captives were sold in Bukhara; rulers bought them to train as slave soldiers'})],
+  ['WALK ON',()=>o('You look away and go on to the cloth sellers.',{},{l:'Enslaved people were bought and sold in Silk Road markets like other goods'})]])},
+ {id:'buk_school',t:'THE SCHOLARS OF BUKHARA',city:'buk',
+ x:['Teachers and students crowd round your camels. In a city of schools and mosques, people always need paper, books and medicine.'],
+ c:[['SELL THEM ONE LOAD',s=>s.goods.some(g=>VAL[g.n])?o('They pay well and carry the load away at once.',{sell1:1.5},{g:'Sold one load of goods to scholars in Bukhara'}):o('You have nothing left to sell.',{},{})],
+  ['GIVE A GIFT TO THE SCHOOL',s=>s.goods.some(g=>VAL[g.n])?o('The head teacher thanks you and sends his {trusty|trustworthy} servant to guide you.',{lose:1,safe:1},{g:'Gave one load of goods to a school in Bukhara',l:'Gifts to teachers and schools won a traveller friends and protection'}):o('You have nothing to give, but they bless your journey.',{},{})],
+  ['KEEP EVERYTHING',()=>o('You shake your head. Prices will be better at the end of the road.',{},{})]]}],
+c_kon:[
+ {id:'kon_slave',t:'KONYA MARKET',city:'kon',
+ x:['In Konya\'s market, Greek {captives|people taken by force} from border raids are sold as slaves. Some will become soldiers of the sultan.'],
+ c:[['BUY CAPTIVES TO SELL IN SYRIA',()=>o('You pay the dealer. The captives will walk south with your caravan.',{co:-30,add:'enslaved captives'},{g:'Bought enslaved Greek captives in Konya to sell in Damascus',l:'In the Seljuk Sultanate of Rum, Greek captives from border raids were sold as slaves'}),30],
+  ['ASK WHO BUYS THEM',()=>o('"The sultan\'s officers," says the dealer. "Slave soldiers serve in his army. Later, many are freed."',{},{l:'The Seljuk sultan\'s army used slave soldiers, many of them Greek captives, who were often freed later'})],
+  ['WALK ON',()=>o('You look away and go to find food for the camels.',{},{l:'Enslaved people were bought and sold in Silk Road markets like other goods'})]]},
+ {id:'kon_court',t:'THE SULTAN\'S MAN',city:'kon',
+ x:['A {courtier|assistant to a king} of Sultan Kilij Arslan II stops your camels. He has seen your silk and wants it for the palace.'],
+ c:[['SELL HIM ONE LOAD',s=>s.goods.some(g=>VAL[g.n])?o('He pays in silver without arguing.',{sell1:1.5},{g:'Sold silk to a courtier of the Seljuk sultan in Konya'}):o('You have no silk left to sell.',{},{})],
+  ['GIVE IT AS A GIFT',s=>s.goods.some(g=>VAL[g.n])?o('He smiles and writes you a letter. With it, the sultan\'s soldiers will protect you.',{lose:1,safe:1},{g:'Gave silk to the sultan\'s courtier for protection',l:'Gifts to powerful people could buy a merchant safe travel'}):o('You have nothing to give.',{},{})],
+  ['KEEP IT FOR DAMASCUS',()=>o('You bow and say the silk is already sold. He lets you go.',{},{})]]}],
+c_ale:[
+ {id:'ale_khan',t:'THE MERCHANTS\' INN',city:'ale',
+ x:['In an Aleppo {khan|inn for merchants}, traders from many lands share news. A stranger offers to guide you for almost nothing.'],
+ c:[['HIRE THE CHEAP STRANGER',()=>R(.5)?o('He turns out to be honest and knows the road well.',{co:-5,safe:1},{g:'Hired a cheap guide in Aleppo'})
+   :o('In the morning he is gone, and so is one load of your goods.',{co:-5,lose:1},{dg:'Robbed by a guide I hired in Aleppo'}),5],
+  ['HIRE A KNOWN, TRUSTY GUIDE',()=>o('The inn-keeper sends for a guide he has known for years.',{co:-15,safe:1},{g:'Hired a trusty guide in Aleppo'}),15],
+  ['TRAVEL WITHOUT A GUIDE',()=>o('You save your coins and trust your own eyes.',{},{})]]},
+ {id:'ale_mkt',t:'ALEPPO MARKET',city:'ale',
+ x:['Aleppo belongs to Nur ad-Din. Its markets are crowded with goods from east and west.'],
+ c:[buyWater,
+  ['SELL ONE LOAD HERE',s=>s.goods.some(g=>VAL[g.n])?o('A dealer buys one load for a fair price.',{sell1:1.3},{g:'Sold one load of goods in Aleppo'}):o('You have nothing to sell.',{},{})],
+  ['REST FOR A FEW DAYS',()=>o('You sleep, eat well and let the camels drink.',{d:3,hp:1},{})]]}],
+
+/* ---- road pools ---- */
+gobi:[storm('gobi_storm','the Gobi desert'),thirst('gobi_thirst','the Gobi desert'),
+ {id:'gobi_toll',t:'THE BORDER',foe:'official',
+ x:['Tangut soldiers of Western Xia stop you at the edge of their land. They open and count every load.'],
+ c:[['PAY THE TAX',()=>o('They take their share and wave you on.',{co:-10},{l:'Rulers along the road, like the Tanguts of Western Xia, taxed passing caravans'}),10],
+  ['WAIT WHILE THEY CHECK',()=>o('You refuse to pay extra. They keep you two days, then let you go.',{d:2},{l:'Rulers along the road, like the Tanguts of Western Xia, taxed passing caravans'})],
+  ['OFFER A SMALL GIFT',()=>R(.6)?o('The officer likes your gift and forgets the tax.',{co:-4},{l:'Border guards could often be won over with gifts'})
+   :o('The officer is insulted. He doubles the tax.',{co:-20},{dg:'Angered a border officer of Western Xia'}),4]]}],
+tarim:[bandits('tarim_band','Desert bandits','the dunes of the Taklamakan'),storm('tarim_storm','the Taklamakan Desert'),ill('tarim_ill','the oasis of Kucha'),cross('tarim_cross','the Taklamakan Desert')],
+mount:[snow('mt_snow','the Tian Shan pass'),bandits('mt_band','Hill bandits','the mountain valleys'),river('mt_river','a mountain river'),
+ {id:'mt_toll',t:'THE GUARD POST',foe:'official',
+ x:['Qara Khitai soldiers guard the road. Their rulers are Buddhist. They do not ask about your religion, only about your tax.'],
+ c:[['PAY THE TAX',()=>o('You pay. The officer stamps a pass that is good for the whole road.',{co:-10},{l:'The Qara Khitai taxed traders but left people free to follow their own religion'}),10],
+  ['ARGUE ABOUT THE PRICE',()=>R(.5)?o('The officer laughs and takes half.',{co:-5},{l:'The Qara Khitai taxed traders but left people free to follow their own religion'})
+   :o('The officer makes you unload everything. Two days are lost.',{d:2,co:-10},{l:'The Qara Khitai taxed traders but left people free to follow their own religion'})],
+  ['GO ROUND BY A GOAT PATH',()=>R(.5)?o('The path is steep, but you get past unseen.',{d:1},{dg:'Took a goat path to avoid a tax post'})
+   :o('A camel slips on the rocks. You lose a load down the mountain.',{lose:1},{dg:'Lost goods on a goat path in the mountains'})]]}],
+karakum:[river('kk_river','the River Oxus'),thirst('kk_thirst','the Karakum desert'),storm('kk_storm','the Karakum desert')],
+khor:[bandits('kh_raid','Turkmen raiders','the hills of Khorasan','bandit','Since Seljuk power fell apart, nobody keeps order on these roads.'),
+ {id:'kh_ribat',t:'THE RIBAT',city:'inn',
+ x:['On the Nishapur road you reach a {ribat|walled inn for travellers} built by the Seljuks. It has one gate, wide enough for loaded camels.'],
+ c:[['SLEEP INSIDE THE WALLS',()=>o('There are rooms, stables and stored water. At dawn a donkey with a bell leads the camels out.',{co:-3,hp:1},{l:'Seljuk inns called ribats gave caravans rooms, water and stables; a donkey with a bell often led the camels'}),3],
+  ['CAMP OUTSIDE FOR FREE',()=>R(.5)?o('The night is quiet. You save your coins.',{},{l:'Seljuk inns called ribats stood about a day\'s journey apart on the main roads'})
+   :o('In the dark, thieves cut a load from one of your camels.',{lose:1},{dg:'Robbed while camping outside a ribat in Khorasan'})],
+  ['ASK FOR NEWS OF THE ROAD',()=>o('Travellers warn you which valleys the raiders are using. You plan a safer way.',{co:-3,safe:1},{l:'Inns were where travellers swapped news about dangers on the road'}),3]]},
+ ill('kh_ill','the town of Rayy'),snow('kh_snow','the Zagros pass'),cross('kh_cross','the hills of Khorasan')],
+syria:[bandits('sy_knights','Crusader knights','the border of the Crusader lands','knight','Knights from the Crusader kingdom of Jerusalem sometimes attack caravans. In 1157 their king robbed one near Banias, breaking a treaty.'),
+ bandits('sy_band','Bandits','the hills of Syria'),
+ {id:'sy_check',t:'SOLDIERS',foe:'official',
+ x:['Nur ad-Din\'s soldiers stop every caravan. He is at war with the Crusaders, and they are looking for spies.'],
+ c:[['ANSWER THEIR QUESTIONS',()=>o('They ask where you come from and what you carry. After a day, they let you go.',{d:1},{l:'Nur ad-Din was fighting the Crusader states, so his soldiers checked travellers'})],
+  ['OFFER A GIFT',()=>o('A few coins make the questions shorter.',{co:-8},{l:'Nur ad-Din was fighting the Crusader states, so his soldiers checked travellers'}),8],
+  ['ARGUE WITH THEM',()=>o('That was a mistake. They lock you up for five days before letting you go.',{d:5,hp:-1},{dg:'Locked up by soldiers who thought I was a spy'})]]}],
+galilee:[
+ {id:'ga_border',t:'THE BORDER',foe:'official',
+ x:['Nur ad-Din and the king of Jerusalem are enemies. Even so, merchants cross between their lands, and guards on both sides want a toll.'],
+ c:[['PAY THE TOLL',()=>o('You pay at both posts and are waved through.',{co:-12},{l:'Merchants still crossed between Muslim and Crusader lands during the wars'}),12],
+  ['TAKE A SHEEP TRACK',()=>R(.5)?o('A shepherd shows you a way round the guards. It costs an extra day.',{d:1},{dg:'Went round the border guards between Damascus and Jerusalem'})
+   :o('Crusader riders find you and take half your coins as a "fine".',{co:'half'},{dg:'Caught avoiding the border toll near Galilee'})],
+  ['JOIN A BIG CARAVAN',()=>o('You wait three days and cross with forty other merchants. Nobody looks at you twice.',{d:3,co:-5},{l:'Merchants still crossed between Muslim and Crusader lands during the wars'}),5]]},
+ bandits('ga_band','Bandits','the hills of Galilee'),ill('ga_ill','a village near the River Jordan')],
+euph:[bandits('eu_band','Desert raiders','the edge of the Syrian desert'),thirst('eu_thirst','the Syrian desert'),river('eu_river','the River Euphrates'),cross('eu_cross','the Syrian desert'),storm('eu_storm','the Syrian desert')],
+anat:[
+ {id:'an_border',t:'THE FRONTIER',foe:'official',
+ x:['Byzantine guards and Seljuk guards watch each other across the border. Since the peace of 1162, merchants may cross.'],
+ c:[['PAY BOTH SIDES',()=>o('You pay one tax to the emperor\'s men and another to the sultan\'s.',{co:-12},{l:'After the peace treaty of 1162, merchants could cross between Byzantine and Seljuk lands'}),12],
+  ['TAKE A BACK ROAD',()=>R(.5)?o('A shepherd\'s path takes you round both guard posts.',{d:1},{dg:'Crossed the Byzantine-Seljuk border by a back road'})
+   :o('Riders catch you on the back road and take half your coins as a "fine".',{co:'half'},{dg:'Caught avoiding the border tax in Anatolia'})],
+  ['WAIT FOR A BIG CARAVAN',()=>o('You wait four days and cross with a hundred other merchants. Nobody looks at you twice.',{d:4,co:-6},{l:'After the peace treaty of 1162, merchants could cross between Byzantine and Seljuk lands'})]]},
+ bandits('an_raid','Turkmen raiders','the hills of Anatolia'),snow('an_snow','the Anatolian plateau')],
+taurus:[snow('ta_snow','the Taurus pass'),bandits('ta_band','Mountain bandits','the Taurus pass'),ill('ta_ill','a village below the pass')],
+
+/* ---- final events ---- */
+f_kas:[{id:'f_kas',t:'KASHGAR',city:'kas',
+ x:['Kashgar at last. Most people here are Muslim, but the Qara Khitai rulers are Buddhist and let every faith pray freely.'],
+ c:[['GIVE THE SCRIPTURES TO THE GOVERNOR\'S {COURTIER|assistant to a king}',()=>o('He touches the books to his forehead. "These will be read here for a hundred years."',{rem:'printed scriptures'},{l:'The Qara Khitai rulers of Kashgar were Buddhist',m:'Buddhist scriptures: carried by a monk on foot and by camel from Dunhuang to Kashgar'})],
+  ['READ THEM ALOUD TO BUDDHIST TRADERS',()=>o('Traders from the east crowd round to listen. One asks to copy a page.',{},{l:'Travellers spread religious ideas by reading and copying books',m:'Buddhist scriptures: carried by a monk from Dunhuang to Kashgar, then read aloud and copied'})],
+  ['TALK WITH A MUSLIM {SAGE|wise person}',()=>o('You talk all night about your two faiths. Neither of you changes his mind, but both of you learn.',{},{l:'People of different religions met and talked in Silk Road cities',m:'Buddhist scriptures and ideas: carried by a monk from Dunhuang to Kashgar and shared in conversation'})]]}],
+f_sam:[{id:'f_sam',t:'SAMARKAND',city:'sam',
+ x:['Papermakers show you their work. Rags and bark are beaten to a wet {pulp|soft, wet mass}, lifted out in thin sheets, dried, then polished with a stone.'],
+ c:[['BUY PAPER TO TAKE HOME',()=>o('You buy a load of the smoothest sheets. Writers at home will fight over it.',{co:-20,add:'Samarkand paper'},{g:'Bought Samarkand paper to carry home',l:'Samarkand paper was made from rags and bark and polished with a stone',m:'Samarkand paper: bought by a traveller to carry home by caravan'}),20],
+  ['PAY TO LEARN THE CRAFT',()=>o('For a week you work beside them, with your hands in the pulp. Now you could teach it.',{co:-15,d:7},{l:'I learned how paper is made: pulp, thin sheets, drying, polishing',m:'The skill of papermaking: learned in person from craftsmen in Samarkand'}),15],
+  ['REST AT LAST',()=>o('You sit in the shade of a mulberry tree and do nothing at all.',{hp:1},{l:'Samarkand paper was made from rags and bark and polished with a stone'})]]}],
+f_dun:[{id:'f_dun',t:'DUNHUANG',city:'dun',
+ x:['Dunhuang! Beyond it lie the lands of China, split between the Jin in the north and the Song in the south.'],
+ c:[['VISIT THE CAVE TEMPLES',()=>o('Hundreds of painted caves fill the cliff. The Tanguts are still cutting and painting new ones.',{},{l:'The Tanguts of Western Xia made and repaired Buddhist cave temples at Dunhuang'})],
+  ['BUY CHINESE SILK FOR THE ROAD HOME',()=>o('You buy silk that has come west out of China. In Kashgar it will be worth far more.',{co:-30,add:'Chinese silk'},{g:'Bought Chinese silk in Dunhuang to carry west',m:'Chinese silk: bought in Dunhuang to carry west by camel caravan'}),30],
+  ['ASK ABOUT CHINA',()=>o('"The Song in the south now send their goods by sea," a trader says. "Fewer caravans come this way."',{},{l:'In the 1160s China was split between the Jin and the Song, and the Song traded mostly by sea'})]]}],
+f_bag:[{id:'f_bag',t:'BAGHDAD',city:'bag',
+ x:['Baghdad! Across the river stands a hospital with {hospices|places where sick people can stay} for the sick poor. Scholars and booksellers fill the markets.'],
+ c:[['VISIT THE HOSPITAL',()=>o('About sixty {physicians|doctors} have stores here. The caliph pays for the medicine of everyone who comes.',{hp:1},{l:'Baghdad had a hospital with about sixty physicians\' stores, paid for by the caliph'})],
+  ['VISIT THE BOOKSELLERS',()=>o('Baghdad has made its own paper since the 790s. Its House of Wisdom once gathered books from many lands.',{},{l:'Baghdad had made paper since the 790s and was a centre of books and learning'})],
+  ['MEET THE JEWISH SCHOLARS',()=>o('About 40,000 Jews live safely in Baghdad. Among them are great {sages|wise people} who lead schools of law.',{},{l:'About 40,000 Jews lived in Baghdad under the caliph, with their own sages and schools'})]]}],
+c_dam:[{id:'c_dam',t:'DAMASCUS',city:'dam',
+ x:['Damascus! Nur ad-Din has built new markets and inns for merchants. Paper made here is sold on to Europe.'],
+ c:[['BUY PAPER TO SELL ON',()=>o('You buy a load of Damascus paper. Few people in Europe can make it yet.',{co:-20,add:'Damascus paper'},{g:'Bought Damascus paper to sell further on',l:'Paper made in Damascus was sold to Europe',m:'Paper: bought in Damascus by a Venetian trader to carry on by caravan'}),20],
+  ['BUY A DAMASCUS SWORD',()=>o('You choose a blade from the city\'s workshops. Someone will pay well for it.',{co:-25,add:'Damascus swords'},{g:'Bought a Damascus sword to sell on',m:'Damascus swords: bought by a Venetian trader to carry south'}),25],
+  ['VISIT NUR AD-DIN\'S HOSPITAL',()=>o('Nur ad-Din has paid for a hospital in the city. Sick people are treated there without charge.',{hp:1},{l:'Nur ad-Din paid for hospitals and other public buildings in Damascus'})]]}],
+f_jer:[{id:'f_jer',t:'JERUSALEM',city:'jer',
+ x:['Jerusalem! Pilgrims from Christian Europe crowd the streets, and the kingdom lives partly on their money.'],
+ c:[['SLEEP IN THE HOSPITAL OF ST JOHN',()=>o('The Hospitallers run a huge hospital for pilgrims. You get a bed, a meal and a doctor.',{hp:1},{l:'In Jerusalem the Hospitallers ran a large hospital that looked after pilgrims'})],
+  ['TALK TO A PILGRIM FROM EUROPE',()=>o('She tells you about home, and asks you what Constantinople is like. You talk until the lamps burn out.',{},{l:'Pilgrims from Europe were a main source of money for the Crusader kingdom',m:'News and stories from Europe: carried by pilgrims to Jerusalem'})],
+  ['ASK A CARAVAN MASTER ABOUT EGYPT',()=>o('"King Amalric marched an army to Egypt last year," he says. "So did Nur ad-Din\'s general Shirkuh."',{},{l:'In 1164 both King Amalric of Jerusalem and Nur ad-Din\'s general Shirkuh led armies into Egypt'})]]}]
+};
+
+/* ---------------- routes ---------------- */
+const ROUTES=[
+{id:'monk',start:'dun',stops:['dun','tur','kas'],role:'a Buddhist monk from Dunhuang',what:'monk',coins:40,goods:['printed scriptures'],robe:'#d07818',hat:'#806030',
+ road:[['gobi',1],['tarim',2]],mid:{tur:'c_tur'},st:'s_dun',fin:'f_kas',
+ intro:['@N, the year is 1165. You are a Buddhist monk in Dunhuang, a desert oasis ruled by the Tanguts of Western Xia.','Your task is to carry printed {scriptures|holy books} west to Kashgar. Your first stop is Turfan.']},
+{id:'uyghur',start:'tur',stops:['tur','kas','sam'],role:'a Uyghur merchant from Turfan',what:'merchant',coins:60,goods:['cotton cloth','cotton cloth'],robe:'#2870b8',hat:'#f8f8f0',
+ road:[['tarim',2],['mount',1]],mid:{kas:'c_kas'},st:'s_tur',fin:'f_sam',
+ intro:['@N, the year is 1165. You are a Uyghur merchant in Turfan, in the Buddhist kingdom of Qocho.','You will take cotton cloth west to Samarkand, by way of Kashgar. It is a very long road.']},
+{id:'jade',start:'kas',stops:['kas','tur','dun'],role:'a jade trader from Kashgar',what:'jade trader',coins:50,goods:['Khotan jade','Khotan jade'],robe:'#388858',hat:'#f8f8f0',
+ road:[['tarim',2],['gobi',1]],mid:{tur:'c_tur'},st:'s_kas',fin:'f_dun',
+ intro:['@N, the year is 1165. You are a jade trader in Kashgar, a city under the Qara Khitai.','You will carry {jade|a hard green or white stone} east to Dunhuang, at the edge of China. Your first stop is Turfan.']},
+{id:'paper',start:'sam',stops:['sam','buk','mer','bag'],role:'a paper merchant from Samarkand',what:'paper merchant',coins:50,goods:['Samarkand paper','Samarkand paper'],robe:'#b03020',hat:'#f8f8f0',
+ road:[['',0],['karakum',1],['khor',2]],mid:{buk:'c_buk',mer:'brief'},st:'s_sam',fin:'f_bag',
+ intro:['@N, the year is 1165. You are a paper merchant in Samarkand, a city under the Qara Khitai.','You will carry paper west to Baghdad, the city of the caliph. First, Bukhara and Merv.']},
+{id:'physician',start:'bag',stops:['bag','mer','buk','sam'],role:'a physician from Baghdad',what:'physician',coins:70,goods:['medicines'],robe:'#f8f8f0',hat:'#388858',
+ road:[['khor',2],['karakum',1],['',0]],mid:{mer:'brief',buk:'c_buk'},st:'s_bag',fin:'f_sam',
+ intro:['@N, the year is 1165. You are a {physician|doctor} in Baghdad, the city of the Abbasid caliph.','You are going east to Samarkand to buy its famous paper. The road crosses mountains and deserts.']},
+{id:'damascus',start:'dam',stops:['dam','ale','bag'],role:'a merchant from Damascus',what:'merchant',coins:60,goods:['Damascus swords','Damascus swords'],robe:'#7040a0',hat:'#f8f8f0',
+ road:[['syria',1],['euph',2]],mid:{ale:'c_ale'},st:'s_dam',fin:'f_bag',
+ intro:['@N, the year is 1165. You are a merchant in Damascus, the capital of Nur ad-Din.','You will take Damascus swords to Baghdad. First you go north to Aleppo, then along the River Euphrates.']},
+{id:'venetian',start:'con',stops:['con','kon','ale','dam','jer'],role:'a Venetian trader from Constantinople',what:'trader',coins:80,goods:['Byzantine silk'],robe:'#283048',hat:'#b03020',
+ road:[['anat',1],['taurus',1],['',0],['galilee',1]],mid:{kon:'c_kon',ale:'brief',dam:'c_dam'},sell:['dam'],st:'s_con',fin:'f_jer',
+ intro:['@N, the year is 1165. You are a trader from Venice, living in Constantinople, capital of the Byzantine Empire.','You will sell Byzantine silk across Seljuk lands and Syria, then go on to Jerusalem as a pilgrim. Your first stop is Konya.']}
+];
+
+/* ---------------- deck ---------------- */
+function newDeck(){let d;for(let t=0;t<50;t++){d=[0,1,2,3,4,5,6,0,1,2,3,4,5,6];for(let i=d.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[d[i],d[j]]=[d[j],d[i]]}
+  let ok=true;for(let i=1;i<d.length;i++)if(d[i]===d[i-1])ok=false;if(ok)break}return{d,p:0,used:{}}}
+let deck=store.get('deck',null);if(!deck||!deck.d||deck.p>=deck.d.length){deck=newDeck();store.set('deck',deck)}
+function drawRoute(){if(deck.p>=deck.d.length)deck=newDeck();const r=deck.d[deck.p];deck.p++;store.set('deck',deck);return ROUTES[r]}
+
+/* =========================================================
+   GAME STATE
+   ========================================================= */
+let S=null;                         // current journey
+const G={mode:'title',scene:null,flash:0,toast:null,t:0,fast:false,pauseOn:true,timerOn:true,pan:0};
+const ui={mode:null};               // 'say' | 'ask'
+const DX={l:-1,r:1,u:0,d:0},DY={l:0,r:0,u:-1,d:1};
+const held=[];
+
+function newJourney(name){
+ const r=drawRoute(),c=CITY[r.start];
+ S={name,route:r,stop:0,x:c.x,y:c.y,tx:c.x,ty:c.y,dir:'d',mv:false,mt:0,frame:0,
+  hp:5,coins:r.coins,sup:4,goods:r.goods.map(n=>({n,from:r.start})),safe:0,enc:0,
+  base:0,extra:0,prog:0,legDays:0,legEv:[],legTh:[],usedIds:{},firstRoad:true,
+  log:{places:[],goods:[],learned:[],dangers:[],moved:[]},t0:performance.now(),ended:null,dead:null};
+ S.log.places.push(`${c.n}: ${c.pl} (start)`);addLog('l',c.learn);
+ S.log.goods.push('Set out with '+listGoods());
+ G.mode='intro';G.scene={kind:'intro'};
+ say(r.intro.concat(['Walk with the arrow keys and follow the road. Press Enter to read on. Good luck!']),()=>{
+  runEvent(EV[r.st][0],()=>{startLeg();G.mode='walk';G.scene=null})});
+}
+function listGoods(){const c={};S.goods.forEach(g=>c[g.n]=(c[g.n]||0)+1);const k=Object.keys(c);return k.length?k.map(n=>n+(c[n]>1?' ×'+c[n]:'')).join(', '):'nothing'}
+function addLog(k,t){if(!t)return;const a={g:S.log.goods,l:S.log.learned,dg:S.log.dangers,m:S.log.moved}[k];if(a.indexOf(t)<0)a.push(t)}
+const days=()=>Math.max(1,S.base+S.extra+Math.round(S.prog*S.legDays));
+function pick(pool,needDg){
+ const prev=(deck.used[S.route.id]||[]);let c=EV[pool].filter(e=>!S.usedIds[e.id]&&(!needDg||e.dg));
+ if(!c.length)c=EV[pool].filter(e=>!S.usedIds[e.id]);if(!c.length)c=EV[pool];
+ const fresh=c.filter(e=>prev.indexOf(e.id)<0);if(fresh.length)c=fresh;
+ const e=c[Math.random()*c.length|0];S.usedIds[e.id]=1;
+ deck.used[S.route.id]=prev.concat([e.id]);store.set('deck',deck);return e}
+function startLeg(){
+ const r=S.route,a=r.stops[S.stop],b=r.stops[S.stop+1],lg=legOf(a,b),rd=r.road[S.stop];
+ S.legDays=lg[0];S.prog=0;S.legEv=[];S.legTh=rd[1]===1?[.5]:rd[1]===2?[.34,.68]:[];
+ for(let i=0;i<rd[1];i++){S.legEv.push(pick(rd[0],S.firstRoad));S.firstRoad=false}
+ S.legA=a;S.legB=b;toast('Next stop: '+CITY[b].n+'  (about '+lg[0]+' days)');
+}
+function toast(t){G.toast={t,until:G.t+3.2}}
+
+/* ---------------- text boxes ---------------- */
+function parseText(t){
+ t=t.replace(/@N/g,S?S.name:'');const words=[],gl=[];const parts=t.split(/(\{[^}]+\})/);
+ parts.forEach((p,pi)=>{if(!p)return;const m=/^\{([^|}]+)\|([^}]+)\}$/.exec(p);
+  if(m){const prevEndsSpace=pi===0||/\s$/.test(parts[pi-1])||parts[pi-1]==='';m[1].split(/\s+/).filter(Boolean).forEach((w,i)=>words.push({t:w,hl:true,join:i===0&&!prevEndsSpace&&words.length>0}));gl.push(m[1].toLowerCase()+' = '+m[2])}
+  else{const startsSpace=/^\s/.test(p);p.split(/\s+/).filter(Boolean).forEach((w,i)=>words.push({t:w,hl:false,join:i===0&&!startsSpace&&words.length>0}))}});
+ return{words,gl}}
+const FONT='bold 15px "Courier New",Courier,monospace',FONTS='bold 12px "Courier New",Courier,monospace',FONTB='bold 22px "Courier New",Courier,monospace';
+function layout(t,maxw){
+ const p=parseText(t);ctx.font=FONT;const sp=ctx.measureText(' ').width;const lines=[[]];let x=0;
+ for(const w of p.words){const ww=ctx.measureText(w.t).width,need=(w.join||!lines[lines.length-1].length?0:sp)+ww;
+  if(x+need>maxw&&lines[lines.length-1].length&&!w.join){lines.push([]);x=0;w.x=0}else{w.x=x+(w.join||!lines[lines.length-1].length?0:sp)}
+  x=w.x+ww;lines[lines.length-1].push(w)}
+ let n=0;for(const w of p.words)n+=w.t.length;return{lines,gl:p.gl,n}}
+function say(texts,cb){ui.mode='say';ui.q=texts.slice();ui.cb=cb;nextBox()}
+function nextBox(){if(!ui.q.length){ui.mode=null;const cb=ui.cb;ui.cb=null;ui.last=ui.cur;ui.cur=null;if(cb)cb();return}
+ const t=ui.q.shift();ui.note=null;if(typeof t==='object'){ui.note=t.note;ui.cur=layout(t.t||'',600)}else ui.cur=layout(t,600);ui.shown=G.fast?1e9:0}
+function ask(opts,cb){ui.cur=ui.last;ui.mode='ask';ui.opts=opts;ui.sel=0;ui.cb=cb;ui.locked=G.pauseOn;ui.rects=[]}
+function confirmKey(){
+ if(G.flash>0)return;
+ if(ui.mode==='say'){if(ui.shown<ui.cur.n){ui.shown=1e9}else{Snd.fx('blip');nextBox()}}
+ else if(ui.mode==='ask'){if(ui.locked){ui.locked=false;Snd.fx('ok');return}chooseOpt(ui.sel)}
+ else if(G.mode==='title'){openName()}
+}
+function chooseOpt(i){const op=ui.opts[i];if(op.cost&&S.coins<op.cost){Snd.fx('no');toast('Not enough coins for that.');return}
+ Snd.fx('ok');ui.mode=null;const cb=ui.cb;ui.cb=null;cb(i)}
+
+/* ---------------- events ---------------- */
+function applyFx(fx){
+ const ch=[];
+ if(fx.co!=null){let d=fx.co==='half'?-Math.floor(S.coins/2):fx.co;if(S.coins+d<0)d=-S.coins;S.coins+=d;if(d)ch.push((d>0?'+':'')+d+' coins')}
+ if(fx.sell1){const i=S.goods.findIndex(g=>VAL[g.n]);if(i>=0){const g=S.goods.splice(i,1)[0],v=Math.round(VAL[g.n]*fx.sell1);S.coins+=v;ch.push('sold '+g.n,'+'+v+' coins')}}
+ if(fx.lose){const idx=S.goods.map((g,i)=>VAL[g.n]?i:-1).filter(i=>i>=0);if(idx.length){const g=S.goods.splice(idx[Math.random()*idx.length|0],1)[0];ch.push('lost '+g.n)}else{const d=Math.min(S.coins,10);S.coins-=d;if(d)ch.push('-'+d+' coins')}}
+ if(fx.add){S.goods.push({n:fx.add,from:S.route.stops[S.stop]});ch.push('+ '+fx.add)}
+ if(fx.rem){const i=S.goods.findIndex(g=>g.n===fx.rem);if(i>=0)S.goods.splice(i,1)}
+ if(fx.hp){const b=S.hp;S.hp=Math.max(0,Math.min(5,S.hp+fx.hp));if(S.hp!==b)ch.push((S.hp>b?'+':'')+(S.hp-b)+' health')}
+ if(fx.su){const b=S.sup;S.sup=Math.max(0,Math.min(6,S.sup+fx.su));if(S.sup!==b)ch.push((S.sup>b?'+':'')+(S.sup-b)+' supplies')}
+ if(fx.d){S.extra+=fx.d;ch.push((fx.d>0?'+':'')+fx.d+' days')}
+ if(fx.safe){S.safe+=fx.safe;ch.push('+ protection')}
+ return ch.join('   ')}
+function runEvent(ev,done){
+ const battle=!!ev.foe;G.mode='scene';
+ const go=()=>{
+  if(!S||S.ended)return;G.mode='scene';G.scene={kind:battle?'battle':'city',ev,foe:ev.foe,city:ev.city,title:ev.t};
+  say(ev.x,()=>{
+   const raw=typeof ev.c==='function'?ev.c(S):ev.c;
+   const opts=raw.map(c=>({label:c[0].replace(/\{([^|}]+)\|[^}]+\}/g,'$1')+(c[2]?'  (-'+c[2]+' coins)':''),fn:c[1],cost:c[2]||0}));
+   ask(opts,i=>{
+    let out=typeof opts[i].fn==='function'?opts[i].fn(S):opts[i].fn;
+    let texts=out.x.slice(),fx=Object.assign({},out.fx),log=Object.assign({},out.log),dead=null;
+    if(out.die){
+     if(S.safe>0){S.safe--;texts.push('But your guards and your guide rush in and get you out alive.');fx={hp:-1};log.dg=(log.dg||'Great danger')+' (saved by my guards and guide)'}
+     else if(S.enc<3){texts.push(out.die.lx);fx=Object.assign({},out.die.lfx)}
+     else{texts.push(out.die.dx);dead=out.die.cause}}
+    const ch=applyFx(fx);
+    ['g','l','dg','m'].forEach(k=>addLog(k,log[k]));
+    if(!dead&&S.hp<=0){if(S.enc>=3&&S.safe<=0){dead='died of wounds and exhaustion on the road';texts.push('You are too weak to go on. You lie down by the road and do not get up.')}else S.hp=1}
+    Snd.fx(dead?'dead':(fx.hp<0||fx.lose||fx.co==='half'||out.die)?'bad':'good');
+    if(ch&&!dead)texts.push({t:'',note:ch});
+    say(texts,()=>{S.enc++;if(dead){S.dead=dead;addLog('dg',S.name+' '+dead);finish('dead')}else done()})})})};
+ if(battle){G.flash=.7;Snd.fx('bad');setTimeout(go,650)}else go();
+}
+function arrive(){
+ const r=S.route,k=r.stops[S.stop+1],c=CITY[k],lg=legOf(S.legA,S.legB);
+ S.base+=S.legDays;S.prog=0;S.legDays=0;S.stop++;
+ S.log.places.push(`Road: crossed ${lg[1]} (about ${lg[0]} days)`);S.log.places.push(`${c.n}: ${c.pl}`);addLog('l',c.learn);
+ Snd.fx('city');G.mode='scene';G.scene={kind:'city',city:k,title:c.n.toUpperCase()};
+ const last=S.stop===r.stops.length-1;
+ say([c.info],()=>{
+  if(last){const sale=sellAll(k);const after=()=>runEvent(EV[r.fin][0],()=>finish('arrived'));if(sale)say([sale],after);else after()}
+  else{const m=r.mid[k];const next=()=>{startLeg();G.mode='walk';G.scene=null};
+   const go=()=>{if(m&&m!=='brief')runEvent(pick(m,false),next);else{S.hp=Math.min(5,S.hp+1);S.sup=Math.min(6,S.sup+1);say(['You rest for a night, fill your water skins and move on.'],next)}};
+   const sale=(r.sell&&r.sell.indexOf(k)>=0)?sellAll(k):null;if(sale)say([sale],go);else go()}});
+}
+function sellAll(k){
+ const c=CITY[k],sold=S.goods.filter(g=>VAL[g.n]);if(!sold.length)return null;
+ let tot=0;const cnt={},from={};sold.forEach(g=>{tot+=VAL[g.n]*2;cnt[g.n]=(cnt[g.n]||0)+1;from[g.n]=g.from});
+ S.goods=S.goods.filter(g=>!VAL[g.n]);S.coins+=tot;
+ const list=Object.keys(cnt).map(n=>n+(cnt[n]>1?' ×'+cnt[n]:'')).join(', ');
+ S.log.goods.push(`Sold in ${c.n}: ${list} (for ${tot} coins)`);
+ Object.keys(cnt).forEach(n=>addLog('m',`${cap(n)}: ${n==='enslaved captives'?'taken':'carried'} by camel caravan from ${CITY[from[n]].n} to ${c.n}`+(from[n]===S.route.start?`, about ${days()} days`:'')));
+ Snd.fx('good');return `In the markets of ${c.n} you sell ${list}. You earn ${tot} coins.`}
+
+/* ---------------- ending ---------------- */
+function titleFor(kind){
+ if(kind==='dead')return'Lost on the Road';if(kind==='stopped')return'Traveller';
+ if(S.route.id==='monk')return'Faithful Messenger';
+ if(S.coins>=170)return'Rich Merchant';if(S.log.learned.length>=6)return'Keen Scholar';
+ if(S.log.dangers.length>=3&&S.hp<=2)return'Lucky Survivor';if(S.hp>=4)return'Careful Traveller';return'Seasoned Traveller'}
+function finish(kind){
+ if(!S||S.ended)return;S.ended=kind;ui.mode=null;ui.cb=null;G.flash=0;
+ const r=S.route,here=cityAt[S.x+','+S.y],lastCity=CITY[r.stops[S.stop]].n,dest=CITY[r.stops[r.stops.length-1]].n;
+ const ending=kind==='arrived'?`Reached ${dest} after about ${days()} days on the road.`
+  :kind==='dead'?`Did not reach ${dest}. ${cap(S.name)} ${S.dead}, about ${days()} days after setting out. The journal was found by other travellers.`
+  :`The journey was stopped ${here?'at '+CITY[here].n:'on the road after '+lastCity}, about ${days()} days after setting out.`;
+ if(S.goods.length&&kind!=='arrived')S.log.goods.push('Still carrying: '+listGoods());
+ if(!S.log.dangers.length)S.log.dangers.push('No serious dangers on this journey');
+ if(!S.log.moved.length)S.log.moved.push('Nothing reached the end of the road this time');
+ const rec={name:S.name,role:r.role,route:r.stops.map(k=>CITY[k].n).join(' → '),days:days(),ending,title:titleFor(kind),coins:S.coins,
+  places:S.log.places,goods:S.log.goods,learned:S.log.learned,dangers:S.log.dangers,moved:S.log.moved,when:new Date().toISOString()};
+ const js=store.get('journals',[]);js.push(rec);store.set('journals',js);
+ G.mode='done';G.scene=null;Snd.play(null);Snd.fx(kind==='dead'?'dead':'good');showSummary(rec,true);
+}
+function recText(r){
+ const sec=(h,a)=>h+'\n'+a.map(x=>'  - '+x).join('\n')+'\n';
+ return['GRADE 10 THEMATIC HISTORY: SILK ROAD JOURNEYS','',
+  'Name: '+r.name,'I was: '+r.role+', in the year 1165','Route: '+r.route.replace(/→/g,'->'),'Days on the road: about '+r.days,'Ending: '+r.ending,'Title earned: '+r.title,'Coins at the end: '+r.coins,'',
+  sec('PLACES',r.places),sec('GOODS',r.goods),sec('LEARNED',r.learned),sec('DANGERS',r.dangers),sec('WHAT MOVED, AND HOW',r.moved)].join('\n')}
+function download(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+const fileName=n=>'silk-road-'+n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.txt';
+
+/* ---------------- overlays (DOM) ---------------- */
+let ovOpen=null;
+function openOv(id,html){ovOpen=id;panel.innerHTML=html;ov.classList.add('on');panel.scrollTop=0;const f=panel.querySelector('[autofocus]');if(f)setTimeout(()=>f.focus(),30)}
+function closeOv(){ovOpen=null;ov.classList.remove('on');panel.innerHTML=''}
+function recHtml(r){const ul=a=>'<ul>'+a.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';
+ return`<h1>${esc(r.name)}: ${esc(r.title)}</h1><p>${esc(cap(r.role))}, 1165. ${esc(r.route)}.</p><p>${esc(r.ending)}</p>
+ <div class="cols"><div><h2>PLACES</h2>${ul(r.places)}<h2>GOODS</h2>${ul(r.goods)}</div><div><h2>LEARNED</h2>${ul(r.learned)}<h2>DANGERS</h2>${ul(r.dangers)}</div></div>
+ <h2>WHAT MOVED, AND HOW</h2>${ul(r.moved)}`}
+function showSummary(r,fresh){
+ const btns=`<p><button class="btn" id="b_dl">Download story</button>${fresh?'<button class="btn" id="b_next">Next student</button><button class="btn alt" id="b_title">Title screen</button> <span class="small">Saved to Journals on this laptop.</span>':'<button class="btn alt" id="b_back">Back to Journals</button>'}</p>`;
+ openOv('summary','<div class="sum">'+recHtml(r).replace('<div class="cols">',btns+'<div class="cols">')+'</div>');
+ panel.querySelector('#b_dl').onclick=()=>download(fileName(r.name),recText(r));
+ if(fresh){panel.querySelector('#b_next').onclick=()=>{S=null;openName()};panel.querySelector('#b_title').onclick=()=>{S=null;closeOv();G.mode='title'}}
+ else panel.querySelector('#b_back').onclick=openJournals}
+function openName(){
+ const n=deck.p%14;
+ openOv('name',`<h1>Who is travelling?</h1><p>Type your name, then press Enter.</p><p><input id="nm" maxlength="14" autocomplete="off" autofocus></p>
+ <button class="btn" id="b_go">Start journey</button><button class="btn alt" id="b_cancel">Back</button><p class="small">Traveller ${n+1} of 14. Your starting city is drawn from the deck.</p>`);
+ const go=()=>{const v=panel.querySelector('#nm').value.trim().replace(/\s+/g,' ').slice(0,14);if(!v){Snd.fx('no');return}closeOv();Snd.init();Snd.fx('ok');newJourney(v)};
+ panel.querySelector('#b_go').onclick=go;panel.querySelector('#b_cancel').onclick=()=>{closeOv();G.mode='title'};
+ panel.querySelector('#nm').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')go();if(e.key==='Escape'){closeOv();G.mode='title'}})}
+function openJournals(){
+ const js=store.get('journals',[]);
+ openOv('journals',`<h1>Journals (${js.length})</h1>`+(js.length?'<p>'+js.map((r,i)=>`<button class="btn" data-i="${i}">${esc(r.name)}</button>`).join('')+'</p>':'<p>No journeys saved yet.</p>')+
+ `<p><button class="btn alt" id="b_all">Download all</button><button class="btn alt" id="b_print">Print all</button><button class="btn alt" id="b_close" autofocus>Close</button></p>
+ <p class="small">Journals are kept in this browser on this laptop. Use Download all as a backup.</p>`);
+ panel.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>showSummary(js[+b.dataset.i],false));
+ panel.querySelector('#b_all').onclick=()=>{if(js.length)download('silk-road-all-journals.txt',js.map(recText).join('\n\n==================================================\n\n'))};
+ panel.querySelector('#b_print').onclick=()=>{document.getElementById('print').innerHTML=js.map(r=>'<pre>'+esc(recText(r))+'</pre>').join('');window.print()};
+ panel.querySelector('#b_close').onclick=closeOv}
+function openReset(){
+ openOv('reset',`<h1>New class?</h1><p>This shuffles a new deck of 14 starting points and deletes every saved journal on this laptop.</p><p>Download the journals first if you still need them.</p>
+ <button class="btn" id="b_yes">Yes, start a new class</button><button class="btn alt" id="b_no" autofocus>Cancel</button>`);
+ panel.querySelector('#b_yes').onclick=()=>{deck=newDeck();store.set('deck',deck);store.set('journals',[]);closeOv();toast('New class ready.')};
+ panel.querySelector('#b_no').onclick=closeOv}
+function openHelp(){
+ openOv('help',`<h1>Keys</h1><table class="keys">
+ <tr><td>Arrow keys</td><td>walk / move through choices</td></tr><tr><td>Enter or Space</td><td>read on / choose (mouse clicks work too)</td></tr><tr><td>1 2 3 4</td><td>pick a choice directly</td></tr>
+ <tr><td>F</td><td>full screen</td></tr><tr><td>M</td><td>music and sound on / off</td></tr><tr><td>T</td><td>timer on / off</td></tr>
+ <tr><td>Q</td><td>fast text on / off</td></tr><tr><td>P</td><td>"Class, what should they do?" pause on / off</td></tr>
+ <tr><td>Shift + E</td><td>end this turn now and show the summary</td></tr>
+ <tr><td>On the title screen</td><td>J journals · S sources · H this page · N new class</td></tr></table>
+ <p class="small">A player cannot die until they have got through three encounters. Guards and guides can save a player once each.</p>
+ <button class="btn alt" id="b_close" autofocus>Close</button>`);panel.querySelector('#b_close').onclick=closeOv}
+function openSources(){
+ openOv('sources',`<h1>Sources</h1><p class="small">The travellers are made up. The places, rulers, goods and dangers are based on the sources below. The game is set in 1165.</p><ul class="small">
+ <li><b>Rosalie Metro, Teaching World History Thematically, 6.5</b> (with the Itinerary of Benjamin of Tudela): Baghdad's hospital, about sixty physicians' stores, hospices, about 40,000 Jews and their sages, the House of Wisdom.</li>
+ <li><b>EBSCO Research Starters, "Karakitai Empire"</b>: Qara Khitai rule over Kashgar and Samarkand, the battle of 1141, Buddhist rulers who did not force Muslim, Christian or Buddhist subjects to convert.</li>
+ <li><b>UNESCO World Heritage, Mogao Caves; British Library International Dunhuang Programme</b>: Tangut (Western Xia) rule at Dunhuang from 1036, Buddhist caves, printed scriptures; the Buddhist Uyghur kingdom of Qocho and its translators.</li>
+ <li><b>Toyo Gakuho 88 (2006) on Old Uyghur documents; Acta Orientalia Hung. 74 (2021)</b>: cotton cloth used as money in Turfan; wine and grapes in Turfan.</li>
+ <li><b>Rong Xinjiang and Zhu Lishuang (2014)</b>: Khotan jade traded east to Dunhuang and China.</li>
+ <li><b>Georgia Tech Paper Museum; British Association of Paper Historians; Phys.org (2018) on Samarkand paper</b>: paper in Samarkand, Baghdad (790s) and Damascus, and its sale to Europe; polishing sheets with a stone.</li>
+ <li><b>Ancient History Sites, "Travel and Caravanserais in the Seljuk World"; UNESCO Silk Roads Programme</b>: the ribat on the Merv to Nishapur road, rooms, water and stables, the donkey with a bell, clearing snow with animals, bandits and wars as dangers.</li>
+ <li><b>Britannica, "Nur al-Din"; Les Clés du Moyen-Orient, "Une brève histoire de Damas au Moyen Âge"</b>: Nur ad-Din takes Damascus in 1154; weapons, luxury markets, inns and public buildings.</li>
+ <li><b>Britannica, "kingdom of Jerusalem"; The Collector, "Knights Hospitallers"; J. Rickard, "Nur ad-Din's Wars in Egypt, 1164-1169"</b>: Jerusalem as capital of the Crusader kingdom, its income from trade with Muslims and from pilgrims, the Hospitallers' hospital for pilgrims, and the armies of Amalric and Shirkuh in Egypt in 1164.</li>
+ <li><b>Chinese city names</b>: modern standard Traditional Chinese spellings. They are shown to help students recognise the places, and are not names used in 1165. Journey times and prices are my own estimates.</li>
+ <li><b>Course notes on Baldwin III (Gateways School)</b>: the 1157 raid on a caravan near Banias in breach of a treaty.</li>
+ <li><b>Belleten 66 (2002), M. Kesik</b>: Sultan Kilij Arslan II's visit to Constantinople in 1162, the peace treaty, and the man who tried to fly.</li>
+ <li><b>Ancient History Sites, "Byzantine Silk Production"; Byzantine World</b>: silk workshops in Constantinople and the limits on selling the finest silk.</li>
+ <li><b>Humanities Institute, R. Dietrich, "Seljuq History: Military"</b>: slave soldiers in Seljuk armies; in Rum, mostly Greek captives from border raids.</li>
+ <li><b>Wikipedia, "Bukhara slave trade"</b> (used only for the Bukhara market scene, by the teacher's decision): Turkic captives from the steppe sold in Bukhara and Samarkand, many as soldiers.</li>
+ <li><b>China Sage; Southeast Asian Archaeology</b>: China split between Jin and Song; the Southern Song cut off from the land routes and trading by sea.</li></ul>
+ <p class="small">Journey times are estimates at about 30 km a day. They are not from a source.</p>
+ <button class="btn alt" id="b_close" autofocus>Close</button>`);panel.querySelector('#b_close').onclick=closeOv}
+
+/* ---------------- input ---------------- */
+const ARROW={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d'};
+function fullscreen(){const d=document;if(!d.fullscreenElement){(d.documentElement.requestFullscreen||(()=>{})).call(d.documentElement)}else d.exitFullscreen()}
+addEventListener('keydown',e=>{
+ Snd.init();
+ if(ovOpen){if(e.key==='Escape'&&ovOpen!=='summary'&&ovOpen!=='name')closeOv();return}
+ const k=e.key,a=ARROW[k];
+ if(a){e.preventDefault();if(held.indexOf(a)<0)held.push(a);
+  if(ui.mode==='ask'&&!ui.locked){if(a==='u'){ui.sel=(ui.sel+ui.opts.length-1)%ui.opts.length;Snd.fx('blip')}if(a==='d'){ui.sel=(ui.sel+1)%ui.opts.length;Snd.fx('blip')}}return}
+ if(k==='Enter'||k===' '){e.preventDefault();if(!e.repeat)confirmKey();return}
+ if(ui.mode==='ask'&&!ui.locked&&/^[1-4]$/.test(k)&&+k<=ui.opts.length){ui.sel=+k-1;chooseOpt(ui.sel);return}
+ const u=k.toLowerCase();
+ if(u==='m'){Snd.toggle();toast(Snd.mute?'Sound off':'Sound on')}
+ else if(u==='f')fullscreen();
+ else if(u==='t'){G.timerOn=!G.timerOn}
+ else if(u==='q'){G.fast=!G.fast;toast(G.fast?'Fast text on':'Fast text off')}
+ else if(u==='p'){G.pauseOn=!G.pauseOn;toast(G.pauseOn?'Class pause on':'Class pause off')}
+ else if(k==='E'&&e.shiftKey&&S&&!S.ended&&G.mode!=='title'){finish('stopped')}
+ else if(G.mode==='title'){if(u==='j')openJournals();else if(u==='s')openSources();else if(u==='h')openHelp();else if(u==='n')openReset()}
+});
+addEventListener('keyup',e=>{const a=ARROW[e.key];if(a){const i=held.indexOf(a);if(i>=0)held.splice(i,1)}});
+addEventListener('blur',()=>{held.length=0});
+cv.addEventListener('pointerdown',e=>{
+ Snd.init();const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;
+ if(ui.mode==='ask'){if(ui.locked){confirmKey();return}for(let i=0;i<ui.rects.length;i++){const q=ui.rects[i];if(x>=q[0]&&x<=q[0]+q[2]&&y>=q[1]&&y<=q[1]+q[3]){ui.sel=i;chooseOpt(i);return}}return}
+ confirmKey()});
+
+/* ---------------- update ---------------- */
+function onStep(){
+ const k=cityAt[S.x+','+S.y],v=villAt[S.x+','+S.y];
+ if(k&&k===S.legB){arrive();return}
+ if(k&&k!==S.legA)toast(CITY[k].n+' is not on your route. Next stop: '+CITY[S.legB].n);
+ if(v)toast(v);
+ const a=CITY[S.legA],b=CITY[S.legB],tot=Math.hypot(a.x-b.x,a.y-b.y),p=Math.max(0,Math.min(1,1-Math.hypot(S.x-b.x,S.y-b.y)/tot));
+ if(p>S.prog)S.prog=p;
+ if(S.legEv.length&&S.prog>=S.legTh[0]){S.legTh.shift();const ev=S.legEv.shift();runEvent(ev,()=>{G.mode='walk';G.scene=null})}
+}
+function update(dt){
+ G.t+=dt;if(G.flash>0)G.flash-=dt;
+ if(ui.mode==='say'&&ui.cur)ui.shown+=dt*70;
+ if(G.mode==='title'){G.pan+=dt*14;Snd.play('middle')}
+ else if(S&&!S.ended){
+  if(G.scene&&G.scene.kind==='battle')Snd.play('battle');else Snd.play(S.x>118?'east':S.x>38?'middle':'west');
+  if(S.mv){S.mt+=dt;if(S.mt>=STEP){S.x=S.tx;S.y=S.ty;S.mv=false;onStep()}}
+  if(!S.mv&&G.mode==='walk'&&!ui.mode&&!ovOpen&&held.length){const d=held[held.length-1];S.dir=d;const nx=S.x+DX[d],ny=S.y+DY[d];
+   if(pass(nx,ny)){S.tx=nx;S.ty=ny;S.mv=true;S.mt=0;S.frame^=1}else if(!S.bumpT||G.t-S.bumpT>.4){S.bumpT=G.t;Snd.fx('bump')}}
+ }
+}
+
+/* ---------------- draw ---------------- */
+function box(x,y,w,h){ctx.fillStyle=COL.ink;ctx.fillRect(x+2,y,w-4,h);ctx.fillRect(x,y+2,w,h-4);ctx.fillStyle=COL.paper;ctx.fillRect(x+3,y+2,w-6,h-4);ctx.fillRect(x+2,y+3,w-4,h-6);
+ ctx.fillStyle='#c8b888';ctx.fillRect(x+5,y+h-5,w-10,1);ctx.fillRect(x+w-5,y+5,1,h-10)}
+function txt(s,x,y,col,font,al){ctx.font=font||FONT;ctx.textAlign=al||'left';ctx.textBaseline='top';ctx.fillStyle=col||COL.ink;ctx.fillText(s,x,y)}
+function txtO(s,x,y,col,font,al){ctx.font=font||FONTS;ctx.textAlign=al||'left';ctx.textBaseline='top';ctx.fillStyle=COL.ink;for(const[a,b]of[[-1,0],[1,0],[0,-1],[0,1],[1,1]])ctx.fillText(s,x+a,y+b);ctx.fillStyle=col||'#fff';ctx.fillText(s,x,y)}
+function playerPal(){return Object.assign({},PAL,{r:S.route.robe,h:S.route.hat})}
+function drawPlayer(x,y,sc,dir,frame){const rows=dir==='u'?SP.back:dir==='d'?SP.front:SP.side;spr(ctx,rows,x,y-(frame?sc:0),sc,playerPal(),dir==='l')}
+const Z=2;
+function drawMapView(cx,cy){ctx.drawImage(mapCv,cx,cy,W/Z,H/Z,0,0,W,H);
+ for(const k in CITY){const c=CITY[k],sx=(c.x*TS-cx+8)*Z,sy=(c.y*TS-cy)*Z-14;if(sx>-120&&sx<W+120&&sy>10&&sy<H){if(c.a){txtO(c.n+' '+c.z,sx,sy-11,'#fff8d0',FONTS,'center');txtO('('+c.a+')',sx,sy+2,'#bfe0ff','bold 10px "Courier New",monospace','center')}else txtO(c.n+' '+c.z,sx,sy,'#fff8d0',FONTS,'center')}}
+ for(const v of VILL){const sx=(v[1]*TS-cx+8)*Z,sy=(v[2]*TS-cy)*Z-12;if(sx>-60&&sx<W+60&&sy>10&&sy<H)txtO(v[0],sx,sy,'#e8e8e8','bold 11px "Courier New",monospace','center')}}
+function drawHUD(){
+ ctx.fillStyle=COL.ink;ctx.fillRect(0,0,W,22);ctx.fillStyle=COL.paper;ctx.fillRect(0,22,W,1);
+ txt(S.name+' the '+S.route.what,6,4,'#f8f0d8',FONTS);
+ let hs='';for(let i=0;i<5;i++)hs+=i<S.hp?'♥':'♡';txt(hs,250,3,'#f06050','bold 14px "Courier New",monospace');
+ txt('Coins '+S.coins,330,4,'#f8e080',FONTS);txt('Supplies '+S.sup,410,4,'#a0e0a0',FONTS);txt('Day '+days(),505,4,'#f8f0d8',FONTS);
+ if(S.safe>0)txt('Guard×'+S.safe,570,4,'#a0c8f8',FONTS);
+ if(G.timerOn){const s=Math.floor((performance.now()-S.t0)/1000);txtO(Math.floor(s/60)+':'+('0'+s%60).slice(-2),W-6,27,s>=240?'#ff8070':'#fff',FONTS,'right')}
+}
+function drawWalk(){
+ const ip=S.mv?Math.min(1,S.mt/STEP):0,px=(S.x+(S.tx-S.x)*ip)*TS,py=(S.y+(S.ty-S.y)*ip)*TS;
+ const cx=Math.max(0,Math.min(MW*TS-W/Z,Math.round(px+8-W/Z/2))),cy=Math.max(0,Math.min(MH*TS-H/Z,Math.round(py+8-H/Z/2-4)));
+ drawMapView(cx,cy);
+ ctx.fillStyle='rgba(0,0,0,.25)';ctx.fillRect(Math.round(px-cx)*Z+6,Math.round(py-cy)*Z+26,20,6);
+ drawPlayer(Math.round(px-cx)*Z,Math.round(py-cy)*Z-6,Z,S.dir,S.mv&&S.mt<STEP/2);
+ drawHUD();
+ if(G.mode==='walk'&&S.legB){const b=CITY[S.legB],dx=b.x-S.x,dy=b.y-S.y,ang=Math.atan2(dy,dx),ar=['→','↘','↓','↙','←','↖','↑','↗'][((Math.round(ang/(Math.PI/4))%8)+8)%8];
+  box(6,H-30,250,24);txt('Next stop: '+b.n+' '+ar,14,H-25,COL.ink,FONTS);
+  box(262,H-30,372,24);const g=listGoods();txt('Bag: '+(g.length>44?g.slice(0,43)+'…':g),270,H-25,COL.ink,FONTS)}
+}
+
+/* ---------------- real map (Natural Earth land outlines, public domain, simplified) ---------------- */
+const RW=3200,RH=910,RL0=5,RL1=135,RTOP=51.8,RBOT=21.5;
+const rproj=(lat,lon)=>[(lon-RL0)/(RL1-RL0)*RW,(RTOP-lat)/(RTOP-RBOT)*RH];
+const RLAB=[['TURKEY',39,33.2],['IRAQ',33.2,43.6],['IRAN',32.5,54.5],['EGYPT',26.5,29.5],['SAUDI ARABIA',24.5,44.5],['TURKMENISTAN',39,59.8],['UZBEKISTAN',42.6,62.8],['KAZAKHSTAN',49,68],['KYRGYZSTAN',41.7,75.2],['TAJIKISTAN',38.5,71.3],['AFGHANISTAN',34.2,66.2],['PAKISTAN',29.5,69.5],['INDIA',24,78],['CHINA',34.5,104],['MONGOLIA',46.5,103],['KOREA',36.5,127.8],
+ ['Black Sea',43.4,34.5,'center',1],['Mediterranean',34,18,'center',1],['Caspian Sea',41.5,50.8,'center',1],['Persian Gulf',27,51.5,'center',1],['Yellow Sea',35.5,123.2,'center',1],['TAIWAN',23.9,124.2,'left']];
+const REAL_LL={con:[41.01,28.98],kon:[37.87,32.48],ale:[36.2,37.16],dam:[33.51,36.28],jer:[31.77,35.21],bag:[33.31,44.37],mer:[37.66,62.19],buk:[39.77,64.42],sam:[39.65,66.96],kas:[39.47,75.99],tur:[42.95,89.18],dun:[40.14,94.66]};
+const LANDS="417,331,6,1,1,-1,-2,-1,3,-1,1,-2,8,2,16,-3,5,1,0,-4,1,-1,7,2,3,2,-1,-5,-2,-1,-27,-1,-2,3,-5,1,-17,2,-1,6,2,-1,2,3,2,-2;408,399,2,-3,13,-3,3,-9,6,-2,0,-2,-2,-1,-6,3,-3,6,-8,1,-1,2,-9,6,-5,0,7,4,3,-2;629,332,-10,-6,-1,-2,3,-4,-7,-1,-6,-4,-7,-1,-1,-3,-3,2,-3,0,-5,2,-3,7,2,-1,5,3,5,0,1,4,13,-1,16,6,3,0,-2,-1;3,416,6,-1,0,-1,-4,-6,-4,-2,-1,1,0,4,0,7,4,1,-1,-3;2680,447,0,-135,0,4,-1,0,0,-2,-2,1,1,6,-4,-1,-3,-6,7,-5,-1,-3,-10,-2,-9,-13,-4,-1,-5,1,-6,9,-1,6,6,4,0,2,-1,1,-6,0,-6,2,-3,0,-7,-1,-7,-4,-23,-5,-7,2,-2,-1,-3,-9,-8,4,-10,-2,-4,1,-3,0,0,6,2,2,7,0,18,12,9,8,4,2,7,1,3,-2,12,1,24,5,1,-1,0,-2,2,-1,9,0,6,4,-2,5,1,2,13,13,1,4,-1,5,3,4,2,0,1,2,0,-6,-2,-2,2,-1,0,-6,0,92;2627,305,6,0,1,-8,1,-1,-7,-4,-4,-7,-5,4,-6,1,-7,-3,-6,-10,-4,-2,-3,0,1,3,-4,0,-1,3,1,4,-2,2,0,2,-7,-2,12,7,3,6,3,2,5,-3,8,1,1,3,-1,2,7,2,8,-2;2564,292,3,-1,5,2,2,-1,0,-2,-3,-5,7,0,-1,-3,2,-1,-1,-2,2,-1,-7,-9,-4,-11,0,-5,-2,-5,-6,1,0,-1,1,-3,-8,-5,2,5,-2,7,2,1,-3,1,-2,-3,0,-3,2,-3,-1,-1,-8,2,-1,2,3,1,0,3,-2,3,0,4,0,3,4,2,5,8,-3,1,1,2,0,2,-3,5,-3,2,-2,-2,1,-5,3,0,0,-3,-2,0,-4,1,-6,-4,2,4,-3,3,0,3,3,-3,3,-1,-2,3,-6,5,0,2,5,-1,0,3,10,4,3,4,4,2,5,-2,2,-4,3,-1;2360,72,-2,-4,-1,-10,-2,1,-3,8,-6,4,-5,12,2,10,14,21,4,7,9,5,7,-4,2,-3,-3,-3,1,-5,-5,-10,-4,-18,-8,-11;2158,20,2,-7,-4,-2,-6,-11,-36,0,-1,6,13,9,-2,0,1,3,19,3,4,-1,0,1,4,-1,1,3,5,-3;133,438,3,-8,-3,-5,1,-5,-3,-17,-10,2,-2,-6,-1,-1,-5,1,-5,5,0,6,1,4,2,1,0,2,-3,1,1,8,-5,7,0,5,3,-1,4,0,5,2,9,6,7,-5,-1,-1,2,-1;130,476,-1,-3,2,-2,0,-8,-3,-4,-1,-5,-3,-6,-8,4,2,2,-4,1,1,4,-3,0,2,2,-3,3,2,2,-2,1,3,4,9,4,3,-1,1,6,2,0,1,-4;252,384,-7,-8,-3,-7,0,-2,3,-2,-2,-1,3,-3,-4,-4,0,-3,-11,2,-8,6,-7,1,-13,7,-8,1,-4,2,-2,3,2,5,4,3,3,-3,5,3,4,0,9,-4,14,1,6,2,6,0,8,3,3,-1,-1,-1;0,700,2680,0,0,-61,0,61,-36,0,32,0,-1,0,-1,-1,0,-3,2,0,4,0,0,4,0,-172,-5,-6,-10,-9,-2,-3,-6,-3,-6,-8,-1,-2,-7,-6,-23,-12,-17,-5,-3,2,-3,0,-3,2,-8,0,0,8,-5,-4,-4,0,3,4,-1,0,-5,-2,-11,-11,-9,0,3,-3,-2,-3,-2,-2,-4,1,-4,-2,-11,-12,1,-6,-1,-9,-7,-2,-5,-5,-8,-4,-4,-3,-4,-2,-7,-1,-2,-2,-6,-2,-1,-8,-2,-1,0,-3,8,-2,11,-8,5,-10,15,-19,1,-4,1,-6,-1,-14,1,-1,2,1,0,-2,-3,-9,-4,-6,-4,-2,-10,0,-2,-2,1,-3,-7,2,-1,1,-7,-1,-1,-1,2,-2,-1,-2,-1,0,-3,3,-2,-1,0,-1,2,-2,-4,-4,-3,2,2,2,0,2,-7,-6,-3,1,-4,-4,-1,4,-5,3,1,1,5,0,-2,1,3,1,-4,0,-2,7,4,7,2,1,-2,2,4,2,1,2,-2,1,1,2,-3,3,-1,11,-2,-1,-4,1,-1,1,1,2,6,3,6,-1,1,-3,3,3,-3,1,-2,4,1,2,-3,3,-2,5,2,2,-6,2,-5,-3,-1,2,-6,3,-3,-4,-5,-2,-1,3,-6,2,5,2,-1,1,-10,1,4,2,0,2,3,4,5,2,5,1,-8,2,5,10,-1,5,-11,4,-1,-2,-2,-1,-2,4,-4,2,0,2,-5,-3,-7,-1,-2,2,-1,-2,-15,-4,-10,-5,-7,-6,-6,-1,-1,-3,-10,-2,-1,3,12,4,-1,2,3,4,-10,0,-1,3,5,2,-1,2,1,2,6,2,9,11,-2,4,-6,3,0,2,-2,-2,-11,1,-9,-6,-5,-7,-18,-7,-4,-3,-4,-7,-4,-4,-7,0,-7,-3,-5,4,-5,-2,-5,-9,2,-6,7,-4,11,-2,5,1,3,-2,3,-7,-2,-1,-1,-6,3,-3,7,-1,6,0,3,2,0,2,8,5,-1,2,10,3,18,-8,6,0,2,2,6,-3,6,0,-2,-2,1,-2,-3,-3,1,-2,-3,-2,-2,0,-2,2,-4,0,-18,-7,-5,1,2,-4,-4,-1,-1,-5,-5,-2,-1,1,0,3,-3,-1,-2,-2,4,-2,-5,-3,-1,-2,-6,-3,-5,-6,-6,-9,1,-2,3,0,5,-3,13,-7,5,-12,7,-13,0,-7,10,-4,2,-6,8,-5,0,-4,-2,0,-8,3,-8,0,-3,4,-6,1,-9,-3,3,-1,6,2,4,0,2,-4,5,-2,12,-8,4,-5,1,-3,-10,-2,-8,-5,-4,-4,-7,1,-5,-3,6,1,3,-3,5,0,7,3,4,-1,5,-5,8,-3,-12,-7,8,3,1,-3,-1,-7,-4,2,-3,0,-2,-2,5,-4,-3,0,2,-2,-4,-4,3,-7,-2,0,-5,-2,-1,3,-1,0,-4,-6,-4,-1,2,-2,-5,-6,0,-4,-6,-6,-5,-9,-3,-1,-1,5,-3,-2,-2,1,1,-4,3,-1,2,-4,-9,-6,-6,1,4,-3,5,1,1,-2,-2,-6,1,-4,-4,1,-4,0,-1,-2,3,-2,-6,-1,-2,-1,1,-3,-1,-1,-5,-2,1,-2,-1,-3,-7,-1,-4,2,-2,-3,-3,-1,1,-1,3,0,0,-3,-4,-5,-2,0,-2,-3,-4,0,-2,-5,-1,2,-4,-2,-4,1,-1,-4,-4,-2,1,-1,-3,-2,-2,-5,-4,1,-2,-2,-6,-2,-4,1,-3,-3,-6,2,-7,-4,-2,1,-2,2,-2,-3,0,-1,-4,1,-2,-1,2,-3,-2,-2,-7,2,2,2,-3,2,-5,5,0,6,-2,-1,-1,-1,0,-2,-2,-1,4,-6,1,-5,-1,-3,-8,-2,-1,2,-3,-6,-3,1,-4,-3,-5,4,1,-4,-2,-1,-7,2,-2,-3,-1,0,-4,-3,-6,-1,-6,0,0,-1,-5,-1,-4,-4,-2,1,-1,2,0,-4,-5,-4,1,-2,3,0,-1,-4,4,-3,-1,-3,-2,-1,-8,0,-1,2,2,0,-1,1,-2,1,-4,8,1,5,2,4,2,1,1,2,-2,0,-2,1,-1,0,-4,3,1,-3,-4,-2,-5,0,0,3,-7,1,-3,2,0,3,-2,0,0,-5,-1,-1,-3,2,-1,-3,-9,-1,-8,-4,-1,-5,-4,-2,-2,1,-3,-1,-4,1,1,-5,-4,-4,-1,-5,-7,-6,-3,-1,-4,-7,0,-6,-4,-6,77,0,-308,0,0,6,-2,-3,0,-3,-3,0,-2,1,-4,6,2,1,5,-3,2,2,1,2,-8,7,2,2,-2,0,-7,3,-2,0,1,-3,-1,-1,-3,4,2,3,-2,0,1,4,-3,-5,-2,1,2,3,-1,1,-3,3,0,-5,-13,17,-1,11,-4,11,1,2,-1,-1,-6,12,-6,-5,-5,-1,-6,10,-1,10,-1,-4,-6,1,7,-4,0,-2,-3,-2,2,-3,-2,0,0,-3,3,-8,0,-2,-5,-4,-2,-4,-4,1,1,2,2,3,-5,-3,-1,2,0,4,2,3,-2,-1,-2,-8,-5,-5,-1,11,0,-8,-3,-4,-4,2,-2,6,0,-3,-2,0,2,-6,-3,0,-1,2,-2,-3,-1,3,1,5,-2,2,-1,-9,-3,-1,-3,3,-1,-3,-3,1,-1,1,3,9,-4,2,-1,2,0,-2,4,-3,-4,-5,-5,-4,-12,-3,-5,-5,0,-3,3,-8,-5,-6,0,-2,-5,-3,-2,-3,-3,1,1,-1,-2,-2,-13,-4,-1,0,1,1,0,2,-2,1,-4,-3,-2,-3,4,2,2,-1,-4,-3,-11,-10,-237,0,3,0,-1,3,-2,-3,-1,6,4,0,-4,1,0,3,-1,2,-2,5,5,16,-2,9,-2,2,-1,3,2,2,-3,0,10,6,-11,-1,1,4,2,1,-4,1,1,3,5,2,-12,0,2,-1,0,-2,-5,-6,3,-1,1,-4,-5,-8,-20,-8,-6,0,-4,2,-9,7,-17,16,-5,6,2,3,5,-3,18,5,6,9,0,2,-3,-3,-5,0,-9,-4,-8,2,-9,4,-3,3,-5,7,8,6,-11,-5,-2,5,-1,-2,-1,2,-2,0,-2,1,-1,-1,-3,-1,0,2,-2,0,-5,5,-3,12,-9,2,0,8,-5,7,-5,0,-1,-2,4,0,2,-1,-33,-3,-3,-2,-12,4,-2,-1,-8,0,-1,-3,-17,1,-7,-2,-2,1,-6,-1,-7,1,-3,-2,-15,4,-3,3,-2,-3,-16,2,-3,2,-8,-2,-5,3,-12,1,-5,2,-3,-1,-1,1,-8,2,-5,11,-1,9,-3,4,-3,3,-8,1,-5,-1,-3,-2,-6,-1,-5,-5,-2,1,-11,-6,-10,4,-11,1,-5,4,-15,7,-4,6,-9,4,-8,1,-3,1,-4,5,-4,7,-1,5,-4,4,1,2,-4,2,-1,5,-10,10,-2,6,-10,-3,-10,6,0,1,4,0,-2,2,-3,0,1,-1,-3,-1,0,-6,-1,-1,-8,-2,-6,2,-3,-1,0,-3,3,-6,-4,1,-5,-4,7,-1,3,-7,12,-22,0,-4,9,-4,-2,-1,5,-5,3,-1,3,-4,6,-2,3,-4,-3,1,1,-3,3,-3,0,-2,-1,-4,-2,0,1,-3,3,-7,4,-4,2,-6,5,-6,1,2,-2,11,5,11,5,3,6,-5,0,-2,-1,-5,2,-10,-3,-8,-4,-1,3,-1,-2,-4,5,-1,1,1,1,-2,2,0,2,-5,5,-1,11,4,23,-2,7,2,5,3,7,10,7,5,8,9,9,6,4,8,3,1,2,2,-1,-11,-1,-3,1,-2,0,-11,6,-11,5,-6,6,-5,8,-2,15,-4,5,1,3,-3,14,-17,7,-3,0,-6,-9,-14,-9,-8,-9,-14,-5,0,1,4,-2,0,-6,-7,-3,-11,2,-14,-333,0,-8,15,-13,10,-4,1,-3,2,-10,11,-3,7,1,4,-3,8,2,10,-1,4,-12,22,-11,10,-7,2,-7,10,1,3,-2,7,-5,7,-3,2,-1,6,-4,1,-5,10,-21,29,-10,2,-2,-2,4,9,3,21,-4,-6,-3,-10,-3,-8,-1,-7,-4,-5,-9,6,-10,10,-2,9,-9,10,-3,9,-2,0,1,-2,-3,-4,5,-7,1,-7,11,-15,7,-6,0,-6,6,-8,2,-11,12,-19,13,-25,6,-6,6,-4,-5,-1,-1,-2,0,-7,4,-10,4,-4,7,-2,3,-5,9,-8,2,-8,6,-10,0,-1,-2,1,0,-2,2,-9,-1,-3,1,-16,2,-10,2,-2,279,0,-968,0,0,356,10,0,6,2,19,0,11,-5,15,4,9,5,2,-2,7,-2,6,1,-1,3,5,-1,9,-4,18,3,7,4,11,3,3,-1,-1,-2,1,-1,1,1,0,1,6,-1,0,-3,3,-4,-1,-1,2,-1,3,3,10,3,2,-4,-7,-7,-6,-4,0,-2,2,-6,8,-5,1,-6,1,-2,-8,-11,-13,-10,0,-3,2,-4,6,-4,5,1,0,-4,4,1,1,2,3,-2,1,-4,2,-1,-1,-1,12,-3,10,-5,9,-1,11,2,17,-4,7,-4,14,-2,3,-5,0,-4,3,-6,4,-4,8,-4,14,-1,21,-5,7,-3,9,-8,6,-2,7,0,6,2,8,8,3,6,-4,9,0,5,3,8,10,8,9,4,8,0,5,3,10,-1,18,-6,0,-5,4,-3,10,-1,7,-3,15,0,3,-2,4,-7,3,-1,10,2,17,-3,10,-1,6,-4,6,0,2,-2,11,-1,11,-4,8,2,10,6,5,0,4,4,10,2,-7,-3,9,1,2,3,8,-3,8,2,5,-4,-5,3,-3,-4,5,-2,2,-2,4,2,-1,2,7,-5,11,2,1,-1,9,1,11,3,6,6,4,6,8,24,10,19,1,4,7,6,-2,8,1,5,-1,4,-3,3,2,6,2,3,-3,6,8,7,0,3,-3,2,-8,-4,-2,-2,-3,-1,-14,5,-8,-4,-7,-6,-5,-2,-18,-3,-8,3,-8,7,-15,5,-12,1,-4,-12,-4,1,-11,-3,-10,3,-3,8,-2,0,-3,0,-10,2,-4,-3,-2,0,2,2,-11,-1,-2,1,11,2,5,4,-20,-1,1,3,5,0,-1,2,-6,3,-1,4,-2,1,4,2,0,5,-7,1,-4,3,-2,-1,-6,3,1,1,1,0,-1,4,2,2,3,-2,0,-3,1,-1,2,1,2,-1,6,2,-4,0,-3,4,-1,1,5,4,-4,1,1,3,-3,3,0,2,4,4,-16,-2,0,1,2,10,2,0,9,8,11,1,4,-3,5,1,2,1,-2,2,2,0,3,0,-1,-3,21,1,1,0,-5,3,3,2,18,2,-10,1,-5,3,-1,1,2,4,15,-1,9,1,9,-2,9,0,4,4,17,9,20,5,29,-1,5,2,3,0,-1,-3,4,-3,5,-2,7,1,3,0,3,-5,4,-4,8,2,5,-3,27,-5,21,3,7,-2,9,-1,23,9,6,6,1,4,-7,17,-5,2,-6,4,-8,2,-12,6,-23,17,-10,2,-7,6,-7,0,-6,5,-11,4,6,3,-5,1,3,2,7,-4,9,3,0,2,-1,0,0,1,5,5,2,4,1,1,2,-2,2,3,6,0,-8,6,-4,0,-3,5,4,-1,6,2,5,-1,-1,3,16,5,-1,4,-4,0,-1,-1,-6,-1,-2,0,4,2,-3,0,-8,-3,-13,-1,-4,-3,-6,0,-5,-4,-5,1,-5,-2,-9,-1,-16,-10,5,4,-1,3,-4,-4,-4,-1,0,-4,3,-6,9,-8,8,2,3,-1,3,2,8,-1,-3,-7,-11,-1,-3,2,-5,0,-7,-6,-8,0,-5,-2,-3,-3,-8,-3,-5,1,-4,2,3,7,-1,4,-3,2,-4,0,-6,3,-6,0,-2,1,13,7,10,4,-1,3,-3,-1,-5,3,-14,-2,-9,3,-4,1,-1,0,4,1,0,2,-9,2,16,-1,5,2,-5,-1,-6,2,-2,3,0,4,-4,4,3,-5,-1,-6,-6,0,0,3,-3,-3,-12,-2,-3,-6,-9,-8,-11,-3,-1,-2,3,-5,-4,-10,-10,-2,1,5,-3,-1,-3,-8,2,0,-5,-5,0,-6,-2,-10,-2,-2,-6,0,-4,-4,-1,-9,-3,-1,-5,-5,4,-2,6,-6,0,-4,4,-6,17,-6,-2,-5,-3,-1,-13,3,-5,-2,-8,-1,-5,-5,-10,-4,-11,-9,1,5,11,7,-14,-1,-2,3,-3,2,-15,3,-6,-3,-6,2,-8,-5,-7,1,0,-1,3,-3,-1,-1,0,-2,7,-1,3,-4,-9,4,-3,0,4,-5,1,-2,-1,-1,-6,5,-4,1,-1,-1,1,-3,5,-2,-6,1,-2,4,-8,4,-1,2,1,2,-5,-2,-1,-9,5,-5,3,-5,5,-4,2,-3,-4,-2,0,3,-5,1,-1,-1,1,-2,1,-2,2,0,-5,-3,-5,-1,14,-4,2,-2,4,-1,3,-3,5,-2,1,-2,0,-9,-10,7,-9,-3,2,-2,1,-4,4,0,2,-3,-7,-2,-1,2,-3,1,-3,2,-1,-1,6,-14,0,-4,2,-4,-3,2,-6,5,-2,0,-2,-5,0,-2,-1,1,-1,0,0,4,-6,7,-3,-1,-1,-5,-6,7,2,6,-3,3,-4,2,-1,2,-4,3,4,3,2,3,5,0,4,3,21,-8,0,2,4,0,2,2,-1,1,-6,1,-9,4,-2,-2,-7,1,-10,-2,-2,4,-1,-3,-4,1,-2,5,-4,3,-1,1,1,2,2,0,4,-1,0,3,-6,-1,-10,7,-2,4,-4,3,-3,7,-9,5,-2,2,3,0,-2,5,2,6,0,10,3,4,0,3,-8,3,-6,6,-5,3,0,1,-3,0,-13,7,-16,4,3,1,10,-4,-16,11,-10,3,-8,-1,-1,3,-9,5,-6,5,-2,2,7,0,-9,7,-2,2,-1,8,-6,4,-5,1,-7,-10,-2,0,-4,5,-3,8,6,3,-3,2,-4,-1,-5,1,-3,-2,-11,-4,-1,0,1,2,-5,-2,-1,-4,6,-6,-2,-3,-2,1,-1,-3,3,-10,6,-4,17,-9,9,-17,11,-9,12,-6,20,-1,0,-3,-5,-3,0,-2,24,-9,7,-4,10,-4,10,-9,1,-2,-3,-6,-5,3,-5,7,-7,0,-5,2,-1,2,-5,-1,-6,-6,-3,-8,2,-2,4,-1,6,-4,1,-8,-1,-2,-3,1,-7,-3,-1,-2,0,-6,-5,-3,-5,-6,-7,0,-1,2,0,3,3,2,3,7,5,2,0,4,-2,1,-2,7,-6,13,-2,1,-6,0,-7,4,0,4,-4,4,-8,-1,2,3,-3,1,-5,0,-6,9,-14,0,-4,3,-4,1,-11,10,-6,3,-3,4,-7,2,-3,0,-1,0,2,1,-1,2,-9,8,-4,0,0,5,-4,6,-1,7,-4,3,-6,2,-9,4,-11,2,-4,-1,-11,-9,-15,-4,-11,-7,-3,-3,-9,-3,-6,1,-8,3,-2,2,-5,0,0,2,-7,-2,-10,3,-3,2,-3,-1,-13,-7,-4,-6,1,-6,4,-6,-3,-1,2,-6,-5,-4,0,-114,0,304,9,3,15,0,-12,1,-3,2,6,1,8,-3,3,0,-6,3,4,0,-5,4,3,4,8,6,5,13,3,-1,3,1,6,3,4,3,10,3,15,1,3,-2,5,-1,-3,2,1,2,4,4,14,0,3,-3,-1,-2,3,0,2,3,3,-2,0,-2,1,8,1,2,12,-1,8,-5,4,-1,-3,1,-7,5,-6,2,-2,1,-5,0,6,0,-17,0,60,0,6,-1,6,1,42,0,1,-3,2,-1,13,-3,-1,3,-12,2,-1,2,-2,0,12,-2,6,2,309,0,-505,0,2642,0,-2680,0;954,559,-6,-1,-10,-6,-11,-2,0,-2,-3,0,1,-2,-11,-4,1,-4,-5,1,-7,-4,-9,-1,-1,-2,-4,2,1,-4,-2,-2,0,-2,-6,-10,-2,2,-5,-5,-1,-4,6,-2,6,-5,3,-11,2,6,2,1,-3,-8,-1,-9,5,-5,1,-2,7,-7,6,-8,9,-6,5,-7,3,-5,4,-5,7,-4,8,-2,3,-4,-9,0,-7,-2,-4,-12,0,-5,-2,-1,-2,-5,-1,-1,0,2,-2,1,-1,-1,-2,-6,0,-8,2,-10,3,-5,5,-3,16,-2,4,-5,12,-7,16,-4,9,0,31,7,3,0,-4,-2,5,-1,1,2,-4,21,1,20,-3,5,-9,3,-2,-2,-1,2,3,5,3,-1,4,0,-3,2,0,6,-9,1,-1,-2,2,-3,-5,6,-1,7,4,13,4,-5,9,0,3,-3,2,0,7,1,4,0,-2,3,8,0,0,4,-12,9,-5,12,-2,1,-12,-1,-4,-2,-3,-6,2,-1,-1,-9,-5,7,-3,7,0,4,3,7,0,6,-2,1,-5,0,-1,1,-6,0,-6,6,-6,0,0,7,-5,5,-4,9,-10,3,-2,1,1,4,2,0,9,1,7,-3,7,1,-5,1,-5,4,-1,2,8,9,21,1,15,-1,-9,4,8,13,-2,6,2,3,-2,4,-3,2,-8,1,-7,-3,-8,2,-3,2,-8,1,-10,-3;468,407,0,-2,4,-3,0,-1,-2,0,1,-1,-8,1,-1,1,3,1,0,1,-1,0,-3,-2,-3,1,-1,1,1,2,4,0,1,1,4,1,1,-1";
+const BORD="2022,4,-4,2,3,4,0,3,11,-1,7,8,-1,3,-4,1,-2,3,-5,2,5,4,-8,5,-3,1,-8,-5,-11,4,-5,7,2,9,-3,2,-1,-2,-2,0,-1,4,-9,10,6,7,5,-2,6,-4,7,6,3,-3,2,4,7,-5,2,4,2,1,4,-2,4,2,3,0,2,2,1,5,8,4,6,-6,6,-3,6,1,3,-2,5,1,5,-2,-5,-6,0,-3,2,-2,0,-5,6,-2,2,-2,4,-2,2,-2,8,1,4,-3;189,458,0,0;1353,439,0,0;1364,418,0,0;1376,419,0,0;1068,120,-7,-5,-2,2,1,2,-3,0,-1,-2,0,-10,-1,-2,4,-1,1,-3,-11,-2,2,-3,-1,-2,-6,-13,0,-7,-2,-2,-51,7,-19,23,-1,4;1062,141,1,0,0,-7,3,-1;1066,125,0,0;640,535,-4,1,0,2,-2,2,-5,-1,-5,3,-11,2,-1,-2;534,525,-6,3,-10,-2,-2,0,-1,-1,-9,2,-2,2,6,1,0,3,5,4,0,2,4,2,1,3,-1,2,0,3,5,1,0,-2,2,1,6,-1,2,1,3,-2,6,1,-4,3,0,3,-1,3,-7,2,-1,3,1,3,-8,5,1,5,0,3,-2,2,-4,-1,-3,3,-4,1,-2,-1,-3,3,-4,0,-6,3,-5,2,-6,-3,-8,1,-5,-3,-6,-1,-3,-4,-14,-2,-11,-4,-8,5,-6,-1,-16,2,-5,2,-5,-3,-3,3,-3,1,-5,2,-2,3,-2,0,0,3,3,3,5,7,6,0,-3,2,1,3,-2,5,1,1,20,16,5,0,3,3,-2,5,2,1,-9,9,-1,6,8,0,7,5,18,2,14,-1,24,-3,3,-3,8,-1,0,-1,3,2,3,-1,4,1,8,-1,3,-2,2,2,5,2,5,-5,16,2,3,-2,1,-1,4,-2,2,2,-2,5,1,2,8,7,11,1,11,-1,4,1,3,4,7,-1,10,2,10,-1,4,-3,2,-3,6,-4,0,-2,-6,0,4,-8,-2,-1,11,-2,6,1,2,-3,3,0,3,-6,-1,-4,4,-4,1,0,5,2,4,-1,4,-2,4,0,2,-2,3,2,13,2,6,-6,7,-4,4,3,13,-5,5,1,3,-2,10,-4,6,1,0,-7,-4,-4,-4,-1,1,-2,5,-2,-4,0,-3,-4,4,-1,1,-4,-1,-1,2,-1,-3,-7,-3,-1,-15,0,-5,-4,-6,-1,-1,-1,-2,-5,2,0,-2,-4;1270,367,-8,1,-7,3,-2,-2,-2,-4,-9,0,-6,-2,-6,-16,-10,-7,-17,-3,0,-3,-2,-5,-7,-4,-5,0,-3,-2,-6,6,-8,0,-5,4,-2,-1,0,5,-2,3,1,4,-2,9,-15,0,-8,8,-10,4,-3,5,-10,4,-11,-1,-5,4,-13,2,-1,4,-2,1,-15,1,-3,-1,-1,-2,-13,0,-4,-1,-10,-5,-4,-7,-10,-2,-6,0;990,456,11,7,21,4,15,-8,12,-13,2,-1,9,1;770,450,6,-1,2,1,11,-1,3,3,4,-1,7,-5,1,-2,5,-1,0,-2,4,-2,1,-5,-3,-4,3,-7,-1,0,6,-3,9,0,8,-7,-4,2,-3,-2,-1,-5,-8,0,4,-5,-1,-4,2,-2,1,-9,3,-1,-5,-9,8,-4,-1,-1,0,-4,5,-3,-1,-3,-3,1,-6,-4,-2,1,0,4,-2,1,-8,-1,-12,2,-3,-1,-4,1,-6,-4,-2,-1,-1,3,-2,1,-3,-2,-11,-2,-16,0,-14,-5,-13,-3,-12,0,-6,3,-5,1,-15,-5,-8,0,-2,2,-6,1,-2,-7,2,-4,-5,-2,-1,-3,-3,-1,-1,-2,-5,1;461,435,6,4,0,6,5,2,0,5,-6,3,4,2,2,2,13,3,6,-4,9,1;170,284,-1,-8,0,-3,2,-3,-1,-2,-13,-6,-5,-3,-3,-4,-3,-1,-4,-5,3,-10,-1,-3,-6,-8,-8,-3,-9,36,-14,10,-5,10,-7,4,-5,12,0,5,5,3,2,3,5,3,3,4,1,7,2,2,-3,12,2,11,-3,3,5,5,3,2,0,2;1896,3,0,6,5,6,5,-1,12,1,3,7,6,0,3,1,-1,4,5,0,4,1,4,-2,1,-1,3,3,4,-4,1,-2,-3,-7,2,-4,3,-1,6,2,5,-1,0,-4,2,-5;1359,425,0,-1,-6,-2,-1,-2,-2,-1,-1,2,-10,3,-8,-2,-1,-4,-4,1,0,-1,-1,-3,1,-5,24,2,6,-4,4,0,1,2,8,2,1,-2,5,-2,0,-2,1,0,5,1,4,-3,2,3,4,1,11,-1,11,2,-1,-4,4,-6,-2,-2,2,-5,3,-1,4,2,3,0,10,-4,-1,-5,4,-9,-1,-3,4,-3,0,-2,-4,-2,-5,3,-8,0,-2,-1,-8,-2,-2,0,1,2,0,1,-6,1,-10,-4,-5,-4,-6,-1,-11,-6,-3,0,-2,3,-2,6,3,15,-6,0,1,5,-2,3,-7,3,-6,-2,-4,-6,-4,-3,1,-5,-1,-1,-3,-1,-5,1,-6,-1,-2,-3,0,-4,-2,-2,-8,5,-17,-8,-2,0,-4,4;1354,416,0,0;787,362,-11,-10,-8,-2,-2,-2,-1,-7,2,-8,-3,-7,0,-11,-4,-6,-39,-19,-45,-24,-9,2,-11,7,2,4,-1,8,4,5,-2,1,0,2,3,2,5,0,-1,1,0,1,6,5,-2,5,-3,1,2,2,-1,1,-8,0;236,637,-3,0,-2,3,-5,1,-1,-1,2,-2,-16,-4,-2,-2,-9,-2,-1,-2,-8,0,-5,-4,-4,2,2,-4,6,-4,-2,-3,6,-7,4,-1,10,-7,3,-1,5,-4,-1,-4,-5,1,-2,-5,-13,-5,4,-4,-1,-4,3,-1,-1,-3,-4,1,-1,2,-1,0,-4,0,-6,1,0,-2,-10,0,-13,-4,-4,2,-8,1,-2,-4,-3,-1,0,1,-3,1,-2,2,-4,2,-4,-1,1,-2,-2,-8,7,-1,1,-1,5,-2,4,3,1,-1,1,-8,-7,1,-1,-2,2,-5,-1,0,-3,2,-7,-1,-2,1,-1,3,-4,0,0,-4,-5,-5,1,-3,-2,-1,-3,3,0,2,-3,0,-4,3,-1,4,-6,-4,0,-2,-2,-3,-4,-2,-5,2,-10,-2,-6,5,1,3,-1,2,-6,1,-4,-2,0,-2,-1,-1,-4,-1,-1,1,3,2,0,2,-1,1,2,3,5,3,1,4,4,2,6,4,1,2,-2,1,3,2,4,-1,3,0,4,3,17,0,2,0,-3,2,3,2,7,-3,6,0,6,-3;420,1,0,19,20,0,0,40,124,0,4,4,2,-1,-1,-3,108,0;1,469,3,0;2473,376,0,2,9,8,19,0,2,1,5,5;383,588,-8,-1,-6,4,-8,-1,-8,1,-3,0,-3,-5,-9,-3,-5,1,-4,-2,-11,-1,-2,-1,-1,-4,-20,-1,-9,5,-4,1,-5,7,3,6,4,3,8,0,9,4,2,4,9,5,7,0,0,-2,4,0,6,4,4,-4,2,-1,0,-3,1,0,5,0,2,2,4,2,12,-2,3,2,5,1,11,-2,2,-3,11,-3;214,532,4,0,-6,4,0,3,-2,1,3,4,-5,1,6,5,17,-2,7,4,11,1,6,1,4,0,1,2,2,1,4,0,4,-7,-4,1,-1,-1,0,-3,-4,0,-8,-3,-1,-1,1,-2,0,-4,-7,-2,1,-2,-1,-1,1,-3,-11,1,-5,3,-4,-3,-7,0,-2,-1,-6,1;512,495,-8,0,-3,1,-3,4,-3,-1,-6,1,-7,3,-18,-3,-8,-5,-6,-2,-45,4,-7,0,-1,2,4,3,-7,3,-2,-3,-4,-2,-1,-4,4,-7,4,-2,4,-4,-5,-5,-5,-1,0,-4,2,-3,-3,-3,-10,-1,-6,-1,-2,2,2,1,3,5,-7,2,0,2,-7,5,-4,1,-1,2,-4,-1,0,-3,-2,-2,-1,-2,-2,0,-2,2,-13,4,-8,6,0,1,1,2,4,-1,1,2,-5,6,6,1,1,1,-10,6,5,11,-7,0,2,1,-1,4,2,1,5,0,-8,4,1,2,-3,2,1,1,-2,4,4,3,5,0,5,3,13,0,10,-8,1,0,0,-5,5,-4,10,-3,-3,-3,4,-2,-4,-1,11,-4,4,-2,8,3,3,-1,2,-2,-4,0,-1,-2,4,-4;639,207,22,-3,9,6,5,7,14,3,4,6,7,4,-21,20,40,10,4,3,24,-4,35,-17,52,-38,55,-4,4,-9,16,0;956,116,3,-5,6,1;1044,74,9,-14,-13,-40,-58,-19;190,498,0,0;2554,466,-3,5,1,1,-4,3,4,1,9,2,4,10,-1,2,-1,4,2,7,-5,16,9,3,8,7,3,-2,19,-4,3,2,2,7,5,2,1,6,3,1,1,4,3,2,0,5,7,13,-1,3,3,2,6,2,3,4,-4,6,2,3,0,2,-7,2,-9,-2,-8,-3,-6,0,-9,-3,-4,-5,-31,0,-1,3,-3,3,-1,3,2,4,-5,5,1,3,-1,2,-7,1,-14,10,-9,-1,-5,2,-2,3,-14,-1,-6,2,-3,3,-1,3,2,5,-5,3,-1,7,-8,8,-2,8,-2,1,0,3,-4,5,-3,8,-7,5,1,3,-4,2,-2,1,-2,3,-12,3,-5,-1,-24,8,-25,-1,-27,-4,-18,-10,-1,-3,12,-2,1,-1,-1,-4,2,-4,-1,-3,-13,-7,-12,-18,-6,-6,4,-2,-2,-5,-16,-4,-12,-7,-12,2,-21,8,-10,-2,-5,0,-14,7,-9,0,-17,-6,-6,-3,-2,-4,-5,-2,-6,1,-8,-3,-15,-1,-13,-4,-29,4,-13,-1,-13,7,-1,6,-13,1,-11,6,-10,0,-16,3,-19,-3,-7,-3,-9,0,-7,1,-3,2,-9,2,-8,4,0,2,-2,3,-2,10,-11,2,-3,0,-19,6,-11,0,-4,2,-6,1,-10,4,-5,-6,-6,-2,-3,-4,-3,-1,-4,-8,4,-8,5,-2,-3,-7,-3,-4,-8,-2,-5,-3,-3,0,-4,3,-14,0,-5,2,-2,-1,-3,1,-6,-2,-8,1,-3,2,-7,-1,-5,4,-2,7,-23,1,-3,4,-3,0,-3,-2,-6,3,-3,-3,-8,0,-8,-5,-8,-1,-7,-4,-12,-2,-1,-2,-7,-2,0,-4,-5,-2,-3,1,-3,-3,-2,-1,-2,2,-1,-2,-13,0,-2,-4,-2,-1,-12,-2,-2,0,-1,2,-5,2,-6,5,-1,0,2,3,-1,2,-10,-6,-19,2,-5,6,0,3,-14,4,-3,5,-4,6,-12,4,-12,-2,-5,-3,-21,0,-1,4,-7,0,2,5,-4,0,-1,2,-3,0,-6,-2,-1,-5,-4,-1,-2,-1,-1,-2,-1,1,-11,14,-32,35,-27,15;1448,699,-7,-2,-4,0,-8,-4,-2,-3,-3,2,-7,0,-9,-3,-2,3,0,2,8,6;1410,700,-8,0;1392,700,-4,-1;1180,700,-8,0;1163,699,-1,-4,-2,-3,5,-1,4,1,2,-2,-6,-1,-2,-2,1,-1,9,-1,7,-3,2,-2,-3,-1,-18,0,-6,-5,5,-7,-7,-4,-5,0,-7,-4,7,-4,1,-2,18,-4,4,-3,1,-1,-4,-8,-9,-3,-11,0,-7,3,-2,-1,-3,-4,-6,-2,0,2,-1,0,-11,2,-11,7,-10,1,-4,-4,-4,0,-9,3,-8,-1,-2,0,-7,-3,-2,-3,-7,-2,-7,1,-14,7,-2,-1,2,-6,-2,-2,-2,1,-1,4,-5,5,-16,9,-16,0,-7,4,-12,-4,-5,-1,-4,4,-7,2,-11,-9,-9,-3,-6,-1,-4,-5,-10,-5,-4,0,5,-12,-2,-1,-6,-2,-2,0,-13,11,-2,0,-3,-1,-3,-3,0,-3,-6,-4,-2,-3,-2,-7,5,-4,-7,-7,-2,-5,1,-3,8,-3,1,-2,0,-4,4,-4,4,1,13,-2,9,-9,7,-10,-1,-1,-7,1,-1,-1,1,-2,14,-5;911,457,-3,-5,-7,-3,-4,-5,-7,1,-5,1,-1,3,-9,7,-4,0,0,1,-12,4,-6,3,1,6,-7,1,-4,3,-6,1,-2,-3,-2,3,-3,0,-13,-4,-2,1,1,3,-14,5,-2,2,-5,1,-23,1,-19,7,-10,0,-3,-3;575,662,-3,4,0,5,-1,2,0,2,-6,5,3,4,5,0,4,-2,6,0,11,5,0,2,-5,3,0,2,-5,2,-9,0,2,3;345,542,7,1,3,2,7,1,3,2,1,4,4,2,0,1,3,6,7,7,0,2,6,5,6,0,6,4;472,585,4,0,4,-2,12,-16,9,-7,4,-7,0,-4,-3,-10,1,-6,-2,-1,3,-3;317,610,-1,2,-4,3,-1,3,-10,3,-3,-2,-5,3,-1,1,3,2,-1,1,-6,-1,-10,4,2,-4,-7,-3,-9,6,4,3,-2,2,-6,-1,-5,3,-8,1,-2,3,-5,1,0,-2,-4,-1,4,8,-2,4,-3,1,0,3,-3,4,3,5,-4,5,1,4,-9,7,5,6,-3,11;224,697,0,2;410,699,7,-17,1,-7,-1,-2,-9,-3,-4,-4,9,-5,0,-5,-2,-2,1,-4;1172,124,1,11,2,2,2,8,6,2,2,0,1,3,3,1,14,2,3,10,-3,2,-8,0,1,5,-1,15,-4,0,-4,3,-9,3,-6,5,-6,11,-9,10,33,-9,21,2,11,-2,6,3,14,0,22,6,2,2,-1,3,2,14,1,2,4,2,5,5,1,1,11,-1,6,2,-3,3,8,4,3,2,6,-1,3,1,5,-3,5,2,4,4,-1,10,3,5,2,6,8,2,7,4,1,1,-9,11,1,2,2,1,6,-2,7,0,8,2,1,6,-3,4,13,13,-1,2,1,2,-1,3,-2,6,-5,4,7,7,4,1,8,5,9,3,23,1,6,-1,11,4,6,-2,5,0,4,-1,1,-3,5,0,5,-3,1,-4,-1,-7,3,-1,2,-3,8,1,0,-3,4,-2,6,-11,-1,-2,-8,-5,-11,-2,-7,-3,-28,5,-7,-2,-3,-5,3,-3,-1,-4,7,-2,-5,-5,3,-4,-3,-6,6,-4,1,-5,6,0,1,-5,11,-3,2,-3,-16,-8,-1,-2,2,-5,-2,-5,3,-3,-6,-3,-9,-9,1,-5,-3,-2,-8,-3,-9,-17,-12,-7,-4,-8,-4,-3,-2,-5,-21,-5,-2,1,-1,4,-5,1,-5,-3,-5,-8,-7,-7,-2,-6,1,-1,13,-5,-1,-12,3,-4,8,-1,0,-5,8,-14,-2,-3,2,-3,-7,-3,-2,1,-1,2,-1,0,-8,-2,-2,-2,-4,-1,-5,2,-14,0,-1,1,-1,-1,-1,-6,-6,0,-5,-2;2427,420,1,2,10,7,10,4,7,4,5,1,10,9,2,6,2,1,4,2,2,-1,4,-4,10,-2,6,0,3,-1,3,4,-5,5,0,3,17,1,6,3,2,4,4,0,4,1,4,11,7,-2,1,-4,5,-3;25,3,32,7,33,27,89,53,31,-6,14,-12,16,8,3,-22,1,-8,8,-11,-1,-2,1,-2,7,-8,-4,-9,-2,-14;84,686,0,-6,-3,-7,-7,-1,1,-3,4,0,2,-1,-1,-4,-6,-2,2,-3,-6,-2,-3,-1,-4,2,-4,-2,5,-7,-2,-5,1,-1,-6,-2,4,-3,-1,-3,-5,0,-2,2,2,2,1,4,-6,3,-6,0,-3,3,-4,-1,-2,2,-2,-2,-3,1,-2,0,0,-2,-4,1,-1,-2,-5,-2,-6,2,-3,-1,-2,3;347,477,-6,-2,0,-4,-2,-1,-3,0,-1,3,-2,0,-7,-10,1,-2,0,-4;310,469,-1,1,2,3,-2,3,0,4,3,1,2,4,3,2,4,-1,-2,5,5,0;2274,616,-14,-20,-4,-4,0,-7,-6,-2,2,-6,6,-3,7,3,10,0,6,-1,6,-3,8,7,8,1,7,-1,5,-5,7,-2,1,-2,11,-8,4,-6,-1,-4,-3,-1,-7,0,-10,3,-3,-1,-8,0,-5,-1,-6,-3,-6,2,-2,-5,-10,1,-6,-2,-6,-7,-1,-4,-10,-6,-23,-1,-3,-4,-6,-5,-10,-4,-18,3,-6,3,-10,0,-6,-4,-4,-10,4,-5,5,-3,2,-5,-8,-4,-11,-3,-12,-12,-21,-6,-24,0,-28,-3,-31,-11,-4,-3,-10,1,0,5,-16,-3,-13,5,-18,3,-4,1,-6,6,-3,1,-30,3,-11,-3,-45,5,-16,-2,-2,5,-9,7,-6,13,-4,2,0,5,-6,-1,-7,2,-10,6,-5,0,-9,6,-14,2,-24,1,-11,2,-3,0,-5,7,1,4,6,6,-2,4,3,6,-4,8,-3,1,-4,6,-3,7,-5,2,-1,3,-5,-1,-6,4,-9,-1,-9,4,-2,4,-10,3,1,3,-6,4,2,2,-1,3;88,495,1,0;3,17,1,-1,1,-8,-3,-5,3,-3;14,1,11,2;387,466,5,-4,5,-2,3,-5,-1,-8,-3,0,-1,-3,-3,-1,-12,0,-8,-6,-4,1,-9,-1,-2,1,-2,0,-5,7,-1,5,1,1,1,6,3,0,2,4,5,2,5,-1,2,2,3,1;436,700,-10,-2,-2,1,-14,0;131,565,1,-3,0,-1;443,253,-6,-6,3,-11,-2,-7,-4,-5,6,-20,0,-144;420,10,-160,79,-20,-9;179,90,-9,16,-16,5,-6,-1,-3,2,-4,9,-1,6,-11,14,1,6,7,4,1,2,0,4,-3,10,3,9,-2,28,-3,9,-7,9,4,3;657,289,-5,-4,-1,0,-1,-3,-2,-1,-6,1;1942,26,3,9,7,2,-2,1,4,7,8,4,1,2,1,-1,-1,-2,2,-4,6,1,3,-2,2,1,-2,2,1,11,-3,3,-2,5,5,5,2,-2,3,1,3,-1;1359,465,2,1,4,-3,-8,-2,-1,-3,-3,-1,-9,-6,0,-1,5,-2,5,1,2,-4,12,-3,0,5,4,0,0,3,1,1,4,-5,1,-2,5,-1,1,-2,3,0,6,-4,10,-1,-11,-5,-4,1,-1,-4,-4,1,-4,-4,-5,-2,-8,3,-13,-2,-6,4,8,7,-2,1,0,1,-5,4,-2,-3,-12,-5,-6,3,-1,-1,-1,-2,-2,-2,2,-4,-2,-1,1,-2,-12,-1,6,-1,-3,-1,1,-3,-4,-1,-1,-4,-3,-2,-15,1,-3,-1,-2,-2,-2,-5,6,-1,1,-3,8,-1,1,-1,-2,-5,1,-4,5,-5,-1,-3,-9,-10,-2,-8,-5,2,-6,0,-3,2,-4,0,-7,0,1,9,2,3,-2,1,-12,5,-7,0,-26,15,-3,-1,-8,4,-5,5,-20,12,-2,7,-6,7,-4,8,-8,4,-5,-2,-8,1,-8,-1,-7,4,1,4,-1,3,2,1,-5,3,1,5,-3,2,-10,0,-4,4,-5,1,-6,5,-2,-3,-5,1,-2,-1,6,-7,-1,0,-2,3,-5,1,-5,-6,-10,-2,-7,-5,1,-8,2,-2,-2,-2,-20,1,0,74,51,11,49,-23,3,-5,17,-13,24,3,25,-2,9,3,12,-8,6,-8,6,2,-2,-20,10,0,4,-16,25,0,3,-3,-1,-5,7,-4,3,0,1,6,8,6,1,3,21,9,6,6,4,-1,2,2,5,2,-1,2,2,4,5,4,3,1,8,0,10,-1,24,-7,-2,4,3,8,8,4,5,1,12,-5,11,-3,6,-1,3,3,24,0,43,-3,6,-6,9,-2,6,-4,1,-3,-8,-1,-2,-2,-20,-7,-8,-4,0,-1,-5,-4,-10,-2,-14,0,-5,-4,-3,-7,-4,-2,-1,2,-8,-3,-3,0,-2,6,-2,1,-5,-3,-8,0,0,-3,-3,-1,-6,-3,-8,-2,-3,-5,1,-4,-2,-2,-3,-1;871,202,7,9,5,9,4,2,6,0,7,-2;351,457,1,3,-2,4,-5,3,-4,4;1686,602,-5,0,-5,-1,-1,-2,-1,-5,-3,-3,-16,-3,-5,-10,3,-13,-3,-4,-5,0,-9,-4,-3,2,-13,0,-19,5,-1,-5,-14,-27,1,-2,5,-2,0,-2,-2,-3,-5,1,-8,0,-3,3,-17,-4,-16,-3,-4,-2,3,-2,5,0,5,-2,-2,-1,-1,-2,0,-9,6,-11,1,-2,-1,-3,3,-3,-1,-1,-3,1,-4,-2,0,-2,3,-2,-7,-2,-1,-3,2,-7,-1,-1;715,287,6,-17,-1,-1,1,-3,4,1,1,-2,-3,-2;639,211,4,12,0,5,6,15,-1,2,3,10,0,18,5,2;149,557,11,-1,5,4,10,0,8,2,0,-3,5,-5,26,-4;90,495,0,2,4,5,-1,1,-7,0,-8,4,-1,3,4,4,-1,3,-5,1,-2,3,1,2,3,0,5,2,1,3,-7,7,0,1,4,3;651,268,-7,3,-3,-2,-2,-6,0,-7,4,0,1,-1,-5,-3,-1,-5,4,0,7,3;638,210,-13,34,6,7,-1,1;625,244,-1,2;835,363,3,-7,2,-2,1,-5,4,-2,2,-7,4,0,5,-4,9,-1,-5,-3,-1,-2,3,-4,1,-3,-5,-2,-4,-5,-1,-5,-3,1,-1,-4,2,-4,-3,-5,7,-7,3,0,-1,-2,3,-2,3,-3,-1,-3,0,-3,6,0,14,-10,5,-1,3,-5,7,-7,-3,-8,0,-8,6,0,0,-11,7,-3,2,-5,2,-2;1165,332,-1,-6,-2,-1,1,-3,-1,-5,-3,-4,-4,-3,3,-4,-5,0,-3,-4,0,-9,8,-3,-7,-7,0,-2,6,-16,-1,-15,17,-2,2,-2,1,-8,-19,-21;836,413,7,-8,7,-5,13,-3,8,1,6,5,13,7,5,3,5,1,6,-6,-3,-2,-1,-1,4,-5,-5,-1,-1,-2,12,-9,5,1;1481,322,15,8,5,0,-1,-5,6,-12,7,-3,6,-4,0,-1,-4,-5,1,-10,7,-7,-1,-2,2,-2,0,-9,-6,-3,-4,5,-6,-2,2,-6,5,-5,-1,-4,2,-3,-1,-3,0,-3,7,2,8,-8,6,-1,7,-3,1,-5,10,-3,6,-3,0,-2;1702,177,1,-2,-3,-12,3,-9,-3,-6,-3,1,-9,-1,-2,-1,-4,2,-2,2,-6,-2,-14,4,-4,-1,-3,5,-8,-2,-3,2,-8,4,-2,5,-10,4,-5,-2,-8,1,-3,-2,-11,3,-1,3,-5,0,-9,5,-3,-1,-11,7,-3,3,-11,6,-4,-1,-7,5,2,5,2,2,1,7,5,7,7,5,6,-2,4,6,5,1,8,-1,3,-6,13,-7,6,-2,9,-8,7,2,3,-2,3,-6,11,-7,7,1,-1,-6,12,0,6,-8,1,1,1,3,1,0,5,-3,2,0,1,3,3,0,9,-5,3,-1,16,1,1,2,9,3,3,-1,2,-4,-2,-8,3,-3,-3,-2,2,-5,6,-3,4,1,4,-1,1,-2,10,1,5,3,8,-3,11,1,3,1,4,-1,8,2,0,1,-1,3,2,4,-2,3,-5,0,-3,2,1,4,7,0,2,1,9,2,3,2,-1,1,1,2,8,5,3,5,10,2,4,2,1,2,12,7,3,-2,13,-3,2,3,11,5,4,-4,2,0,-5,-3,1,-4,6,3,3,-6,-6,-7,2,-1,4,2,3,-2,7,0,4,-3,1,-5,-9,-7,0,-3,4,-7,-3,1,-4,4,-11,-2,-15,-10,-6,-3,-2,-5,2,-6,-3,-3,-1,-4,-7,-8,-1,-2,3,-3,-8,-15,-3,-8,-9,2,-4,-1,-3,2,1,-7,-1,-11,-1,-2,-3,0,-1,-7,1,-9,-2,-1,-3,-4,-4,3,-3,-3,-1,14,-3,5,-2,15,-6,0,0,-4,-4,-4,0,-5,-3,-1,-2,1,-1,3,-2,0,0,-3,-1,1,-3,10,2,6,2,4,11,2,1,3,3,1,3,10,4,-1,0,2,-8,4,-32,0,-12,3,-1,13,-3,5,-1,0,-1,-4,-4,0,-3,2,-4,6,-2,0,1,-3,-2,0,-3,1,-2,3,-5,2,0,-1,2,-3,-6,-5,-1,-4,8,-7,5,-1,4,-5,-3,-1,-7,0,-3,-6,-3,0,-3,-5,3,-3,3,0,8,-4,0,-6,-3,-7,4,-4,-1,-4,5,-1,-2,-3,4,-19;318,539,-5,-1,-2,-2,-4,-1,-11,1,-10,4,-9,7,-7,3;262,557,3,2,4,1,1,2,-2,2,1,4,3,1,2,2,-1,1,-5,1,4,2,4,-1,5,0,0,3,2,3;340,414,5,0,1,2,2,0,-2,4,7,2,3,7,3,1,2,2,-2,5;398,447,15,1,7,1,1,2,9,0,5,-4,5,0,5,-2,13,1,5,3,-1,5,4,0;92,572,-1,1,1,10,5,10,6,5,0,1,-11,2,-3,2,-8,-1,-3,2,-3,-1,-4,5,-4,1;62,622,0,-1,2,-3,6,-2,-3,-7,-3,1,-4,-1,-4,1,0,1,2,2,-3,3,2,6,3,1,2,-1,2,3,3,1,0,3,-3,1,1,2,-5,3;869,458,-5,-3,0,-2,2,-3,7,-4,-2,-4,-2,0,-6,2,-5,0,-3,1,-1,2,-8,2,-6,-3,-4,-1,1,-1,-12,0,-16,-2;0,635,4,0,2,-5,7,-1,1,-3,5,1,4,-2,0,-6,8,0,5,4,1,0,-1,-4,1,-3,9,-2,4,-4,6,1;279,592,-1,2,-7,2,-4,-1,-6,0,-5,2,-15,3,-2,0,-1,-5,-2,0,-2,-3,-13,0,-5,3;620,321,-3,1,-8,-2,-1,3,-4,0,-6,-1,-4,1;320,517,-3,1,-4,4,-13,1,-4,-1,-3,1,-3,-1,-7,1,-5,3,-2,-2,-5,0,-5,-4,-7,4,-3,0,-1,-9,7,-5,4,-8,16,-12,3,-1,1,-3,7,-6,-1,-1;293,478,3,0,13,-7;1963,51,0,4,-1,0,-10,-6,-9,1,-1,3,-3,2,-1,6,-14,2,0,3,3,4,1,7,2,2,-3,3,-10,2,1,4,-2,2,1,2,-3,6,3,4,-5,-1,-8,1,-10,-4,-3,0,3,7,-1,3,-2,2,1,6,3,1,-1,4,2,4,4,1,3,5,4,1,2,4,4,1,-2,4,3,3,1,12,-2,15,-4,2,-3,-2,-5,13,-9,6,-1,0,-5,-6;1773,175,0,3,-8,4,-5,-3,-6,2,-7,1,0,3,-7,1,-10,-5,-11,-12,-1,-3;1496,330,-7,0,-14,3;1431,360,-4,3,8,3,3,-1;2225,71,-3,0,-2,-1;2211,65,-1,-1;1786,36,-2,10,3,3,4,-4,2,1,-2,14;835,414,6,1,2,-4,2,1,4,-2,7,1,-1,-3,5,-3,-1,-1,3,-6;870,398,0,3,-2,3,4,0,-5,4,3,2,0,1,-4,1,-2,0,-12,8,6,0,1,5,-8,3,-2,3,-1,2,4,4,-4,3,-7,2,3,1,-4,3;851,432,0,0;840,441,0,0";
+let realCv=null;
+function getReal(){if(realCv)return realCv;
+ realCv=document.createElement('canvas');realCv.width=RW;realCv.height=RH;const c=realCv.getContext('2d');
+ c.fillStyle='#9cc8e4';c.fillRect(0,0,RW,RH);
+ c.strokeStyle='rgba(255,255,255,.35)';c.lineWidth=1;
+ for(let lo=30;lo<=100;lo+=10){const x=rproj(0,lo)[0];c.beginPath();c.moveTo(x,0);c.lineTo(x,RH);c.stroke()}
+ for(let la=30;la<=45;la+=5){const y=rproj(la,0)[1];c.beginPath();c.moveTo(0,y);c.lineTo(RW,y);c.stroke()}
+ const P=new Path2D();
+ for(const ring of LANDS.split(';')){const n=ring.split(',').map(Number);let X=0,Y=0;
+  for(let i=0;i<n.length;i+=2){X+=n[i];Y+=n[i+1];const q=rproj(19+Y/20,3+X/20);if(i===0)P.moveTo(q[0],q[1]);else P.lineTo(q[0],q[1])}P.closePath()}
+ c.fillStyle='#ecdcaa';c.fill(P,'evenodd');
+ c.strokeStyle='#8f6e3e';c.lineWidth=4.5;c.lineJoin='round';c.setLineDash([16,8]);c.beginPath();
+ for(const ln of BORD.split(';')){const n=ln.split(',').map(Number);let X=0,Y=0;for(let i=0;i<n.length;i+=2){X+=n[i];Y+=n[i+1];const q=rproj(19+Y/20,3+X/20);if(i===0)c.moveTo(q[0],q[1]);else c.lineTo(q[0],q[1])}}
+ c.stroke();c.setLineDash([]);
+ c.strokeStyle='#8a6a30';c.lineWidth=3;c.stroke(P);
+ return realCv}
+function drawScene(){
+ const sc=G.scene;
+ if(sc.kind==='intro'){ctx.fillStyle='#182838';ctx.fillRect(0,0,W,H);
+  const r=S.route,tz=ui.q.length<=1?1:0,now=performance.now();
+  if(sc.tz!==tz){sc.z0=sc.zv||0;sc.tz=tz;sc.zt=now}
+  const zp=Math.min(1,(now-sc.zt)/1800),ez=zp<.5?2*zp*zp:1-Math.pow(-2*zp+2,2)/2;sc.zv=sc.z0+(tz-sc.z0)*ez;
+  const z=sc.zv,gA=Math.max(0,Math.min(1,(z-.35)/.5)),rc=getReal();
+  const tgt=(xs,ys,FW,mw,pd)=>{const mnx=Math.min(...xs),mxx=Math.max(...xs),mny=Math.min(...ys),mxy=Math.max(...ys);
+   let tw=Math.max(mw,mxx-mnx+2*pd),th=tw*182/W;if(mxy-mny+pd/3>th){th=mxy-mny+pd/3;tw=th*W/182}tw=Math.min(tw,FW);th=tw*182/W;
+   return{tw,th,tx:Math.max(0,Math.min(FW-tw,(mnx+mxx)/2-tw/2)),ty:Math.max(0,Math.min(FW*182/W-th,(mny+mxy)/2-th/2))}};
+  const lay=(cv,xs,ys,FW,T,zz,al,real)=>{if(al<=0)return;ctx.save();ctx.beginPath();ctx.rect(0,40,W,182);ctx.clip();ctx.globalAlpha=al;
+   const sx=T.tx*zz,sy=T.ty*zz,sw=FW+(T.tw-FW)*zz,sh=sw*182/W;ctx.drawImage(cv,sx,sy,sw,sh,0,40,W,182);
+   if(real){ctx.font='bold 10px "Courier New",monospace';ctx.textBaseline='middle';
+    for(const L of RLAB){const q=rproj(L[1],L[2]),x=(q[0]-sx)/sw*W,y=40+(q[1]-sy)/sh*182;if(x<-60||x>W+60||y<30||y>230)continue;ctx.textAlign=L[3]||'center';ctx.fillStyle=L[4]?'#2a5a8a':'#6a5428';ctx.fillText(L[0],x,y)}}
+   if(real){const q=rproj(24.15,120.67),x=(q[0]-sx)/sw*W,y=40+(q[1]-sy)/sh*182;if(x>-40&&x<W+40){ctx.fillStyle='#f8e080';ctx.fillRect(x-3,y-3,6,6);ctx.fillStyle=COL.ink;ctx.fillRect(x-1,y-1,2,2);txtO('Taichung',x-8,y-6,'#f8e080',FONTS,'right')}}
+   r.stops.forEach((k,i)=>{const c=CITY[k],x=(xs[i]-sx)/sw*W,y=40+(ys[i]-sy)/sh*182;ctx.fillStyle=i===0?COL.red:'#fff';ctx.fillRect(x-4,y-4,8,8);ctx.fillStyle=COL.ink;ctx.fillRect(x-2,y-2,4,4);ctx.font=FONTS;
+    const lb=(zz>.5||!real)?c.n+' '+c.z:c.n,lw=ctx.measureText(lb).width;
+    {const blk=r.stops.some((_,j)=>j!==i&&Math.abs((ys[j]-sy)/sh*182-(y-40))<14&&(xs[j]-sx)/sw*W-x>0&&(xs[j]-sx)/sw*W-x<lw+16),rr=!blk&&x+10+lw<W-4;txtO(lb,rr?x+10:x-10,y-6,'#fff8d0',FONTS,rr?'left':'right')}});
+   ctx.restore()};
+  const gx=r.stops.map(k=>CITY[k].x*TS+8),gy=r.stops.map(k=>CITY[k].y*TS+8),GW=MW*TS;
+  const qx=[],qy=[];r.stops.forEach(k=>{const q=rproj(CITY[k].lat,CITY[k].lon);qx.push(q[0]);qy.push(q[1])});
+  const GT=tgt(gx,gy,GW,48*TS,12*TS),RT2=tgt(qx,qy,RW,RW*48/190*.62,RW*12/190*.62);
+  if(gA>0)lay(mapCv,gx,gy,GW,GT,1,gA,false);
+  lay(rc,qx,qy,RW,RT2,z,1-gA,true);
+  txtO('SILK ROAD JOURNEYS · 1165',W/2,12,'#f8e080',FONT,'center');
+  drawPlayer(W/2-24,224-8,2,'d',Math.floor(G.t*3)%2);return}
+ const west=S&&S.x<=38,east=S&&S.x>118;
+ if(sc.kind==='battle'){
+  const t=terr[S.y][S.x];ctx.fillStyle=t===2?'#f0dca0':t===3?'#c8c0b8':'#b8dca0';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle=t===2?'#e0c078':t===3?'#a89888':'#88c070';ctx.fillRect(0,96,W,264);ctx.fillStyle='rgba(0,0,0,.12)';ctx.fillRect(470,110,136,12);ctx.fillRect(40,116,120,10);
+  const f=sc.foe,bob=Math.round(Math.sin(G.t*4)*2);
+  if(f==='official')spr(ctx,SP.front,490,22+bob,6,Object.assign({},PAL,{r:'#505868',h:'#c84830'}));
+  else if(f==='guide')spr(ctx,SP.front,490,22+bob,6,Object.assign({},PAL,{r:'#806030',h:'#e8c860'}));
+  else if(f==='sick')spr(ctx,SP.sun,490,20+bob,6,Object.assign({},PAL,{y:'#e06848',k:'#803020'}));
+  else spr(ctx,SP[f],490,20+bob,6);
+  drawPlayer(60,40,5,'u',0);
+  box(W/2-150,4,300,28);txt(sc.title,W/2,10,COL.red,FONT,'center');
+  txtO('♥'.repeat(S.hp)+'♡'.repeat(5-S.hp)+'  Coins '+S.coins+'  Supplies '+S.sup,W/2,38,'#fff8d0',FONTS,'center');
+ }else{
+  ctx.fillStyle=east?'#f0d8a8':west?'#c8d8e8':'#f0e0b0';ctx.fillRect(0,0,W,H);ctx.fillStyle=east?'#d8b070':west?'#98b088':'#d8c080';ctx.fillRect(0,120,W,240);
+  if(sc.city==='inn'){spr(ctx,SP.cityM,W/2-48,38,6,Object.assign({},PAL,{u:'#c89858'}))}
+  else if(sc.city)spr(ctx,SP['city'+CITY[sc.city].st],W/2-48,38,6);
+  drawPlayer(W/2+70,72,4,'l',0);
+  box(W/2-150,4,300,28);txt(sc.title||'',W/2,10,COL.red,FONT,'center');
+  if(S){txtO('♥'.repeat(S.hp)+'♡'.repeat(5-S.hp)+'  Coins '+S.coins+'  Supplies '+S.sup+'  Day '+days(),8,38,'#fff8d0',FONTS)}
+ }
+}
+function drawUI(){
+ if(ui.mode==='say'&&ui.cur){
+  const L=ui.cur,bh=104,by=H-bh-4;box(6,by,W-12,bh);
+  if(ui.note){txt(ui.note,W/2,by+34,COL.red,FONT,'center')}
+  let n=0;ctx.font=FONT;ctx.textAlign='left';ctx.textBaseline='top';
+  L.lines.forEach((ln,li)=>{for(const w of ln){const left=Math.floor(ui.shown)-n;if(left<=0)return;const s=left>=w.t.length?w.t:w.t.slice(0,left);ctx.fillStyle=w.hl?COL.red:COL.ink;ctx.fillText(s,20+w.x,by+10+li*18);n+=w.t.length}});
+  if(L.gl.length&&ui.shown>=L.n)txt(L.gl.join('   ·   '),20,by+bh-20,'#806030','bold 11px "Courier New",monospace');
+  if(ui.shown>=L.n&&Math.floor(G.t*3)%2)txt('▼',W-26,by+bh-22,COL.red,FONTS);
+ }else if(ui.mode==='ask'){
+  const n=ui.opts.length,bw=470,bh=n*22+14,bx=W-bw-8,by=H-bh-8;
+  const th=92,ty=by-th-4;if(ui.cur){const L=ui.cur;box(6,ty,W-12,th);ctx.font=FONT;ctx.textAlign='left';ctx.textBaseline='top';
+   L.lines.slice(-4).forEach((ln,li)=>{for(const w of ln){ctx.fillStyle=w.hl?COL.red:COL.ink;ctx.fillText(w.t,20+w.x,ty+9+li*18)}})}
+  box(bx,by,bw,bh);ui.rects=[];
+  ui.opts.forEach((op,i)=>{const y=by+8+i*22;ui.rects.push([bx,y-2,bw,22]);const poor=op.cost&&S.coins<op.cost;
+   if(!ui.locked&&i===ui.sel){ctx.fillStyle='#f0d890';ctx.fillRect(bx+6,y-2,bw-12,20);txt('▶',bx+10,y,COL.red,FONTS)}
+   txt((i+1)+'. '+op.label,bx+26,y+1,poor?'#a09880':COL.ink,'bold 13px "Courier New",monospace')});
+  if(ui.locked){const on=Math.floor(G.t*2)%2;ctx.fillStyle=on?COL.red:COL.ink;ctx.fillRect(0,ty-30,W,26);
+   txt('CLASS: WHAT SHOULD '+S.name.toUpperCase()+' DO?',W/2,ty-25,'#fff',FONT,'center');
+   box(8,by+bh-28,150,24);txt('Enter = choose',16,by+bh-23,COL.ink,FONTS)}
+ }
+}
+function drawTitle(){
+ const mx=(G.pan%(MW*TS-W)),my=120;ctx.drawImage(mapCv,mx,my,W,H,0,0,W,H);ctx.fillStyle='rgba(16,24,40,.55)';ctx.fillRect(0,0,W,H);
+ box(70,40,500,150);
+ txt('GRADE 10 THEMATIC HISTORY',W/2,58,COL.ink,FONT,'center');
+ txt('SILK ROAD JOURNEYS',W/2,88,COL.red,'bold 34px "Courier New",Courier,monospace','center');
+ txt('The year is 1165. Seven roads. Fourteen travellers.',W/2,136,COL.ink,FONTS,'center');
+ txt('Travellers so far: '+(deck.p%14)+' of 14',W/2,158,'#806030',FONTS,'center');
+ if(Math.floor(G.t*2)%2){box(200,214,240,32);txt('PRESS ENTER TO START',W/2,223,COL.ink,FONT,'center')}
+ box(70,286,500,58);txt('J  Journals      S  Sources      H  Keys and help',W/2,296,COL.ink,FONTS,'center');
+ txt('F  Full screen   M  Sound on/off   N  New class',W/2,316,COL.ink,FONTS,'center');
+}
+function draw(){
+ ctx.imageSmoothingEnabled=false;
+ if(G.mode==='title')drawTitle();
+ else if(S){if(G.scene)drawScene();else drawWalk();
+  if(G.flash>0){const ph=Math.floor(G.flash*14)%2;ctx.fillStyle=ph?'#fff':COL.ink;for(let i=0;i<12;i++)if((i+ph)%2===0)ctx.fillRect(0,i*30,W,30)}
+  else drawUI();}
+ else{ctx.fillStyle=COL.ink;ctx.fillRect(0,0,W,H)}
+ if(G.toast&&G.t<G.toast.until&&G.mode!=='done'){ctx.font=FONTS;const w=Math.min(W-20,ctx.measureText(G.toast.t).width+24);box(W/2-w/2,G.mode==='walk'?48:H-150,w,24);txt(G.toast.t,W/2,(G.mode==='walk'?48:H-150)+6,COL.ink,FONTS,'center')}
+}
+let last=0;
+function frame(ts){const dt=Math.min(.05,(ts-last)/1000||0);last=ts;update(dt);draw();requestAnimationFrame(frame)}
+
+/* ---------------- boot ---------------- */
+buildMap();renderMap();
+window.SRJ={closeOv,G,ui,EV,ROUTES,CITY,get S(){return S},pass,road,terr,riv,confirmKey,finish,newJourney,held,store,update,draw};
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
