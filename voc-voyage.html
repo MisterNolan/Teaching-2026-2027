@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Long Road Home – a VOC voyage, 1650s</title>
+<style>
+:root{--ink:#2b1d0e;--parch:#efe2bf;--parch2:#e2d0a2;--navy:#0e1a2b;--gold:#e0b040}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--navy);color:var(--parch);font-family:"Courier New",Courier,monospace;font-weight:bold}
+.hide{display:none!important}
+button{font:inherit;cursor:pointer}
+#title{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#173350 0%,#0b1422 75%);overflow:auto;padding:20px}
+.tbox{max-width:780px;background:var(--parch);color:var(--ink);padding:26px 32px;border:4px solid var(--ink);box-shadow:0 0 0 4px var(--parch2),0 0 0 8px var(--ink),12px 12px 0 8px rgba(0,0,0,.4)}
+.tbox h1{margin:0 0 4px;font-size:34px;letter-spacing:1px;color:#7a1d12;text-shadow:2px 2px 0 #d8b86a}
+.tbox .sub{margin:0 0 14px;font-size:16px}
+.tbox p,.tbox li{font-size:16px;line-height:1.45}
+.tbox label{display:block;margin:10px 0 3px;font-size:15px}
+.tbox input{width:100%;font:inherit;font-size:18px;padding:8px;border:3px solid var(--ink);background:#fff8e4}
+.row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.big{background:#7a1d12;color:#fff3d0;border:3px solid var(--ink);padding:12px 22px;font-size:20px;box-shadow:4px 4px 0 var(--ink)}
+.big:hover{background:#9a2a1a}.small-btn{background:var(--parch2);border:3px solid var(--ink);padding:10px 14px;color:var(--ink)}
+#fleet table,.endbox table{border-collapse:collapse;width:100%;font-size:14px}#fleet td,#fleet th{border:2px solid var(--ink);padding:3px 6px;text-align:left}
+#fleet button{margin-top:8px;background:var(--parch2);border:2px solid var(--ink);padding:4px 10px}
+#game{position:fixed;inset:0;display:grid;grid-template-columns:1fr 300px;gap:10px;padding:10px}
+#left{display:flex;flex-direction:column;min-height:0;gap:10px}
+#cwrap{position:relative;flex:0 0 auto;border:4px solid #000;box-shadow:0 0 0 3px #c9a04a,0 0 0 6px #000}
+#c{display:block;width:100%;height:60vh;image-rendering:pixelated;image-rendering:crisp-edges;background:#173f66}
+#panel{flex:1 1 auto;min-height:0;overflow:auto;background:var(--parch);color:var(--ink);border:4px solid var(--ink);padding:12px 16px;box-shadow:inset 0 0 0 3px var(--parch2)}
+#panel h3{margin:0 0 6px;font-size:22px;color:#7a1d12}#panel h4{margin:12px 0 6px;font-size:17px}
+#panel .own{font-size:14px;color:#5b4a2a;font-weight:normal;margin-left:6px}
+#panel .info{margin:4px 0;font-size:16px;font-weight:normal;line-height:1.4}
+.evt{font-size:19px;line-height:1.45;margin:6px 0 12px;font-weight:normal}
+.delta{background:#2b1d0e;color:#ffe9a8;display:inline-block;padding:6px 10px;font-size:16px;margin:0 0 10px}
+.opts,.routes,.acts{display:flex;flex-direction:column;gap:7px}.routes{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+.acts{flex-direction:row;flex-wrap:wrap}
+.opt,.route,.act{text-align:left;background:#fff8e4;color:var(--ink);border:3px solid var(--ink);padding:9px 12px;font-size:17px;box-shadow:3px 3px 0 var(--ink)}
+.opt:hover,.route:hover,.route.hl,.act:hover{background:#ffe9a8;transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.opt .k{display:inline-block;background:var(--ink);color:var(--parch);width:24px;text-align:center;margin-right:10px}
+.route small,.act small{display:block;font-size:13px;font-weight:normal;margin-top:3px;color:#5b4a2a}.route i{font-weight:normal;font-size:14px}
+.act{font-size:15px;padding:7px 10px}
+.cont{background:#7a1d12!important;color:#fff3d0!important;align-self:flex-start}
+.fl{display:inline-block;width:12px;height:9px;margin-right:6px;vertical-align:middle;border:1px solid #000}
+.fl-nl{background:linear-gradient(#e07a1f 33%,#f4f0e6 33% 66%,#28418a 66%)}.fl-pt{background:linear-gradient(90deg,#1f7a3a 40%,#c8262c 40%)}.fl-es{background:linear-gradient(#c8262c 25%,#f2c230 25% 75%,#c8262c 75%)}.fl-en{background:linear-gradient(90deg,#f4f0e6 40%,#c8262c 40% 60%,#f4f0e6 60%)}.fl-id{background:#2f8a4a}.fl-none{background:#9aa0a0}
+.hint{font-size:14px;color:#5b4a2a;font-weight:normal}
+#side{display:flex;flex-direction:column;gap:10px;min-height:0}
+.card{background:#152742;border:3px solid #000;box-shadow:0 0 0 2px #c9a04a;padding:10px 12px}
+#timer{font-size:40px;text-align:center;color:#ffe27a;letter-spacing:2px}#timer.low{color:#ff6b55;animation:bl 1s steps(2) infinite}@keyframes bl{50%{opacity:.4}}
+#sname{font-size:20px;color:#ffe27a}#screw{font-size:13px;color:#cfd8e6;font-weight:normal;min-height:16px}
+.st{margin-top:8px;font-size:14px}.st .lab{display:flex;justify-content:space-between}.bar{height:9px;background:#0a1220;border:2px solid #000;margin-top:2px}.bar div{height:100%}
+#mini{width:100%;image-rendering:pixelated;border:2px solid #000;display:block}
+#toast{position:fixed;left:50%;top:18px;transform:translate(-50%,-80px);background:var(--parch);color:var(--ink);border:3px solid var(--ink);padding:8px 16px;font-size:18px;transition:transform .25s;z-index:9}#toast.on{transform:translate(-50%,0)}
+#end{position:fixed;inset:0;overflow:auto;background:radial-gradient(ellipse at center,#173350 0%,#0b1422 75%);padding:20px}
+.endbox{max-width:980px;margin:0 auto;background:var(--parch);color:var(--ink);border:4px solid var(--ink);padding:20px 28px;box-shadow:0 0 0 4px var(--parch2),0 0 0 8px var(--ink)}
+.endbox h2{font-size:40px;margin:0}.win{color:#2d6a2a}.lose{color:#7a1d12}.fate{font-size:18px;font-weight:normal}
+.endgrid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.endbox td{border-bottom:2px solid var(--parch2);padding:4px 6px;font-size:15px;vertical-align:top}.endbox td:first-child{color:#5b4a2a;width:42%}.endbox td.small{font-size:13px}
+.meter{height:22px;border:3px solid var(--ink);background:linear-gradient(90deg,#8ccf7e,#e0b040,#c8402c)}.meter div{height:100%;background:transparent;border-right:4px solid var(--ink);box-shadow:inset 0 0 0 0 #000}
+.band{font-size:16px;font-weight:normal}.band b{font-size:19px}
+.cat{display:flex;justify-content:space-between;font-size:14px;margin:3px 0}.dots{letter-spacing:1px}
+.dec{font-size:15px;font-weight:normal;line-height:1.4}.dec i{color:#5b4a2a}
+.eq{background:var(--ink);color:var(--parch);padding:10px 14px;font-size:17px}
+.endbtns{display:flex;gap:10px;flex-wrap:wrap}.endbtns button{background:#fff8e4;border:3px solid var(--ink);padding:10px 16px;font-size:17px;box-shadow:3px 3px 0 var(--ink)}#again{background:#7a1d12!important;color:#fff3d0}
+#sumtxt{width:100%;height:120px;margin-top:10px;font:13px "Courier New",monospace;border:2px solid var(--ink);background:#fff8e4}
+@media (max-width:900px){#game{grid-template-columns:1fr;overflow:auto;position:static}.endgrid{grid-template-columns:1fr}}
+</style></head><body>
+<div id="title"><div class="tbox">
+<h1>The Long Road Home</h1><p class="sub">A Dutch East India Company (VOC) ship sails from Taiwan to the Netherlands, some time in the 1650s.</p>
+<p>You are the captain of a VOC ship at Fort Zeelandia on Taiwan. Your job is to bring the ship, the men and the cargo home to the Netherlands.</p>
+<ul><li>Choose where to sail next. Company ports can feed your men, repair the ship and load cargo.</li><li>Things will happen on the way. Talk with your crew, then decide.</li><li>You have <b id="mins">5</b> minutes. If you are too slow, the ship is posted missing.</li><li>Watch your men, food and hull. Not every ship gets home.</li></ul>
+<label for="shipname">Name your ship</label><input id="shipname" maxlength="28" placeholder="e.g. Zeeland">
+<label for="crewnames">Crew (your names)</label><input id="crewnames" maxlength="60" placeholder="e.g. Amy, Ben, Chen">
+<div class="row"><button id="go" class="big">Set sail ▸</button><button id="mute" class="small-btn">♪ Music on</button></div>
+<div id="fleet" style="margin-top:16px"></div>
+</div></div>
+<div id="game" class="hide">
+ <div id="left"><div id="cwrap"><canvas id="c"></canvas></div><div id="panel"></div></div>
+ <div id="side">
+  <div class="card"><div id="timer">5:00</div></div>
+  <div class="card"><div id="sname"></div><div id="screw"></div>
+   <div class="st"><div class="lab"><span>Date</span><span id="sdate"></span></div></div>
+   <div class="st"><div class="lab"><span>At</span><span id="vat"></span></div></div>
+   <div class="st"><div class="lab"><span>Crew</span><span id="vcrew"></span></div><div class="bar"><div id="bcrew"></div></div></div>
+   <div class="st"><div class="lab"><span>Food &amp; water</span><span id="vfood"></span></div><div class="bar"><div id="bfood"></div></div></div>
+   <div class="st"><div class="lab"><span>Hull</span><span id="vhull"></span></div><div class="bar"><div id="bhull"></div></div></div>
+   <div class="st"><div class="lab"><span>Cargo value</span><span id="vgold"></span></div></div>
+   <div class="st"><div class="lab"><span>Last fresh food</span><span id="vfresh"></span></div></div>
+  </div>
+  <div class="card"><canvas id="mini" width="264" height="166"></canvas></div>
+ </div>
+</div>
+<div id="end" class="hide"></div><div id="toast"></div>
+<script>
+const LAND64='AAAAAAAAAAAAAAAAAAAAAAAAAACz//////8DAPz//////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAAAAAA8P//////HwDA////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAD//f////8BAPz//////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAAAAAAKOT/////HwDA////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAD///////8BAP7//////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAACAAA4P//////PwDA////+f//////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAMAAAACe//////8fCMj/D4D//////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAAAAAAgP///////4NA9AcAgP//////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAD6////////AAABAAD//////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAAAAAA4P///////wcAAEAA////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAD+/7////8PAADg/////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAIAAAAAP//4f///wEAwP//////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAQAAAAADs/wH+//8DAOD8/////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAMAAAAwP8P4P//AQAA0P//////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAEfwAAAADwfwD+/38AAPDY/////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAMPgBAAAAAPQAwP//BwAAAPz/////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAADBDwAAAAAAAAD4/z+AAQDg/////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAADP7+AAAAAAAAAv//AwYAB/7/////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAEDm/w8AAAAAADjw/z9gAPzA/////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAP3/AAAAAAD4A/7/AwLAH/7/////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAADg/wcAAAAAYB7A/z8AAP7//////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAgPs/AAAAAAD4Afj/BQDw////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAADY/wEAAAAA4P+A/w8AAP///////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAPwPAAAAAAD+AfwHAADw////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAI/g8AAAAA4F+0HwAAAP///////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAOb/AQAAAAB+8PcBAADg////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAg/j8AAAAAgH8+AgAAAP7//////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAACA9/D/AwAAAAA8hwAYAADg////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAPyfn38AAAAAoCcLAAAA8P///////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAADA/wP8DwAAAAD4ACAA8IP/////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAPwfxP8DAAAAgD/ABuB//v///////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAD//yDg/wAAAADwj3/g////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAA0P8HAP8PAAAAQP7/9////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAD+fwDwfwAAAOD8////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAA4P8HhP8fAAD4/////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAD4/4D//wEAyP//////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAwP8P8v/PA4D//////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAD2fwD//38A/P//////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAA4P8D8P//B8D//////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAD/A+D//z8A/v//////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAA+A+A////AfD//////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAeAIDf/w8A/v//////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAP9/AOb//////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAID//x/8////////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAA/L9/+P///////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAOCDBMD/////////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAACAPwAA/P///////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAA4AAMD/////////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAACA/////////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAABv7/////////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAODx/////////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAA/P//////////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAMD//////////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAMDf////////////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAA/v///////////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAMD/////////////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAA+P///////////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAADw////////////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAPz//////////////////////////////////////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAACA///////////////////////////h////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAPD/////////////////////////gP//////PxD//////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAA/v///////////////////z//f4D///////8A4P//////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAMD///////////////////9/8P8D8P//////AQD//////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAA+P///////////////////wPmFwD8/////w8A8P//////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAD///////////////////8fAPwA8P////8/AAD//////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAA8P///////4//////////PwDwD4D/////fwAA+P//////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAID///////8f/P////////8HwP+5+P////8DAHj+/////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAA+P///////8H9////////fwDA//v/////HwDg////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAID///////8/KP////////8DAPwB/v////8AAP///////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAA+P///////wHw////////BwDAAQD/////BwDk////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAID/////f/8fAP///////38AAAAA4P////8A4P///////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAA+P////+B/wPg////////BwAAAADw////HwD4////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAMD/////D+D/APz//////z8AAAAAAP7///8DAP///////////////////////////////////////////////////w8AAAAAAAAAAAAAAACABwEA/P///x8A/j8A////////AwAAAACA////PwDg////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAPz///P//wN/AMD/B0D//////w8AAAAAAPD///8DAP7//////////////////////////////////////////////////w8AAAAAAAAAAAAAAAD4//////8fgAEA/H8A+P//////AAAAAAAA/P//PwCA////////////////////////////////////////////////////AAAAAAAAAAAAAAAAgP///////wAAAIL/DwD8/////w8AAAAAAAD///8HAOD//////////////////////////////////////////////////w8AAAAAAAAAAAAAAADw//////8PAAAw8P8AAP7///9/AAAAAAAAwP//fwAA/P//////////////////////////////////////////////////AAAAAAAAAAAAAAAAAP7//////wEAwAP8HwCA/////wcAAAAAAAD8//8PAMD//////////////////////////////////////////////////w8AAAAAAAAAAAAAAADg//////8fAAA4gP8HAPD/////AAAAAAAAgP///wEAvP//////////////////////////////////////////////////AAAAAAAAAAAAAAAAAP7//////wEAgAPg/x8A/v///w8AgP8BAAD4//8/AMDw/////////////////////////////////////////////////w8AAAAAAAAAAAAAAADg//////8HAAAYAPz/AMD/////AQD+/wAAwP///wcADP////////////////////////////////////////////////9/AAAAAAAAAAAAAAAAAP7/////HwAAAAAA/x8A/P///z8A/P8fAAD+////AADg/////////////////////////////////////////////////wcAAAAAAAAAAAAAAADg/////x8AAAAwAID/D8D//////+f//z8A+P///x8AAPj///////////////////////////////////////////////9/AAAAAAAAAAAAAAAAAP7///9/AAAAgAcA8P8D/P8f/AP+////////////AwCA/////////////////////////////////////////////f///wcAAAAAAAAAAAAAAADg/////wcAAAB+AAD6/+D/fwQL8P///////////38A+P///////////////////////////////////////////wf+//8fAAAAAAAAAAAAAAAAAP7///8/AAAAwAcAAH8e/n8PoPn/////////////H4D///////////////////////////////////////////8/4P//fwAAAAAAAAAAAAAAAADg/////wEAAAB8AADgB4P/o4D8/////////////z8A+P///////////////////////////////////////////wH///8DAAAAAAAAAAAAAAAAAP////8PgAEAwAcAADgg8H8A4f//////////////AwD8//////////////////////////////////////////8D/N//BwAAAAAAAAAAAAAAAADw////fwA8AAB8AACAB4D/DwD+/////////////x8AwP//////////////////////////////////////////H8AP8D8AAAAAAAAAAAAAAAAAgP////8HgAEAwAMAAPAA4P8BgP//////////////AQD///////////////////////////////////////////8BGAD8AwAAAAAAAAAAAAAAAAD8////fwAAAAAMAAAAHwD8DwD6/////////////x8AgP////////////////////////////////////////9/AoAA4H8AAAAAAAAAAAAAAAAAwP////8PAgAAAAAAAGAAgD8DAP//////////////AADw/////////////////////////////////////////wcABwD+DwAAAAAAAAAAAAAAAAD4/////wAAAAAAAAAAAwD03wH4/////////////wcAgP////////////////////////////////////////8/AAAA4P8BAAAAAAAAAAAAAAAAAP7///8DAAAAAAAAADgAAMQX0P////////////9/AAD4/////////////////////////////////////////wcAAAD/PwAAAAAAAAAAAAAAAADg////HwAAAAAAADC4AQDk4wL4/////////////w8AgP//////////////////////////////////////////AQAA+P8HAAAAAAAAAAAAAAAAAP7///8BAAAAAADA/wEAAP6IAP7/////////////AAD4//////////////////////////////////////////8AAADWfwAAAAAAAAAAAAAAAADg////HwAAAAAAAPwfAADAHxLx/////////////x8AgP//////////////////////////////////////////Dx4AAPwPAAAAAAAAAAAAAAAAAP7//x8AAAAAAAAA/gAAAHgBAP7/////////////HwDw///////////////////////////////////////////wfwCA/wEAAAAAAAAAAAAAAADw4///AQAAAADwAYAfAADADwDA//////////////8BAP////////////////////////////////////////////8DAPg/AAAAAAAAAAAAAAAAAAD8/w8AAHjw998BwAEAAOgAAPD/////////////fwD0////////////////////////////////////////////JwBg/wMAAAAAAAAAAAAAAAAAgD8AAAD4////DwAAAAAAAAAC8IP/If7///////9//v///////////////////////////////////////////wcAAPw/AAAAAAAAAAAAAAAAAAB4AACA/////z8AAAAAAAAAABA+4A/4//////////////////////////////////////////////////////9/AADA/wMAAAAAAAAAAAAAAAAAAAIAAP7/////AwAAAAAAAACAAAAcAP///////////////////////////////////////////////////////wIAAPw/AAAAAAAAAAAAAAAAAABAAADw/////z8AIAAAAAAAAAAAAAD4//////////////////////////////////////////////////////8PAACA/wMAAAAAAAAAAAAAAAAAAAcA8P//////DwAAAAAAAAAQAAAAgP//////////////////////////////////////////////////////fwAAAPw/AAAAAAAAAAAAAAAAAADwAID///////8AAAAAAADcAAAAAAjw//////////////////////////////////////////////////////8DAADA/wEAAAAAAAAAAAAAAAAAgP8f/v//////DwAAAAAAAPwBAAD8AP//////////////////////////////////////////////////////HwAAAP4PAAAAAAAAAAAAAAAAAAD4/////////38AAAAAAAAAAAAA4APw//////////////////////////////////////////////////////8BAADATwAAAAAAAAAAAAAAAAAAwP//////////BwAAAAAAAAAAAAAAAP//////////////////////////////////////////////////////PwAAAC4gAAAAAAAAAAAAAAAAAAD8/////////x8AAAAAAAAAAAAAAAD4//////////////////////////////////////////////////////8PAAAAAAIAAAAAAAAAAAAAAAAA4P//////////AAAAAAAAAAAAAAAAgP///////////////////////////////////////////////////////wEAAAAAAAAAAAAAAAAAAAAAAAD//////////58AAAAAAAAAAAAAAAD8//////////////////////////////////////////////////////8/AAAAAAAAAAAAAAAAAAAAAAAA/P//////////BwAAAAAAAAAAAAAAwP///////////////////////////////////////////////////////wMAAAAAAAAAAAAAAAAAAAAAAPj///////////8BAAAAAAAAAAAAAAD+//////////////////////////////////////////////////////9/AADgAAgAAAAAAAAAAAAAAADg////////////fwAAAAAAAAAAAAAA4P///////////////////////////////////////////////////////wcAAACAAAAAAAAAAAAAAAAAAP////////////8fAwAAABwAAAAAAAD/////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAD4//////////////8BAAD4DwAAAAAA8P///////////////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAAAAAgP///////////////wEA4P8AAAAAAID/////////////////////////////////////////////////////////AwAAAAAAAAAAAAAAAAAAAAD4//////////////8fAAD//wAAAAAA+P///////////////////////////////////////////////////////z8AAAAAAAAAAAAAAAAAAAAAwP///////////////wMA8P//AAAAAID///////////////////////////////////////////////////////9/BwAAAAAAAAAAAAAAAAAAAAD+//////////////8/AAD//x8AAAAA/P///////////////////////////////////////////////////////z8AAAAAAAAAAAAAAAAAAAAA4P///////////////wcA8P///wHgB+D/////////////////////////////////////////////////////////AwAAAAAAAAAAAAAAAAAAAAD+////////////////HwD+////gP/y/////////////////////////////////////////////////////////38AAAAAAAAAAAAAAAAAAAAA4P////////////////8P8P/////+////////////////////////////////////////////////////////////BwAAAAAAAAAAAAAAAAAAAAD+/////////////////4P//////////////////////////////////////////////////////////////////x8AAAAAAAAAAAAAAAAAAAAA4P////////////////9//P////////////////////////////////////////////////////////////////8/AAAAAAAAAAAAAAAAAAAAAAD+/////////////////////////////////////0///////////////////////////////////////////////z8BAAAAAAAAAAAAAAAAAAAA4P////////////////////////////////////8f4P//////////////////////////////////////////////LwAAAAAAAAAAAAAAAAAAAAD////////////////////////////5/////////wH8/////////////////////////////////////////////38AAAAAAAAAAAAAAAAAAAAA+P//////////////////////////v3////////8HgP//////////////////////////////////////////////DwAAAAAAAAAAAAAAAAAAAMD////////////////////////////39////////wH4/////////////////////////////////////////////z8AAAAAAAAAAAAAAAAAAAAA/v//////////////////////////f/7///////8fgP//////////////////////////////////////////////BwAAAAAAAAAAAAAAAAEAAfj////////////////////////////n+////////wPw/////////////////////////////////////////////z8AAAAAAAAAAAAAAAAABgjA/////////////////////////////7z///////8/AP7/////////////////////////////////////////////AwAAAAAAAAAAAAAAAChCAP////////////////////////////+f/////////wfg/////////////////////////////////////////////w8AAAAAAAAAAAAAAAAAIAD//////////////////////////////xP+//////9/APz///////////////////////////////////////////9/AAAAAAAAAAAAAAAAAAAA+P////////////////////////////8/wP///////w8A/P///////////////////////////////////////////wcAAAAAAAAAAAAAAAAAAID//////////////////////////////wf4////////AYD///////////////////////////////////////////8/AAAAAAAAAAAAAAAAAAAA/P////////////////////////////9/gP///////z8A8P/4/////////////////////////////////////////wEAAAAAAAAAAAAAAAAAAMD//////////////////////////////w/w////////DwD8G/////////////////////////////////////////8fAAAAAAAAAAAAAAAAAAAA/v//////////////////////////////AP7///////8AACzw////////////////////////////////////////fwAAAAABAAAAAAAAAAAAAPj//////////////////////////////x/g////////HwAAAP////////////////////////////////////////8HAAAAAAAAAAAAAAAAAADA////////////////////////////////Afz///////8BAADj////////////////////////////////////////PwAAAAAAAAAAAAAAAAAAAPz//////////////////////////////z+A////////DwMAMP7///////////////////////////////////////8HAAAAAAAAAAAAAAAAAADg////////////////////////////////A/D///////85AIAB////////////////////////////////////////PwAAAAAAAAAAAAAAAAAAAP7//////////////////////////////38A////////vwMAHAD4///H//////////////////////////////////8BAAAAAAAAAAAAAAAAAADg////////////////////////////////B+D///////87AOABACAAAPj/////////////////////////////////D2AAAAAAAAAAAAAAAAAAAP7///////////////////////////////8A/v///////wOAPwAAAACA/////////////////////////////////38ABwAAAAAAAAAAAAAAAADw////////////////////////////////D+D///////8fAPgDAAAAAOD/////////////////////////////////BngAAAAAAAAAAAAAAAAAgP////////////////////////////////8B/P///////wHAfwAAAAAA/v///////////////////////////////w/ABxgAAAAAAAAAAAAAAAD8////////////////////////////////PwD///////9/HP8PAAAAAOD/////////////////////////////////AHwAAAAAAAAAAAAAAAAA4P////////////////////////////////8D4P///////////wMAAAAA8P///////////////////////////////wfgAwAAAAAAAAAAAAAAAAD/////////////////////////////////PwD8////////////AQAAAAD8//////////////////////////////8/AD4AAAAAAAAAAAAAAAAA8P////////////////////////////////8DgP///////////38AAAAAwP////////////+/////////////////fwDgAwAAAAAAAAAAAAAAAID/////////////////////////////////PwD4////////////DwAAAAD4//////////////v///////////////8DAD8AAAAAAAAAAAAAAAAA+P////////////////////////////////8HAP////////////8BAAAAAO7///////////+////////////////9DwDgAQAAAAAAAAAAAAAAAID//////////////////////////////////wHw////////////PwAAAAAA/v///////////9f/////////////vwMAAA4AAAAAAAAAAAAAAAAA/P////////////////////////////////8/AP////////////8HAAAAAP3///////////8/+f////////////8TAADAAAAAAAAAAAAAAAAAAOD//////////////////////////////////wfw////////////fwAAAADw//3/////////f4b/////////////DwAAAAgAAAAAAAAAAAAAAAAA////////////////////////////////////AP////////////8DAAAAAP7P/////////68X+P///////////38AAAAAAAAAAAAAAAAAAAAAAPD//////////////////////////////////w/w////////////PwAAAADA//n///////8/AID///////////F/AAAAAAAAAAAAAAAAAAAAAAAA////////////////////////////////////AP////////////8BAAAAAPif/////////wAA8P////////8HcAAAAAAAAAAAAAAAAAAAAAAAAPD//////////////////////////////////x/g////////////DwAAAAAA//j///////8HAAD/////////H4ABAAAAAAAAAAAAAAAAAAAAAAAA/v//////////////////////////////////Af7//////////38AAAAAAMCD/////////wAA4P///////38AGAAAAAAAAAAAAAAAAAAAAAAAAMD//////////////////////////////////x/A////////////CwAAAAAAAPD///////8PAAD8////////B4ABAAAAAAAAAAAAAAAAAAAAAAAA+P//////////////////////////////////Afj//////////w8AAAAAAACA////////fwAAgP///////z8AMAAAAAAAAAAAAAAAAAAAAAAAAID//////////////////////////////////x8A/v////////9/AAAAAAAAAPj///////8DAADw////////AQAAAAAAAAAAAAAAAAAAAAAAAAAA+P//////////////////////////////////AcD//////////wcAAAAAAACA////////HwAAAPn//////w8A/gAAAAAAAAAAAAAAAAAAAAAAAID//////////////////////////////////x8A+P////////9/AAAAAAAAAPj//////z8AAACA//////9/APAPAAAAAAAAAAAAAAAAAAAAAAAA/P//////////////////////////////////AQD//////////wcAAAAAAACA////////AAAAAPj//////weAfwAAAAAAAAAAAAAAAAAAAAAAAID//////////////////////////////////x8A8P////////9/AAAAAAAAAPj//////wcAAACA//////9/APgDAAAAAAAAAAAAAAAAAAAAAAAA+P//////////////////////////////////AwD+/////////wAAAAAAAAAA//////8/AAAAAPT//////weAPwAAAAAACAAAAAAAAAAAAAAAAAD//////////////////////////////////38A4P////////8HAAAAAAAAAPD//////wMAAAAA/v////9/APgBAAAAAAAAAAAAAAAAAAAAAAAA8P//////////////////////////////////DwD8////////PwAAAAAAAAAA//////8fAAAAAOD//////w8ABwAAAADAEwAAAAAAAAAAAAAAAAD///////////////////////////////////8DwP////////8DAAAAAAAAAPD/////fwAAAAAA/P//////AQAAAAAAAPwBAAAAAAAAAAAAAAAA8P//////////////////////////////////fwD4////////AwAAAAAAAAAA//////8DAAAAAMD//////z8AAAAAAADAHwAAAAAAAAAAAAAAAAD///////////////////////////////////8HAP///////x8AAAAAAAAAAOD/////HwAAAAAA/P//////AwAAAAAAAP4BAAAAAAAAAAAAAAAA+P///////////////////////////////////wDg////////AQAAAAAAAAAA/v///38AAAAAAMB//////38AAAAAAADAHwAAAAAAAAAACAAAAID///////////////////////////////////8PAPz//////x8AAAAAAAAAAOD/////AwAAAAAA/O//////DwAAAAAAAPwDAAAAAAAAAAAAAAAA+P///////////////////////////////////wDI//////8HAAAAAAAAAAAA/v///x8AAAAAAMB//v////8BAAAAAADgPwAAAAAAAAAAwAAAAMD///////////////////////////////////8fAPn/////DwAAAAAAAAAAAOD/////AQAAAAAA/uf/////PwAAAAAAAP4BAAAAAAAAAAAAAAAA/P///////////////////////////////////wGA/////z8AAAAAAAAAAAAA/v///wcAAAAAAOAf+P////8HAAAAAADgHwAAAAAAAAAAABAAAMD///////////////////////////////////8fAPj/////AQAAAAAAAAAAAMD///8fAAAAAAAAcsD//////wEAAAAAgP4AAAAAAAAAAAAAAAAA/P///////////////////////////////////wGA/////x8AAAAAAAAAAAAA/P//vwAAAAAAAAAD+P////8/AAAAAADwAwAAAAAAAAAAAAAAAOD///////////////////////////////////8/A/j/////AQAAAAAAAAAAAID///8BAAAAAAAAAID//////wMAAAAAAD8AAAAAAAAAAAAAAAAA/v///////////////////////////////////w+A/////wcAAAAAAAAAAAAA+P//HwAAAAAAAAAA+P////9/AAAAAADwAwAAAAAAAAAAAAIAAPD/////////////////////////////////////APj///8PAAAAAAAAAAAAAAD///8AAAAAAAAAAID//////w8AAAAAAD8AAAAAAAAAAAAEAACA/////////////////////////////////////38A////HwAAAAAAAAAAAAAA8P//DwAAAAAAAAAA+P//////AAAAAADwAwAAAAAAAAAAAAAAAPj/////////////////////////////////////H/D//x8AAAAAAAAAAAAAAAD+//8BAAAAAAAAAAD//////w8AAAAAAHIAAAAAAAAAAAAAAAAA//////////////////////////////////////8B////AAAAAAAAAAAAAAAAwP//HwAAAAAAAAAA8P//////AQAAAACABwAAAAAAAAAAAAAAAOD/////////////////////////////////////P/D//wcAAAAAAAAAAAAAAAD8//8BAAAAAAAAAAD//////x8AAAAAAHwOAAAAAAAAAAAAAAAA/v////////////////////////////////////8H/v8HAAAAAAAAAAAAAAAAwP//HwAAAAAAAAAA8P//////AQAAAACAszYAAAAAAAAAAAAAAMD//////////////////////////////////////+H/HwAAAAAAAAAAAAAAAAD4//8AAAAAAAAAAAD+/////x8AAAAAAAA6AQAAAAAAAAAAAAAA/v////////////////////////////////////8f/gcAAAAAAAAAAAAAAAAAgP//HwAAAAAAgAAAwA//////AQAAAADASQYAAAAAAAAAAAAAAOD//////////////////////////////////////+M/AAAAAAAAAAAAAAAAAAD4//8BAAAAAAAIAAD88P///x8AAAAAADhgAAAAAAAAAAAAAAAA/v////////////////////////////////////9//AAAAAAAAAAAAAAAAAAAgP//HwAAAAAAgAAAgA//////AwAAAACAAxAAAAAAAAAAAAAAAMD//////////////////////////////////////x8AAAAAwAEAAAAAAAAAAADw//8BAAAAAAAIAAD6gP///x8AAAAAADBBAAAAAAAAAAAAAAAA/v//////////////////////////////////////AQAAAAAcAAAAAAAAAAAAAP//DwAAAAAAAAAAoA/g////AQAAAAAAQ+IBAAAAAAAAAAAAAID//////////////////////////////////////z8AAAAAAAAAAAAAAAAAAADg//8AAAAAAAAAAAD4APj//x8AAAAAAAHAPAAAAAAAAAAAAAAAuP//////////////////////////////////////AAAAwAAAAAAAAAAAAAAAAPz/BwAAAAAAQAAAgAeA////AQAAAAAAAIADAAAAAAAAAAAAAAD0/////////////////////////////////////wcAAAAeAAAAAAAAAAAAAADA/38AAAAAAAAEAAB4APD//x8AAAAAAAADMAAAAAAAAAAAAAAAgP//////////////////////////////////////AwAA/AAAAAAAAAAAAAAAAPj/BwAAAAAAQAAAgAMA////AAAAAAAA8KEDAAAAAAAAAAAAAID4/////////////////////////////////////z8A4P8PAAAAAAAAAAAAAACA/38AAAAAAAAAAAA4APD//wMAAAAAAAAPDAAAAAAAAAAAAAAAAP7/////////////////////////////////////B4D//wEAAAAAAAAAAAAAAPD/BwAAAAAAAAAAwAMA+P8PAAAAAAACcIMAAAAAAAAAAAAAAADA///////////////////////////////////////g//8fAAAAAAAAAAAAAAAA/38AAAAAAAAAAAAcAED/fwAAAAAA4AC1GAAAAAAAAAAAAAAAAPz//////////////////////////////////////////wAAAAAAAAAAAAAAAPD/BwAAAAAAAAAAwAEAwH8BAAAAAAADgIkFAAAAAAAAAAAAAAAA//////////////////////////////////////////8PAAAAAAAAAAAAAAAA/h8AAAAAAAAAAAAYAAD4BwAAAAAAGABYSgAAAAAAAAAAAAAAAOD/////////////////////////////////////////fwAAAAAAAAAAAAAAAOD/AQAAAAAAAAAAwAEAAD8AAAAAAEAAwDkAAAAAAAAAAAAAAAAA/v////////////////////////////////////////8HAAAAAAAAAAAAAAAA/A8CAAAAAAAAAAAcAAD4AwAAAAAABgA8QQAAAAAAAAAAAAAAAMD/////////////////////////////////////////fwAAAAAAAAAAAAAAAOD/cAAAAAAAAAAAwAEAgA8AAAAAACAAgAEMAAAAAAAAAAAAAAAA+P////////////////////////////////////////8HAAAAAAAAAAAAAAAA/AMHAAAAAAAAAAD+AAA4AAAAAACAAQBQwAEAAAAAAAAAAAAAAAD/////////////////////////////////////////PwAAAAAAAAAAAAAAAMAf8AAAAAAAAAAA4A8AgAEAAAAAAAwAAIAeAAAAAAAAAAAAAAAA+P////////////////////////////////////////8BAAAAAAAAAAAAAAAA+AEfAAAAAAAAAAD+AAAIAAAAAAAgAABA+AEAAAAAAAAAAAAAAID/////////////////////////////////////////HwAAAAAAAAAAAAAAAAAP+AMAAAAAAAAA4B8AAAAAAAAAAAAAAOc/AAAAAAAAAAAAAAAA8P////////////////////////////////////////8AAAAAAAAAAAAAAAAAIIA/AAAAAAAAAAD4AQAAAAAAAAAAAAB4/wMAAAAAAAAAAAAAAAD/////////////////////////////////////////BwAAAAAAAAAAAAAAAAAA+AMAAAAAAAAAIB8AAAAAAAAAAAAA4P8/AAAAAAAAAAAAAAAA4P///////////////////////////////////////38AAAAAAAAAAAAAAAAAAIB/AAAAAAAAAADgAwAAAAAAAAAAAAAr/wMAAAAAAAAAAAAAAAD8////////////////////////////////////////AwAAAAAAAAAAAAAAAAAA+AcAAAAAAAAAAB4AAAAAAAAAAAAAkOA/AAAAAAAAAAAAAAAAAP7//////////////////////////////////////z8AAAAAAAAAAAAAAAAAAID/AAAAAACAAACABwAAAAAAAAAAAAABfwMAAAAAAAAAAAAAAADA////////////////////////////////////////AQAAAAAAAAAAAAAAAAAA+AcAAAAAAAgAAPgCAAAAAAAAAAEAAPATAAAAAAAAAAAAAAAAAPj//////////////////////////////////////x8AAAAAAAAAAAAAAAAAAAB/AAAAAAAAAABAfwAAAAAAAAAcAIABPwEAAAAAAAAAAAAAAAAA/v//////f+D/////////////////////////////AAAAAAAAAAAAAAAAAAAA8AMAAAAAAAAAAOgPAAAAAAAA4AcAAPADAAAAAAAAAAAAAAAAAID//////x8A+P///////////////////////////w8AAAAAAAAAAAAAAAAAAAAOAAAAAAAAAAAA/gEAAAAAAAB+AAAAfAAAAAAAAAAAAAAAAAAA8P//////AAD///////////////////////////9/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOA/AAAAAAAA8A8AAAACAAAAAAAAAAAAAAAAAAD+/////wAA4P///////////////////////////wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/gcAAAAAAAD/AwAAIAAAAAAAAAAAAAAAAAAAwP////8DAAD8//////////////////////////8/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOAMD/AAAAAAAA/P8BAAAAAAAAAAAAAAAAAAAAAAD4/wf4BwAAwP///////////////////////////wEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4H8A/B8AAAAAAMD/nwAAAAAAAAAAAAAAAAAAAAAAAP4HABgAAAD8//////////////////////////8fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8D8D/AwAAAACA/x8AAAAAAAAAAAAAAAAAAAAAAACADwAAAAAAwP/9/////////////////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP8A/D8AAAAAAP7/AwAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAABwAP////////////////////////8HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4H8D/AwAAAADw/z8AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADw////////////////////////fwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP4B+D8AAAEAgP+/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPj///////////////////////8DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAf4D/AwAwAAD8/wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACI////////////////////////HwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAP8D8AAAAA4P8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQPj///////////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wP+AwAAAAD+/wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////////////////////BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOB/4D8AAAAA8P8/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPD//////////////////////z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI/A/+AwAAAPj//wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA////////////////////////AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIH/gX8AAADg//9/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPj//////////////////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg+B/wDwAAAPz//w8AAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA//////////////////////8/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+H/wAAADg////AAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPj//////////////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP+FHwAABv7//w8AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAACCA//////////////////////8HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4f+ABAODz////AQAAEMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPz/////////////////////HwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgv8PCAAA/////z8AAMAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA//////////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGDw/ysDAPD/////BzgADkAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPz/////////////////////BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADP/fEQAA/////2/gf3MAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg/////////////////////z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADw/w8AAPD///9/AP//A8ADAAAAAAAAAAAAAAAAAAAAAAAAAABAAPz/////////////////////AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7/AwAA/////wMQAA4ATAAAAAAAAAAAAAAAAAAAAAAAAAAAAATg/////////////////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA/38EAOD///8/gAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7///////////////////9/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPj/QwAA/v///wMIAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg/////////////////////wMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/38AAPD///8/gAAAALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////////////////////8fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOD/IwAA/v///wMIAAEAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4/////////////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/n8AAMD///8fwEE/AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////////////////////8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgMD/PwAA9P///wA8fgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg////////////////////fwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI/P8DAAD///8H4P8rAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPz///////////////////8DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgIH/PwyA8P//PwD+DwAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA////////////////////PwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P/jAQD///8D4F8A3gGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPz///////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIT/fxgA8P//HwD+AwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA////////////////////BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8P+XAQD+//8D4H8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPj//////////////////x8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABD+/3cI4P//PwD/DwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/v//////////////////AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP//wgH+//8B+PEBAABuAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD//////////////////x8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACD8/w8QAPj+H4AfHwDw8A8AAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P//////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP//AACAhf4B+PMBAB8kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////////////wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg/wcAAADAHwA8HwDgEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8P////////////////9/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7/AAAAABwBwOMDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+/////////////////wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA/wcAAAAAAAAc/AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP////////////////8/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPh/AAAAAAAAwMMPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4/////////////////wMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/g8AAAAAAAA8jAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////////////////8fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/AAAAAAAAwAEOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADw/////////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+AcAAAAAAAAcqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7///////////////8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJ/AAAAAAAA4AMYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg/////////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAUAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPb///////////////8HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg////////////////fwIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPgDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPz///////////////8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA/wMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA/////////////////wEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPw/gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPj///////////////8/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/3/8wCAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAACA/////////////////wMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD//78nAAAAAAAAQBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPD///////////////8fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/P//BwAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////////////////wEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4//8AAAAAAABAAhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOD///////////////8/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wMAAAAAgANAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/v///////////////wMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP8/AQgAgAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD///////////////8fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxH+GDw9YDxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/P///////////////wEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg8ef4fwD+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOD///////////////8/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD7ABgA8AMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////////////////wMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOD///////////////9/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4AAAHwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/v///////////////wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfAPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOD///////////////9/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAfABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/P///////////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/////////////////AwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P///////////////z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID/////////////////AwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P///////////////z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID/////////////////AwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P///////////////z8AAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID/////////////////AwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P///////////////z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/////////////////AwAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/v///////////////z8AAACABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPD/////////////////AwAQAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA/////////////////z8AAACADwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPz/////////////////AwAAAPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA/////////////////z8AAADgDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPz/////////////////AwAAAP8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg/////////////////z8AAADwHwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAwwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7/////////////////BwAAgP8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQH/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg/////////////////38AAADwHwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/DwgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7/////////////////BwAA4P8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4P+NAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADw/////////////////z8AAAD/PwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/7wsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//////////////////AwAA6P8DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAADw/////////////////z8AAOD/NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD//w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP//////////////////AQCA/X8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4/////////////////w8AAP//BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD//w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP////////////////9/AAD8/38AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+f//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4/////////////////wMAwP//BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgPz//w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP////////////////8fAAD+/38AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACc////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4////////////////PwAA4P//AwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4P3//w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP////////////////8AAAD//z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4////////////////AwAA8P//AwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4P///w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP///////////////w8AAAD//z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4////////////////AAAA8P//AwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4P///w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////////////wcAAAD//x8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg//////////////8/AAAA4P//AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P///w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPz//////////////wAAAAD+/x8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA//////////////8HAAAA4P//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/P///w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPj/////////////PwAAAAD8/w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOD/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA//////////////8BAAAAwP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPD/////////////BwAAAAD8/wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////////////38AAAAA4P9/AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOD/////////////BwAAAAD+/wcAAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/v//////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/v///////////38AAAAA8P8/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPj//////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/////////////DwAAAAD//wMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/P////////////8AAAAA+P8/AAAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8P///////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID/////////////HwAAAMD//wEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8P////////////8BAAAA/P8fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/v///////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////////////HwAAAOD//wEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPn/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4P////////////8BAAAA/v8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8////////////HwAAAOD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP//////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP////////////8DAAAA/v8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8////////////PwAAAMD/fwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP//////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP////////////8DAAAA/P8HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8////////////PwAAAID/fwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP//////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP////////////8DAAAA+P8DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8////////////PwAAAID/PwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP//////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP////////////8DAAAA+P8DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8////////////HwAAAID/HwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP//////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP////////////8AAAAA8P8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4////////////AwAAAAD/DwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP//////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP///////////wcAAAAA4H8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4//////////8fAAAAAAB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP//////////fwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADw/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADw//////////8HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUP7/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//////////fwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADu/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADw//////////8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoP//////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7//////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg//////////8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP//////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7/////////fwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADw/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg//////////8HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPz/////////fwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADw/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA//////////8DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPj/////////PwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/v////////8DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPz/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/////////HwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPj/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID/////////AwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8P///////x8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPD/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////////AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8P///////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPD/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+//////9/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4P///////wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPD/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8//////8/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP///////wEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOD/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4//////8fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/v///////w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg//////8DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P///////wMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7/////HwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID///////8DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg//////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P//////BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7/////BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID/////fwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg/////z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P////8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP//////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID/////BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADw/////wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P///x8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7///8fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA////fwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/f///wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPz//38AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPD//wc/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACg/x9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/PwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+H8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+// id: [name, lon, lat, kind, owner, region]
+const N={
+ zeel:["Fort Zeelandia",120.0,22.95,'port','nl','tw'],
+ luzon:["Luzon Strait",119.8,19.8,'sea',0,'scs'],
+ scsN:["South China Sea",115.5,18.5,'sea',0,'scs'],
+ macao:["Macao",113.55,22.05,'port','pt','scs'],
+ scsS:["Off Vietnam",110.5,8.5,'sea',0,'scs'],
+ java:["Java Sea",109.2,-4.7,'sea',0,'sea'],
+ batavia:["Batavia",106.8,-5.95,'port','nl','sea'],
+ bantam:["Bantam",106.1,-5.9,'port','id','sea'],
+ sunda:["Sunda Strait",105.4,-6.5,'sea',0,'sea'],
+ sgs:["Singapore Strait",104.6,1.0,'sea',0,'sea'],
+ malacca:["Malacca",101.7,2.3,'port','nl','sea'],
+ strM:["Malacca Strait (south)",100.8,3.3,'sea',0,'sea'],
+ karimata:["Karimata Strait",108.7,0.3,'sea',0,'sea'],
+ strN:["Malacca Strait (north)",98.3,5.8,'sea',0,'sea'],
+ aceh:["Aceh",95.3,5.9,'port','id','bob'],
+ bob:["Bay of Bengal",88.0,8.0,'sea',0,'bob'],
+ pulicat:["Pulicat",80.4,13.5,'port','nl','bob'],
+ ceyS:["South of Ceylon",80.6,4.3,'sea',0,'bob'],
+ colombo:["Colombo",79.7,6.9,'port','nl','bob'],
+ maldives:["Maldives Sea",73.5,1.5,'sea',0,'io'],
+ indSE:["Indian Ocean (east)",101.0,-13.0,'sea',0,'io'],
+ indMid:["Indian Ocean (centre)",78.0,-25.0,'sea',0,'io'],
+ maur:["Mauritius",57.6,-20.3,'port','nl','io'],
+ indSW:["Indian Ocean (south)",52.0,-32.5,'sea',0,'io'],
+ agul:["Off Agulhas",28.0,-36.0,'sea',0,'cape'],
+ capeS:["South of Cape Agulhas",19.3,-36.2,'sea',0,'cape'],
+ cape:["Cape of Good Hope",17.9,-33.9,'port','nl','cape'],
+ atlS:["South Atlantic",5.0,-22.0,'sea',0,'atl'],
+ sthel:["St Helena",-5.7,-16.0,'port','none','atl'],
+ line:["Atlantic (the Line)",-12.0,1.0,'sea',0,'atl'],
+ cverde:["Cape Verde waters",-22.0,15.0,'sea',0,'atl'],
+ azores:["Azores waters",-27.0,37.0,'sea',0,'atl'],
+ biscay:["Bay of Biscay",-8.0,45.0,'sea',0,'eur'],
+ westIre:["West of Ireland",-16.5,52.5,'sea',0,'eur'],
+ ushant:["Western Approaches",-7.0,49.2,'sea',0,'eur'],
+ chanM:["English Channel (west)",-1.5,50.0,'sea',0,'eur'],
+ chanE:["English Channel (east)",0.6,50.35,'sea',0,'eur'],
+ rockall:["Atlantic, north of Ireland",-13.5,59.0,'sea',0,'eur'],
+ dover:["Dover Strait",1.45,51.0,'sea',0,'eur'],
+ north:["North of Scotland",-3.6,60.0,'sea',0,'eur'],
+ nsea:["North Sea",3.5,56.2,'sea',0,'eur'],
+ texel:["Texel Roads (home)",4.2,53.1,'port','nl','eur'],
+};
+// edges; third element true => narrow strait, carve a channel
+const E=[
+ ['zeel','luzon'],['zeel','scsN'],['zeel','macao'],['luzon','scsN'],['scsN','macao'],['scsN','scsS'],['macao','scsS'],
+ ['scsS','karimata'],['karimata','java',true],['scsS','sgs'],['java','batavia'],['java','bantam'],['batavia','bantam',true],['batavia','sunda',true],['bantam','sunda',true],
+ ['sgs','malacca',true],['malacca','strM'],['strM','strN'],['strN','aceh'],['aceh','bob'],['bob','pulicat'],['bob','ceyS'],['colombo','ceyS'],
+ ['ceyS','maldives'],['colombo','maldives'],['maldives','maur'],['maldives','indMid'],
+ ['sunda','indSE'],['indSE','indMid'],['indMid','maur'],['indMid','indSW'],['maur','indSW'],['indSW','agul'],['agul','capeS'],['capeS','cape'],
+ ['cape','atlS'],['atlS','line'],['cape','sthel'],['atlS','sthel'],['sthel','line'],['line','cverde'],['cverde','azores'],
+ ['azores','biscay'],['azores','westIre'],['azores','ushant'],['biscay','ushant'],['ushant','chanM'],['chanM','chanE'],['chanE','dover'],['dover','texel',true],
+ ['westIre','rockall'],['rockall','north'],['westIre','ushant'],['north','nsea'],['nsea','texel'],
+];
+
+
+// ===== ENGINE (no DOM) =====
+const W=660,H=416,S=4,LON0=-35,LAT1=62;
+const px=(lon,lat)=>[(lon-LON0)*S,(LAT1-lat)*S];
+const NODES={},ADJ={};
+for(const id in N){const v=N[id];const [x,y]=px(v[1],v[2]);NODES[id]={id,name:v[0],lon:v[1],lat:v[2],kind:v[3],owner:v[4],region:v[5],x,y};ADJ[id]=[];}
+for(const e of E){ADJ[e[0]].push({to:e[1],strait:!!e[2]});ADJ[e[1]].push({to:e[0],strait:!!e[2]});}
+const DH={};(function(){for(const k in NODES)DH[k]=1e9;DH.texel=0;const Q=new Set(Object.keys(NODES));
+ while(Q.size){let u=null;for(const k of Q)if(u===null||DH[k]<DH[u])u=k;Q.delete(u);for(const a of ADJ[u]){const d=DH[u]+legKm(u,a.to);if(d<DH[a.to])DH[a.to]=d;}}})();
+const STAGE={zeel:0,macao:1,bantam:3,batavia:3,malacca:3,aceh:4,pulicat:5,colombo:5,maur:6,cape:7,sthel:8,texel:9};
+const rnd=()=>Math.random();
+const pick=a=>a[Math.floor(rnd()*a.length)];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function legKm(a,b){const A=NODES[a],B=NODES[b];const mid=(A.lat+B.lat)/2*Math.PI/180;const dx=(B.lon-A.lon)*111*Math.cos(mid),dy=(B.lat-A.lat)*111;return Math.hypot(dx,dy)*1.12;}
+const pathKm=p=>{let k=0;for(let i=0;i<p.length-1;i++)k+=legKm(p[i],p[i+1]);return k;};
+const VIA={north:'north of Scotland',chanM:'the English Channel',biscay:'the Bay of Biscay',sgs:'the Singapore Strait',sunda:'the Sunda Strait',karimata:'the Java Sea',luzon:'the Luzon Strait',scsN:'the South China Sea',maldives:'the Maldives',atlS:'the open Atlantic',line:'the open Atlantic',bob:'the Bay of Bengal',ceyS:'south of Ceylon',indMid:'the open Indian Ocean',strN:'the Malacca Strait',agul:'Cape Agulhas'};
+const VIA_ORDER=['north','chanM','biscay','sunda','sgs','luzon','karimata','maldives','ceyS','bob','strN','indMid','atlS','line','agul','scsN'];
+const viaOf=p=>{for(const k of VIA_ORDER)if(p.includes(k)&&p.length>2)return VIA[k];return '';};
+let DMG=1.9;
+const fmt=n=>'ƒ'+Math.round(n).toLocaleString('en-GB');
+// ownership by date
+function ownerOf(id,d){const y=d.getUTCFullYear(),m=d.getUTCMonth();const n=NODES[id];
+ if(id==='colombo')return (y>1656||(y===1656&&m>=5))?'nl':'pt';
+ if(id==='maur')return (y<1658||(y===1658&&m<5))?'nl':'none';
+ if(id==='sthel')return (y>1659||(y===1659&&m>=4))?'en':'none';
+ return n.owner;}
+const OWNER_TXT={nl:'Company port',pt:'Portuguese, at war with the Company',es:'Spanish, at peace with the Netherlands',id:'local ruler\'s port',en:'English fort',none:'no one lives here'};
+// cargo that can be loaded at Company ports (game values, not historical figures)
+const CARGO={batavia:[110000,'spices and pepper'],malacca:[45000,'tin'],pulicat:[70000,'cotton cloth'],colombo:[55000,'cinnamon'],bantam:[0,''],zeel:[0,'']};
+const INFO={
+ zeel:"The Company's fort on Taiwan, built in 1624. Deerskins, sugar and Chinese goods are traded here.",
+ macao:"Portuguese, and well defended. A Dutch landing was beaten off here in 1622.",
+ batavia:"The Company's capital in Asia. Return fleets gather here and leave in the last months of the year.",
+ bantam:"A sultan's port on Java with an English trading post. Pepper is cheap here.",
+ malacca:"Taken from the Portuguese by the Company in 1641. Tin and pepper pass through.",
+ aceh:"An independent sultanate at the top of Sumatra. Not under Company control.",
+ pulicat:"The Company's fort on the Coromandel coast, built in 1613. Indian cotton cloth is loaded here.",
+ colombo:"Portuguese until the Company took it in 1656. Cinnamon comes from the Sri Lankan interior.",
+ maur:"A small Company post from 1638. It cut ebony and gave passing ships fresh food. Given up in 1658.",
+ cape:"The Company's refreshment station, begun in 1652. Fresh vegetables and meat are grown here for passing ships.",
+ sthel:"A lonely island with fresh water. Empty after the Dutch left it. The English fortified it in 1659.",
+ texel:"Home. Company ships anchor off Texel while clerks count the cargo.",
+};
+// ---------- EVENTS ----------
+const has=(c,...r)=>r.some(x=>c.has(x));
+const EVENTS=[
+{id:'zheng',title:'Junks under Zheng colours',w:5,once:true,
+ where:(s,c)=>has(c,'tw','scs')&&s.y<=1660,
+ text:"Near the Chinese coast a fleet of junks flies the colours of the Zheng family, the biggest private navy in these waters. Their captain signals you to heave to. So far the Company's dealings with the Zheng family have been friendly.",
+ opts:[
+ {t:"Heave to and let them come aboard",out:[[.8,"They look at your papers, take a gift of cloth and let you go. A day is lost.",{gold:-2000,time:1}],[.2,"They ask for a fee to pass, and you pay it.",{gold:-9000,time:1}]]},
+ {t:"Fire a warning shot and sail on",tags:{v:1},sfx:'cannon',out:[[.6,"The junks fall back. You are through, but you have not made a friend.",{}],[.4,"They answer with a volley. Two men are killed and the hull is hit.",{crew:-3,hull:-10}]]},
+ {t:"Take one junk's cargo by force, as the Company has done on this coast before",tags:{v:3},sfx:'cannon',out:[[.4,"Your gunners disable a junk and your men take her cargo of silk and sugar.",{gold:30000,crew:-4,hull:-6}],[.55,"The other junks close in. It takes hours of firing to break out.",{crew:-13,hull:-24}]]}]},
+{id:'ptprize',title:'A Portuguese ship',w:5,once:false,
+ where:(s,c)=>has(c,'scs','sea')&&s.y<=1660,
+ text:"A Portuguese ship out of Macao is sailing low in the water, loaded with Chinese silk. Portugal and the Netherlands are at war, so the Company treats her as fair game.",
+ opts:[
+ {t:"Attack and take her",tags:{v:2},sfx:'cannon',out:[[.6,"She surrenders after a short fight. Her cargo is worth a lot.",{gold:45000,crew:-5,hull:-8}],[.4,"She is better armed than she looked. She gets away and you lose men.",{crew:-12,hull:-18}]]},
+ {t:"Let her pass",out:[[1,"You watch her go. Nobody on board is happy about it.",{}]]},
+ {t:"Fly a false flag and trade with her",tags:{d:2},out:[[.65,"Her captain trusts the flag and pays well for pepper.",{gold:16000}],[.35,"Someone on her deck recognises your ship. You get away, with damage.",{hull:-14,crew:-4,gold:-4000}]]}]},
+{id:'pirates',title:'Boats at dusk',w:6,once:false,
+ where:(s,c)=>has(c,'sea','scs','bob'),
+ text:"At dusk, with no wind, six low boats pull out from a river mouth. The men in them are armed and heading for you. Your ship has more guns, but the boats are quick and there are a lot of them.",
+ opts:[
+ {t:"Fight them off with the guns",tags:{v:1},sfx:'cannon',out:[[.7,"Your guns sink two boats and the rest turn back.",{crew:-4,hull:-8}],[.3,"Some get alongside and board before you can reload. You lose men and part of the cargo.",{crew:-14,hull:-12,gold:-22000}]]},
+ {t:"Pay them to leave you alone",out:[[1,"Their leader takes the silver and the boats pull away.",{gold:-14000}]]},
+ {t:"Burn their boats and the huts beside them as a warning to others",tags:{v:3},sfx:'cannon',out:[[.65,"The fire spreads along the bank. Nobody troubles you again on this stretch of coast.",{}],[.35,"People along the shore see the smoke. Boats follow you downriver and fire on you all night.",{hull:-16,crew:-8}]]}]},
+{id:'barbary',title:'Corsairs off Portugal',w:6,once:true,
+ where:(s,c)=>['azores','biscay','ushant','cverde'].some(k=>c.has2(k)),
+ text:"Off the coast of Portugal three ships under mixed colours turn towards you. They are corsairs from the Barbary coast. They take Christian crews to sell in the markets of North Africa, and a Company ship with a full hold is a prize they want.",
+ opts:[
+ {t:"Fight",tags:{v:1},sfx:'cannon',out:[[.55,"A hard fight, then they break off.",{crew:-9,hull:-14}],[.45,"They grapple and board. You hold the deck, but only just.",{crew:-22,hull:-22}]]},
+ {t:"Run for the open Atlantic",out:[[.6,"You pull away in the night.",{time:3,hull:-3}],[.4,"One of them is faster. She bangs away at your stern before you outrun her.",{crew:-8,hull:-15,time:3}]]},
+ {t:"Throw part of the cargo overboard to lighten the ship",out:[[.85,"The ship leaps ahead and you lose them at dawn.",{gold:-32000}],[.15,"It is not enough. They close and fire.",{gold:-32000,crew:-9,hull:-12}]]}]},
+{id:'english',title:'An English privateer',w:8,once:false,
+ where:(s,c)=>s.y<=1654&&(has(c,'eur')||['azores','cverde','line'].some(k=>c.has2(k))),
+ text:"A ship flying English colours turns across your bow. England and the Dutch Republic are at war over trade, and her captain has a commission to capture Company ships.",
+ opts:[
+ {t:"Fight",tags:{v:1},sfx:'cannon',out:[[.5,"Broadsides for an hour. She breaks off with her masts damaged.",{crew:-10,hull:-16}],[.5,"She out-guns you and takes part of the cargo before she leaves.",{crew:-14,hull:-20,gold:-40000}]]},
+ {t:"Make for the Dutch coast and hope for an escort",out:[[.6,"You lose her in the dark.",{time:2}],[.4,"She catches you and takes her share.",{gold:-40000,crew:-6,hull:-10}]]},
+ {t:"Hand over part of the cargo to avoid a fight",out:[[1,"She takes what she wants and sails off.",{gold:-45000}]]}]},
+{id:'storm',title:'Storm',w:8,once:false,
+ where:(s,c)=>has(c,'cape')||(c.has('io')&&(c.has2('indSW')||c.has2('indMid')))||c.has2('rockall')||c.has2('north')||c.has2('ushant'),
+ text:"A storm builds from the west. The waves are higher than the mainmast and sea water is coming in faster than the pumps can clear it.",
+ opts:[
+ {t:"Throw cargo overboard to lighten the ship",out:[[.8,"Chests and barrels go over the side. The ship rides higher and holds.",{gold:-36000,hull:-6}],[.2,"Even lighter, the ship is battered for two days.",{gold:-36000,hull:-20,crew:-3}]]},
+ {t:"Shorten sail and ride it out",out:[[.6,"The ship takes a beating but holds.",{hull:-22,crew:-3}],[.4,"A wave smashes the stern. Water floods the lower deck.",{hull:-40,crew:-9}]]},
+ {t:"Order the sick men to the pumps as well",tags:{c:2},out:[[.65,"With every pair of hands pumping, the water goes down. Some of the sick men do not get up again.",{hull:-10,crew:-9}],[.35,"It is not enough. The ship is badly damaged and more men die.",{hull:-24,crew:-14}]]},
+ {t:"Keep all sail up to get through quickly",out:[[.5,"You make good time, but torn sails and a cracked mast cost you.",{time:-4,hull:-30,crew:-6}],[.5,"The mainmast goes over the side.",{hull:-48,crew:-12,time:6}]]}]},
+{id:'shoal',title:'Breakers ahead',w:5,once:false,
+ where:(s,c)=>has(c,'sea','io','atl','bob'),
+ text:"At night the lookout shouts that he can hear breakers. The charts for these waters are poor, and the Company wants its ships home on time.",
+ opts:[
+ {t:"Heave to and wait for daylight",out:[[1,"Dawn shows a reef a mile ahead. You steer round it.",{time:2}]]},
+ {t:"Send a boat ahead to take soundings",out:[[.85,"The boat finds a channel and you follow it.",{time:1}],[.15,"The boat capsizes in the surf. Four men drown.",{crew:-4,time:1}]]},
+ {t:"Hold your course to save time",out:[[.55,"Nothing. The noise was a tide rip.",{time:-2}],[.45,"The ship strikes the reef and grinds over it.",{hull:-45,crew:-6}]]}]},
+{id:'mutiny',title:'A petition on deck',w:5,once:true,
+ where:(s,c)=>s.days>50,
+ text:"The crew's wages are months behind. Two sailors read out a petition on deck and others cheer. The boatswain says you must make an example before it spreads.",
+ opts:[
+ {t:"Hang the ringleader",tags:{v:2,c:1},out:[[.7,"The ringleader is hanged. The crew goes quiet.",{crew:-1}],[.3,"The crew stays sullen. Someone damages the pumps in the night.",{crew:-3,hull:-16}]]},
+ {t:"Promise back-pay at Texel, though the Company decides what is paid",tags:{d:2},out:[[.85,"The petition is dropped.",{}],[.15,"They do not believe you. Some men refuse orders for a day.",{time:2}]]},
+ {t:"Share out some of the ship's wine and spices",out:[[1,"The mood improves.",{gold:-10000}]]}]},
+{id:'private',title:'Cloves under a hammock',w:4,once:true,
+ where:(s,c)=>s.visitedAny(['batavia','malacca','bantam','colombo','pulicat','aceh']),
+ text:"The boatswain finds two chests of cloves hidden under a sailor's hammock. The Company forbids private trade, but many officers do it quietly and some captains take a share.",
+ opts:[
+ {t:"Confiscate the cloves and flog the sailor",tags:{v:1,c:1},out:[[1,"The cloves go into the Company's hold.",{gold:7000}]]},
+ {t:"Take a share and say nothing",tags:{d:2},out:[[.85,"Nobody asks questions.",{gold:3000}],[.15,"A clerk at the next port notices and writes it up.",{gold:-9000}]]},
+ {t:"Write it in the log and let the Company decide",out:[[1,"The log is clear and the matter is closed.",{}]]}]},
+{id:'calm',title:'No wind',w:5,once:false,
+ where:(s,c)=>has(c,'io','atl')&&!c.has('cape'),
+ text:"There has been no wind for nine days. The sails hang slack and the water barrels are running low.",
+ opts:[
+ {t:"Cut the water ration in half",out:[[1,"A hard week. The wind returns, and most men recover.",{crew:-4,food:6}]]},
+ {t:"Tow the ship with the boats in the heat",tags:{c:2},out:[[1,"The rowers collapse one after another, but the ship creeps forward.",{crew:-7,time:-3}]]},
+ {t:"Wait it out",out:[[1,"Nine more days go by before the wind comes.",{time:9,food:-9}]]}]},
+{id:'fishing',title:'Fishing boat',w:5,once:false,
+ where:(s,c)=>has(c,'sea','bob','scs','io'),
+ text:"A small fishing boat comes alongside. The fishermen hold up baskets of fresh fish. Your cook says the crew has not eaten fresh food for weeks.",
+ opts:[
+ {t:"Pay them a fair price",out:[[1,"A good deal for both sides. The crew eats well tonight.",{gold:-1500,food:5,fresh:1}]]},
+ {t:"Take the fish and give nothing",tags:{v:1},out:[[.85,"The fishermen are in no position to argue.",{food:8,fresh:1}],[.15,"They shout for help and another boat comes after you.",{food:8,fresh:1,hull:-4,crew:-2}]]},
+ {t:"Sail on",out:[[1,"The boat falls behind.",{}]]}]},
+{id:'stowaway',title:'A man in the hold',w:5,once:true,
+ where:(s,c)=>s.visitedAny(['batavia','bantam','malacca']),
+ text:"A man is pulled out of the hold, half starved. He is enslaved and ran away from his owner in Batavia. Under Company law his owner can claim him back. He asks you to put him ashore somewhere else.",
+ opts:[
+ {t:"Keep him locked up and hand him over at the next Company port",tags:{e:3},out:[[1,"He is kept below until you reach a Company port.",{set:'stowaway'}]]},
+ {t:"Put him ashore at the next quiet beach",tags:{d:1},out:[[.7,"You land him on a quiet beach before dawn.",{time:1}],[.3,"An officer finds out first, and you have to explain to the crew.",{time:2,gold:-4000}]]},
+ {t:"Make him work the pumps for his passage",tags:{e:3},out:[[1,"He works the pumps for the rest of the voyage.",{set:'stowaway'}]]}]},
+{id:'fever',title:'Fever',w:4,once:true,
+ where:(s,c)=>s.visitedAny(['batavia','malacca','bantam','colombo','pulicat','aceh','macao']),
+ text:"Fever spreads through the crew after watering at a river near the coast. Twenty men are sick and the surgeon wants them off the ship.",
+ opts:[
+ {t:"Leave the sick at the nearest Company hospital",out:[[1,"They are left behind to recover. You are short of hands for the rest of the voyage.",{crew:-8,gold:-2000}]]},
+ {t:"Keep sailing and hope it passes",tags:{c:2},out:[[1,"It does not pass quickly.",{crew:-13}]]},
+ {t:"Anchor offshore for a few days",out:[[1,"A few days of rest and clean water help.",{crew:-5,time:5}]]}]},
+// ---- arrival events ----
+{id:'siege',title:'Breaking out of Zeelandia',phase:'start',once:true,
+ where:(s)=>s.y===1661,
+ text:"Koxinga's fleet is off the coast and his army has landed on Taiwan. Fort Zeelandia is surrounded. Your ship has orders to leave, but the harbour mouth is watched by his junks.",
+ opts:[
+ {t:"Slip out at night with no lights",out:[[.65,"You are past the junks by dawn.",{}],[.35,"A junk spots you at the harbour mouth and fires.",{hull:-22,crew:-6}]]},
+ {t:"Fire the guns and force your way through",tags:{v:2},sfx:'cannon',out:[[.5,"You break through, with a cost.",{hull:-18,crew:-9}],[.5,"A hard fight at the harbour mouth. You get out, barely.",{hull:-34,crew:-18}]]}]},
+{id:'hostile',title:'A hostile port',phase:'arrive',once:false,
+ where:(s,c,n)=>s.ownerAt(n)==='pt',
+ text:(s,n)=>n==='macao'?"The forts above Macao harbour are the ones that beat a Dutch landing in 1622. Portugal is at war with the Netherlands, so Company ships are not welcome. Merchants on the shore might still deal in secret.":"The Portuguese still hold this port. Their guns cover the anchorage. Merchants on the shore might still deal in secret.",
+ opts:[
+ {t:"Sail away without landing",out:[[1,"The guns stay quiet. You turn out to sea.",{time:1}]]},
+ {t:"Fly a false flag and trade",tags:{d:3},out:[[.55,"The merchants buy silk and pepper at a good price.",{gold:35000,time:2}],[.45,"The deception is seen through and the forts open fire.",{hull:-25,crew:-10}]]},
+ {t:"Bombard the harbour and raid the ships at anchor",tags:{v:3},sfx:'cannon',out:[[.3,"You take two ships and a warehouse of goods before you leave.",{gold:50000,crew:-8,hull:-15}],[.7,"The forts hit back hard.",{hull:-32,crew:-17}]]}]},
+{id:'local',title:'A sultan\'s port',phase:'arrive',once:false,
+ where:(s,c,n)=>n==='aceh'||n==='bantam',
+ text:(s,n)=>n==='bantam'?"The sultan's officials welcome you, and so do the English merchants at their trading post. Pepper is cheap here, but the Company wants its pepper bought through Batavia.":"The sultan's officials welcome you. Pepper is cheap here, but this port is not under Company control and the Company wants its pepper bought through its own agents.",
+ opts:[
+ {t:"Pay the anchorage fee and buy pepper here",tags:{d:2},out:[[.85,"A good cargo of pepper for the price.",{gold:28000,time:3}],[.15,"Company agents hear of it and you lose some of the profit.",{gold:12000,time:3}]]},
+ {t:"Threaten to blockade the port unless they sell only to the Company",tags:{v:2,d:1},sfx:'cannon',out:[[.45,"They sign. Pepper is loaded cheaply.",{gold:36000,time:3}],[.55,"They refuse, and will not sell you water. You leave with empty barrels.",{food:-4,time:2}]]},
+ {t:"Take on water only and sail on",out:[[1,"You fill the barrels and go.",{food:10,fresh:1,gold:-1000,time:2}]]}]},
+{id:'convicts',title:'Exiles for the Cape',phase:'arrive',once:true,
+ where:(s,c,n)=>n==='batavia',
+ text:"Officials at Batavia give you a list of convicts and exiles to carry to the Cape. Once there they will work for the Company without pay and will not be allowed to leave. They take up space that your cargo needs.",
+ opts:[
+ {t:"Take them, for the fee the Company pays",tags:{e:3},out:[[1,"Thirty people are put aboard. The Company pays you for the passage.",{gold:10000,time:1,set:'exiles'}]]},
+ {t:"Say the hold is full",tags:{d:1},out:[[.6,"The officials accept it.",{}],[.4,"They check the hold and are not pleased. A week is lost waiting for a ruling.",{time:5}]]},
+ {t:"Take them and charge double",tags:{e:3,d:1},out:[[1,"The officials grumble but sign.",{gold:20000,time:1,set:'exiles'}]]}]},
+{id:'fleet',title:'The return fleet',phase:'arrive',once:true,
+ where:(s,c,n)=>n==='batavia',
+ text:"The Governor-General's officials say the return ships will sail together in about two weeks, with warships to protect them. A good wind blows now. Sailing alone is faster, but the sea is full of ships that would take a lone Indiaman.",
+ opts:[
+ {t:"Wait and sail with the fleet",out:[[1,"Two weeks pass, then a long line of ships leaves together.",{time:14,set:'convoy'}]]},
+ {t:"Sail alone now",out:[[1,"You leave the roads with the wind behind you.",{}]]}]},
+{id:'ebony',title:'The post on Mauritius',phase:'arrive',once:true,
+ where:(s,c,n)=>n==='maur'&&s.ownerAt(n)==='nl',
+ text:"The Company post here cuts ebony and relies on forced labour. The commander is short of hands. He asks you to leave ten fit men for a year. They will not be paid extra, and he will give you fresh food and a share of the ebony.",
+ opts:[
+ {t:"Leave ten of your men",tags:{c:2},out:[[1,"Ten men stay behind. The commander gives you fresh food and ebony.",{crew:-10,gold:12000,food:20}]]},
+ {t:"Refuse politely",out:[[1,"The commander is not pleased, but supplies you anyway.",{food:8,time:1}]]}]},
+{id:'sthelen',title:'The English at St Helena',phase:'arrive',once:true,
+ where:(s,c,n)=>n==='sthel'&&s.ownerAt(n)==='en',
+ text:"The English East India Company has built a small fort here. The garrison is weak. They have goats, fresh water and vegetables, and they sell them to passing ships.",
+ opts:[
+ {t:"Buy supplies at the English price",out:[[1,"The English governor drives a hard bargain, but the barrels are full.",{gold:-4000,food:20,fresh:1}]]},
+ {t:"Take what you need while the garrison is small",tags:{v:2},sfx:'cannon',out:[[.6,"The garrison gives way and you load everything you want.",{food:30,fresh:1}],[.4,"They fire from the fort. You get supplies, but the English will remember this.",{food:30,fresh:1,crew:-5,hull:-8}]]}]},
+{id:'sthelempty',title:'An empty island',phase:'arrive',once:true,
+ where:(s,c,n)=>n==='sthel'&&s.ownerAt(n)==='none',
+ text:"Nobody lives on St Helena. The Dutch claimed it years ago and then left for the Cape. There are wild goats, fresh water and fish in the bay.",
+ opts:[
+ {t:"Hunt, fish and fill the barrels",out:[[1,"Four days ashore. The crew eats well and the sick recover.",{food:25,fresh:1,time:4}]]}]},
+{id:'capearr',title:'Table Bay',phase:'arrive',once:true,
+ where:(s,c,n)=>n==='cape'&&(s.flags.stowaway||s.flags.exiles),
+ textf:(s)=>s.flags.stowaway?"The Commander at the Cape has been told not to enslave the local people, and the Company has sent him no enslaved workers. He hears you have a runaway on board and asks you to hand him over. He offers fresh vegetables in return.":"The exiles from Batavia are rowed ashore. From now on they will work for the Company at the Cape, without pay, and they cannot leave. The Commander thanks you and sends fresh vegetables out to the ship.",
+ optsf:(s)=>s.flags.stowaway?[
+ {t:"Hand him over in return for supplies",tags:{e:3},out:[[1,"He is taken ashore. The barrels are filled with fresh food.",{food:30,fresh:1,gold:3000,clr:true}]]},
+ {t:"Refuse, and buy supplies with silver",out:[[1,"The Commander is annoyed but sells you vegetables at a price.",{food:25,fresh:1,gold:-5000,time:1,clr:true}]]}]:
+ [{t:"Watch them go ashore",out:[[1,"The boats come back loaded with cabbages and fresh water.",{food:20,fresh:1,clr:true}]]}]},
+];
+EVENTS.forEach(e=>{if(!e.phase)e.phase='sea';});
+
+// ---------- GAME ----------
+class Game{
+ constructor(o={}){
+  const y0=o.year||(1652+Math.floor(rnd()*10));
+  const m=9+Math.floor(rnd()*3);this.date=new Date(Date.UTC(y0,m,1+Math.floor(rnd()*25)));
+  this.start=new Date(this.date);
+  this.node='zeel';this.crew=110;this.crew0=110;this.food=110;this.hull=100;this.gold=60000;this.sinceFresh=0;
+  this.days=0;this.flags={};this.tags={v:0,d:0,e:0,c:0};this.hardGold=0;this.log=[];this.route=[NODES.zeel.name];
+  this.seen={};this.loaded={};this.fate=null;this.fateText='';this.cool={};this.visited={zeel:1};this.lastScurvy=-99;
+  this.cands=0;
+ }
+ get y(){return this.date.getUTCFullYear();}
+ ownerAt(n){return ownerOf(n,this.date);}
+ visitedAny(a){return a.some(k=>this.visited[k]);}
+ dateStr(d=this.date){return d.getUTCDate()+' '+MONTHS[d.getUTCMonth()]+' '+d.getUTCFullYear();}
+ routesFrom(from=this.node){
+  const cur=STAGE[from]||0;const found={};
+  const dfs=(path)=>{const u=path[path.length-1];if(path.length>11)return;
+   for(const a of ADJ[u]){const v=a.to;if(path.includes(v))continue;const p=path.concat(v);
+    if(DH[v]>DH[from]+600)continue;
+    if(NODES[v].kind==='port'&&STAGE[v]>cur&&STAGE[v]<=cur+4){const km=pathKm(p),via=viaOf(p),key=v+'|'+via;if(!found[key]||found[key].km>km)found[key]={to:v,path:p,km,via};}
+    if(path.length<11)dfs(p);}};
+  dfs([from]);
+  let list=Object.values(found);
+  // best variant per destination, except home (two ways round)
+  const best={};for(const r of list)if(!best[r.to]||best[r.to].km>r.km)best[r.to]=r;
+  const second=list.filter(r=>r.to==='texel'&&r!==best.texel&&r.via!==(best.texel&&best.texel.via)).sort((a,b)=>a.km-b.km)[0];
+  const pool=Object.values(best);
+  const byStage=(a,b)=>STAGE[a.to]-STAGE[b.to]||a.km-b.km;
+  pool.sort(byStage);
+  const out=[];const add=r=>{if(r&&!out.includes(r)&&out.length<3)out.push(r);};
+  add(pool[0]);
+  for(const m of ['batavia','cape','texel'])add(pool.find(r=>r.to===m));
+  const rest=pool.filter(r=>!out.includes(r));
+  for(let i=rest.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[rest[i],rest[j]]=[rest[j],rest[i]];}
+  rest.sort((a,b)=>STAGE[a.to]-STAGE[b.to]||0);rest.forEach(add);
+  if(out.length<3&&out.some(r=>r.to==='texel'))add(second);
+  out.sort(byStage);
+  for(const r of out)r.days=Math.round(this.pathDays(r.path,true));
+  return out;}
+ pathDays(p,det){let d=0;for(let i=0;i<p.length-1;i++)d+=this.legDays(p[i],p[i+1],legKm(p[i],p[i+1]),det);return d;}
+ legDays(a,b,km,det){let f=1;const A=NODES[a],B=NODES[b];const mo=this.date.getUTCMonth();
+  const asia=['tw','scs'].includes(A.region)&&['tw','scs','sea'].includes(B.region);
+  if(asia&&B.lat<A.lat+1){f*= (mo>=9||mo<=2)?0.85:1.35;}
+  if(asia&&B.lat>A.lat+3){f*= (mo>=9||mo<=2)?1.25:0.9;}
+  if(this.flags.convoy)f*=1.04;
+  return km/150*f*(det?1:(0.88+rnd()*0.3));}
+ tick(d,atPort){ // advance d days
+  let left=d;
+  while(left>0&&!this.fate){const step=Math.min(left,8);left-=step;
+   this.date=new Date(this.date.getTime()+step*864e5);this.days+=step;this.food-=step;this.sinceFresh+=step;
+   const scurvy=Math.max(0,Math.min(1,(this.sinceFresh-45)/90));
+   const trop=['sea','bob','scs','tw'].includes(NODES[this.node].region)?1:0.5;
+   if(!atPort)this.hull-=0.05*step;
+   let rate=(0.0005*trop+0.0028*scurvy)*(atPort?0.6:1);
+   if(this.food<0)rate+=0.012;
+   let loss=this.crew*rate*step;loss=Math.floor(loss)+(rnd()<(loss%1)?1:0);
+   this.crew=Math.max(0,this.crew-loss);
+   if(this.food<-40){this.fate='crew';this.fateText="The food ran out. Too few men were left to work the ship, and she drifted.";}
+   this.checkFate();}
+ }
+ scurvy(){return Math.max(0,Math.min(1,(this.sinceFresh-45)/90));}
+ checkFate(){if(this.fate)return;
+  if(this.hull<=0){this.hull=0;this.fate='hull';this.fateText="The hull gave way. The ship went down with her cargo, and the survivors took to the boats.";}
+  else if(this.crew<=25){this.fate='crew';this.fateText="Too few men were left to work the ship. She drifted off course and was never seen again.";}}
+ pickSeaEvent(path,exclude){
+  const c=new Set(path.map(k=>NODES[k].region));c.has2=k=>path.includes(k);
+  if(this.scurvy()>0.3&&this.days-this.lastScurvy>45&&!exclude.includes('scurvy')){this.lastScurvy=this.days;return SCURVY;}
+  const pool=EVENTS.filter(e=>e.phase==='sea'&&!exclude.includes(e.id)&&!(e.once&&this.seen[e.id])&&(!this.cool[e.id]||this.days-this.cool[e.id]>30)&&e.where(this,c));
+  if(!pool.length)return null;
+  let tot=pool.reduce((a,e)=>a+e.w,0),r=rnd()*tot;
+  for(const e of pool){r-=e.w;if(r<=0)return e;}return pool[pool.length-1];}
+ arrivalEvent(n){
+  const c=new Set([NODES[n].region]);c.has2=k=>k===n;
+  const pool=EVENTS.filter(e=>e.phase==='arrive'&&!(e.once&&this.seen[e.id])&&e.where(this,c,n));
+  return pool[0]||null;}
+ startEvent(){return EVENTS.find(e=>e.phase==='start'&&e.where(this));}
+ eventView(ev,n){const text=ev.textf?ev.textf(this):typeof ev.text==='function'?ev.text(this,n):ev.text;const opts=ev.optsf?ev.optsf(this):ev.opts;return {title:ev.title,text,opts};}
+ choose(ev,opts,i,placeName){
+  const o=opts[i];this.seen[ev.id]=1;this.cool[ev.id]=this.days;this.cands++;
+  const r=rnd();let acc=0,res=o.out[o.out.length-1];for(const x of o.out){acc+=x[0];if(r<=acc){res=x;break;}}
+  const fx=res[2]||{};const tg=o.tags||{};let tsum=0;
+  for(const k in tg){this.tags[k]+=tg[k];tsum+=tg[k];}
+  if(fx.crew)this.crew=Math.max(0,this.crew+Math.round(fx.crew<0?fx.crew*DMG:fx.crew));
+  if(fx.hull)this.hull=Math.min(100,this.hull+Math.round(fx.hull<0?fx.hull*DMG:fx.hull));
+  if(fx.gold){this.gold=Math.max(0,this.gold+fx.gold);if(fx.gold>0&&tsum>=2)this.hardGold+=fx.gold;}
+  if(fx.food)this.food+=fx.food;
+  if(fx.fresh)this.sinceFresh=0;
+  if(fx.set)this.flags[fx.set]=1;
+  if(fx.clr){delete this.flags.stowaway;delete this.flags.exiles;}
+  if(fx.time>0){this.tick(fx.time);} else if(fx.time<0){this.pendingBonus=(this.pendingBonus||0)+(-fx.time);}
+  this.log.push({place:placeName,title:ev.title,choice:o.t,result:res[1],tags:tg});
+  this.checkFate();
+  return {text:res[1],sfx:o.sfx,fx};}
+ // leg: returns {days, ev}
+ beginLeg(r){
+  let days=this.pathDays(r.path,false);
+  if(this.pendingBonus){days=Math.max(2,days-this.pendingBonus);this.pendingBonus=0;}
+  // number of event slots: by length of the leg
+  const slots=days<25?1:days<60?2:2;const probs=slots===1?[0.55]:[0.6,0.5];
+  if(this.cands===0)probs[0]=0.95;
+  const pc=this.flags.convoy?0.7:1;
+  const evs=[];for(let i=0;i<slots;i++){if(rnd()<probs[i]*pc){const ev=this.pickSeaEvent(r.path,evs.map(x=>x.id));if(ev)evs.push(ev);}}
+  const n=evs.length+1;const parts=Array(n).fill(days/n);
+  return {to:r.to,path:r.path,days,evs,parts,i:0};}
+ sail(leg,i){this.tick(leg.parts[i]);
+  // a weak hull on a long stretch of open sea may give way
+  if(!this.fate&&this.hull<45){const risk=(45-this.hull)/45*0.35*Math.min(1,leg.parts[i]/30);if(rnd()<risk){this.hull=0;this.checkFate();this.fateText="Heavy seas opened the damaged seams. The ship went down with her cargo, and the survivors took to the boats.";}}}
+ arrive(leg){
+  if(this.fate)return;
+  this.node=leg.to;this.route.push(NODES[leg.to].name);this.visited[leg.to]=1;
+  if(leg.to==='texel'){this.fate='home';this.fateText="Your ship drops anchor in the Texel roads. The Company's clerks row out to count the cargo.";}
+ }
+ // port actions
+ portActions(){
+  const n=this.node,o=this.ownerAt(n),a=[];
+  if(NODES[n].kind!=='port'||n==='texel')return a;
+  const friendly=o==='nl';
+  if(friendly){
+   a.push({id:'food',t:'Take on fresh food and water',d:'6 days, ƒ2,000',});
+   a.push({id:'repair',t:'Repair the hull',d:'9 days, ƒ6,000'});
+   const cg=CARGO[n];if(cg&&cg[0]>0&&!this.loaded[n])a.push({id:'cargo',t:'Load '+cg[1],d:'5 days, adds '+fmt(cg[0])});
+   if(n==='batavia'&&!this.loaded.hands)a.push({id:'hands',t:'Sign on new hands',d:'3 days, +25 men'});
+  } else if(o==='en'&&!this.loaded[n+'f']){/* handled by event */}
+  return a;}
+ doAction(id){
+  const n=this.node;
+  if(id==='food'){this.gold=Math.max(0,this.gold-2000);this.food=Math.min(150,this.food+55);this.sinceFresh=0;this.tick(6,true);}
+  if(id==='repair'){this.gold=Math.max(0,this.gold-6000);this.hull=Math.min(100,this.hull+40);this.tick(9,true);}
+  if(id==='cargo'){this.loaded[n]=1;this.gold+=CARGO[n][0];this.tick(5,true);}
+  if(id==='hands'){this.loaded.hands=1;this.crew=Math.min(130,this.crew+25);this.tick(3,true);}
+ }
+ score(){const t=this.tags;const total=t.v+t.d+t.e+t.c;const pct=Math.min(100,Math.round(total/18*100));return {pct,total,t};}
+ payout(){return this.fate==='home'?Math.round(this.gold*(0.6+0.4*this.hull/100)):0;}
+}
+const SCURVY={id:'scurvy',title:'Scurvy',phase:'sea',text:"Men are going down with scurvy. Their gums swell and old wounds open. The surgeon says only fresh food will help, and there is hardly any on board.",
+ opts:[
+ {t:"Give the sick the officers' own fresh stores",out:[[1,"The worst cases begin to recover. The officers are angry.",{crew:-5,fresh:1,food:-3}]]},
+ {t:"Put the sick on half rations so the fit men can work the ship",tags:{c:3},out:[[1,"The fit men keep the ship moving. Many sick men die.",{crew:-16,food:5}]]},
+ {t:"Hold prayers and carry on",tags:{c:1},out:[[1,"Nothing changes.",{crew:-11}]]}]};
+
+// ===== UI / RENDER =====
+let VW=320;const VH=200;
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');cv.width=VW;cv.height=VH;ctx.imageSmoothingEnabled=false;
+function fit(){const w=cv.parentElement.clientWidth||960,h=Math.min(window.innerHeight*0.6,w*0.7);cv.style.height=h+'px';VW=Math.max(260,Math.min(W,Math.round(VH*w/h)));cv.width=VW;cv.height=VH;ctx.imageSmoothingEnabled=false;}
+addEventListener('resize',fit);
+const mini=document.getElementById('mini'),mctx=mini.getContext('2d');
+const $=id=>document.getElementById(id);
+const params=new URLSearchParams(location.search);
+const MINUTES=+(params.get('mins')||5);
+// ---- 3x5 pixel font ----
+const F={A:'010101111101101',B:'110101110101110',C:'011100100100011',D:'110101101101110',E:'111100110100111',F:'111100110100100',G:'011100101101011',H:'101101111101101',I:'111010010010111',J:'001001001101010',K:'101101110101101',L:'100100100100111',M:'101111111101101',N:'111101101101101',O:'010101101101010',P:'110101110100100',Q:'010101101110011',R:'110101110101101',S:'011100010001110',T:'111010010010010',U:'101101101101111',V:'101101101101010',W:'101101111111101',X:'101101010101101',Y:'101101010010010',Z:'111001010100111',
+ '0':'111101101101111','1':'010110010010111','2':'110001010100111','3':'110001010001110','4':'101101111001001','5':'111100110001110','6':'011100111101111','7':'111001010010010','8':'111101111101111','9':'111101111001110','.':'000000000000010','-':'000000111000000',"'":'010010000000000','(':'001010010010001',')':'100010010010100',',':'000000000010100',' ':'000000000000000','?':'110001010000010','!':'010010010000010'};
+function text(c,s,x,y,col,shadow,sp=1){s=s.toUpperCase();const draw=(ox,oy,cl)=>{c.fillStyle=cl;let cx=x+ox;for(const ch of s){const g=F[ch]||F[' '];for(let i=0;i<15;i++)if(g[i]==='1')c.fillRect(cx+i%3,y+oy+((i/3)|0),1,1);cx+=3+sp;}};
+ if(shadow){for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1],[1,1]])draw(a,b,shadow);}draw(0,0,col);}
+const tw=(s,sp=1)=>s.length*(3+sp)-sp;
+// ---- land mask ----
+const LANDB=Uint8Array.from(atob(LAND64),c=>c.charCodeAt(0));
+const LM=new Uint8Array(W*H);for(let i=0;i<W*H;i++)LM[i]=(LANDB[i>>3]>>(i&7))&1;
+// carve narrow channels along flagged legs
+for(const e of E)if(e[2]){const A=NODES[e[0]],B=NODES[e[1]];const L=Math.hypot(B.x-A.x,B.y-A.y);for(let t=0;t<=L;t+=0.5){const x=Math.floor(A.x+(B.x-A.x)*t/L),y=Math.floor(A.y+(B.y-A.y)*t/L);LM[y*W+x]=0;}}
+const isLand=(x,y)=>x<0||y<0||x>=W||y>=H?0:LM[y*W+x];
+// distance fields
+function dist(target){const d=new Int16Array(W*H).fill(99);const q=[];for(let i=0;i<W*H;i++)if(LM[i]===target){d[i]=0;q.push(i);}
+ for(let h=0;h<q.length;h++){const i=q[h],x=i%W,y=(i/W)|0;for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=W||ny>=H)continue;const j=ny*W+nx;if(d[j]>d[i]+1&&d[i]<14){d[j]=d[i]+1;q.push(j);}}}return d;}
+const DL=dist(1),DW=dist(0);
+const hash=(x,y)=>{let h=Math.imul(x|0,374761393)^Math.imul(y|0,668265263);h=Math.imul(h^(h>>>13),1274126177);return ((h^(h>>>16))>>>0)/4294967296;};
+const BAYER=[[0,2],[3,1]];
+const hex=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+const SEA=['#173f66','#1f527d','#2a6994','#3a82a8','#5aa3bf','#86c3cf'].map(hex);
+const LANDC={green:['#3f6b33','#4d7c3b','#5c8c44'].map(hex),dry:['#a88a4f','#b9995a','#c6a865'].map(hex),sand:hex('#d8c48a'),cold:['#7d8f78','#8e9f88'].map(hex),edge:hex('#26402a')};
+function vnoise(x,y){const xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi;const a=hash(xi,yi),b=hash(xi+1,yi),c=hash(xi,yi+1),d=hash(xi+1,yi+1);const u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf);return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;}
+function biome(lon,lat){lon+=(vnoise(lon/6,lat/6)-0.5)*9;lat+=(vnoise(lon/6+50,lat/6+50)-0.5)*7;
+ if(lat>15&&lat<33&&lon>-17&&lon<62)return 'dry'; if(lat>24&&lat<40&&lon>45&&lon<72)return 'dry';
+ if(lat>-30&&lat<-17&&lon>12&&lon<28)return 'dry'; if(lon>112&&lat<-15)return 'dry'; if(lat>35&&lat<50&&lon>55&&lon<105)return 'dry';
+ if(lat>55)return 'cold'; return 'green';}
+const MAP=document.createElement('canvas');MAP.width=W;MAP.height=H;
+(function buildMap(){const m=MAP.getContext('2d');const img=m.createImageData(W,H);const D=img.data;
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;let c;const b=BAYER[y&1][x&1]/4;
+  if(!LM[i]){const d=DL[i];let lv=d<=1?5:d<=2?4:d<=4?3:d<=8?2:d<=12?1:0; if(d>2&&d<=12&&b<((d%2)?0.5:0)&&lv<4)lv++;
+   c=SEA[lv];
+   if(d>3&&hash(x>>2,y)<0.012&&(x%4)<2)c=SEA[Math.min(5,lv+2)];
+   const lon=x/S+LON0,lat=LAT1-y/S; if((Math.abs(lon%10)<0.13||Math.abs(lat%10)<0.13)&&((x+y)%3===0)&&d>2)c=SEA[Math.min(5,lv+1)];
+  }else{const d=DW[i];const lon=x/S+LON0,lat=LAT1-y/S;const bm=biome(lon,lat);
+   if(d<=1)c=LANDC.edge;else if(d===2)c=bm==='cold'?LANDC.cold[1]:LANDC.sand;
+   else{const pal=LANDC[bm];const h=hash(x,y);let k=d>6?2:d>3?1:0;if(h<0.25)k=Math.max(0,k-1);if(b>0.5&&h>0.8)k=Math.min(pal.length-1,k+1);c=pal[Math.min(k,pal.length-1)];
+    if(d>4&&hash(x+7,y*3)<0.03)c=bm==='dry'?hex('#8a6d3c'):hex('#2f5527');}}
+  D[i*4]=c[0];D[i*4+1]=c[1];D[i*4+2]=c[2];D[i*4+3]=255;}
+ m.putImageData(img,0,0);
+ // big labels
+ const L=[['INDIAN OCEAN',70,-12,'#5d93b8'],['ATLANTIC',-26,5,'#5d93b8'],['OCEAN',-24,1,'#5d93b8'],['SOUTH CHINA SEA',111,15,'#5d93b8'],['BAY OF BENGAL',84,15,'#5d93b8'],['NORTH SEA',-1,57.6,'#5d93b8'],
+  ['AFRICA',18,3,'#2c4a26'],['ARABIA',44,22,'#6b5530'],['INDIA',75,22,'#2c4a26'],['CHINA',106,30,'#2c4a26'],['EUROPE',12,48,'#2c4a26'],['JAVA',108.5,-7.6,'#2c4a26'],['SUMATRA',98,0.3,'#2c4a26'],['BORNEO',112.5,1,'#2c4a26'],['TAIWAN',121.2,23.6,'#2c4a26'],['MADAGASCAR',46,-19,'#2c4a26'],['CEYLON',80.7,7.6,'#2c4a26']];
+ for(const [t,lo,la,col] of L){const [x,y]=px(lo,la);text(m,t,Math.round(x-t.length*2),Math.round(y),col,null,t.length>9&&col==='#5d93b8'?2:1);}
+ // compass rose
+ const [cx,cy]=px(92,-33);m.fillStyle='#d9c58a';for(let r=0;r<12;r++){m.fillRect(cx,cy-r,1,1);m.fillRect(cx,cy+r,1,1);m.fillRect(cx-r,cy,1,1);m.fillRect(cx+r,cy,1,1);}
+ m.fillStyle='#b3262c';for(let r=1;r<12;r++)m.fillRect(cx,cy-r,1,1);text(m,'N',cx-1,cy-19,'#d9c58a');
+ for(let a=0;a<64;a++){const t=a/64*Math.PI*2;m.fillStyle='#86b3c9';m.fillRect(Math.round(cx+Math.cos(t)*7),Math.round(cy+Math.sin(t)*7),1,1);}
+})();
+// ---- ship sprite (drawn in code, facing right) ----
+function drawShip(c,x,y,dir,t,small){
+ const P=(dx,dy,w,h,col)=>{c.fillStyle=col;c.fillRect(Math.round(x+(dir>0?dx:-dx-w)),Math.round(y+dy),w,h);};
+ const bob=Math.round(Math.sin(t*3)*0.7);y+=bob;
+ // wake
+ for(let i=0;i<4;i++){const o=((t*12+i*5)%20);P(-16-o,1,2,1,'rgba(220,240,255,'+(0.6-o/40)+')');}
+ // hull
+ P(-13,-3,27,4,'#5a3a1e');P(-12,1,25,1,'#3e2814');P(-10,2,21,1,'#2a1b0e');
+ P(-15,-9,6,7,'#6e4524');P(-15,-10,6,1,'#c9a04a');P(-14,-7,1,1,'#e7c86a');P(-12,-7,1,1,'#e7c86a'); // stern castle + windows
+ P(10,-6,4,4,'#6e4524');P(10,-7,4,1,'#c9a04a'); // forecastle
+ P(-9,-3,19,1,'#8a5a2b');for(let g=-6;g<10;g+=4)P(g,-2,1,1,'#1c1410'); // gunports
+ P(13,-7,7,1,'#6e5230');P(19,-8,2,1,'#6e5230'); // bowsprit
+ // masts
+ P(7,-24,1,21,'#4a3420');P(-1,-30,1,27,'#4a3420');P(-9,-21,1,12,'#4a3420');
+ const sail=(mx,top,w,h,pinch)=>{P(mx-((w/2)|0),top,w,h,'#efe4c6');P(mx-((w/2)|0),top+h-1,w,1,'#cbbb93');if(pinch)P(mx-((w/2)|0),top,1,h,'#ddd0aa');};
+ sail(7,-12,11,6,1);sail(7,-19,9,5,1);sail(7,-24,6,3,0); // fore
+ sail(-1,-14,13,7,1);sail(-1,-22,11,6,1);sail(-1,-28,7,4,0); // main
+ P(-12,-19,3,1,'#efe4c6');P(-13,-18,5,1,'#efe4c6');P(-14,-17,6,1,'#efe4c6');P(-14,-16,7,1,'#efe4c6');P(-14,-15,8,1,'#cbbb93'); // lateen mizzen
+ P(-2,-12,3,2,'#b3262c'); // VOC mark on the main course (simple red patch)
+ // flag (Prince's flag: orange-white-blue), waving
+ const f=Math.round(Math.sin(t*6));P(0,-32,4,1,'#e07a1f');P(0,-31+f*0,5,1,'#f4f0e6');P(0,-30,4+(f>0?1:0),1,'#28418a');
+ P(-15,-12,1,3,'#4a3420');P(-18,-13,3,1,'#e07a1f');P(-18,-12,3,1,'#f4f0e6');P(-18,-11,3,1,'#28418a');
+}
+// ---- port icons ----
+const FLAG={nl:['#e07a1f','#f4f0e6','#28418a'],pt:['#1f7a3a','#1f7a3a','#c8262c'],es:['#c8262c','#f2c230','#c8262c'],en:['#f4f0e6','#c8262c','#f4f0e6'],id:['#2f8a4a','#f4f0e6','#2f8a4a'],none:['#9aa0a0','#9aa0a0','#9aa0a0']};
+function drawPort(c,n,o,hi){const x=Math.round(n.x),y=Math.round(n.y);
+ c.fillStyle='#3a2a1a';c.fillRect(x-3,y-3,7,6);c.fillStyle=o==='none'?'#9c8f74':'#d7c9a3';c.fillRect(x-2,y-2,5,4);c.fillStyle='#3a2a1a';c.fillRect(x-1,y,1,2);c.fillRect(x+1,y,1,2);
+ c.fillStyle='#3a2a1a';c.fillRect(x,y-8,1,6);const f=FLAG[o]||FLAG.none;c.fillStyle=f[0];c.fillRect(x+1,y-8,4,1);c.fillStyle=f[1];c.fillRect(x+1,y-7,4,1);c.fillStyle=f[2];c.fillRect(x+1,y-6,4,1);
+ if(hi){c.fillStyle='rgba(255,230,120,'+(0.5+0.5*Math.sin(perf()/150))+')';c.fillRect(x-5,y-5,11,1);c.fillRect(x-5,y+4,11,1);c.fillRect(x-5,y-5,1,10);c.fillRect(x+5,y-5,1,10);}}
+const perf=()=>performance.now();
+// ---- state ----
+let G=null,mode='title',routes=[],hover=-1,anim=null,cam={x:0,y:0},ship={x:0,y:0,dir:-1},timeLeft=MINUTES*60,timerOn=false,fx=[],shake=0,storm=0,crewNames='',shipName='';
+function startGame(){
+ shipName=$('shipname').value.trim()||pick(['Zeeland','Middelburg','Ter Veere','Wapen van Hoorn','Leeuwinne','Prins Willem']);
+ crewNames=$('crewnames').value.trim()||'';
+ G=new Game();ship.x=NODES.zeel.x;ship.y=NODES.zeel.y;ship.dir=-1;cam.x=ship.x-VW/2;cam.y=ship.y-VH/2;
+ timeLeft=MINUTES*60;timerOn=true;$('title').classList.add('hide');$('game').classList.remove('hide');music.region('tw');
+ const se=G.startEvent();updateSide();if(se)showEvent(se,'zeel',()=>portView());else portView();}
+// ---- side panel ----
+function bar(id,v,max,col){const el=$(id);el.style.width=Math.max(0,Math.min(100,v/max*100))+'%';el.style.background=col;}
+function updateSide(){if(!G)return;
+ $('sname').textContent=shipName;$('screw').textContent=crewNames;$('sdate').textContent=G.dateStr();
+ $('vcrew').textContent=Math.max(0,G.crew)+' men';bar('bcrew',G.crew,G.crew0,'#d9c58a');
+ $('vfood').textContent=Math.max(0,Math.round(G.food))+' days';bar('bfood',G.food,150,G.food<25?'#c8402c':'#8ccf7e');
+ $('vhull').textContent=Math.max(0,Math.round(G.hull))+'%';bar('bhull',G.hull,100,G.hull<45?'#c8402c':'#7fb6d6');
+ $('vgold').textContent=fmt(G.gold);$('vfresh').textContent=Math.round(G.sinceFresh)+' days ago';$('vfresh').style.color=G.sinceFresh>60?'#ff8a70':'';
+ $('vat').textContent=(mode==='sail'||(mode==='event'&&anim===null&&G.inLeg))?'At sea':NODES[G.node].name;}
+function drawMini(){const s=mini.width/W;mctx.drawImage(MAP,0,0,mini.width,mini.height);
+ mctx.strokeStyle='rgba(255,240,180,.8)';mctx.strokeRect(cam.x*s+.5,cam.y*s+.5,VW*s,VH*s);
+ if(G){mctx.fillStyle='rgba(255,220,120,.5)';let prev=null;for(const p of G.trail||[]){mctx.fillRect(p[0]*s,p[1]*s,1,1);}
+  mctx.fillStyle='#ff4b3a';mctx.fillRect(ship.x*s-2,ship.y*s-2,4,4);}}
+// ---- choice panel ----
+const panel=$('panel');
+function setPanel(html){panel.innerHTML=html;panel.scrollTop=0;}
+function portView(){if(G.fate)return endGame();mode='port';updateSide();
+ const n=NODES[G.node],o=G.ownerAt(G.node);let h='';
+ if(n.kind==='port'){h+=`<h3>${n.name} <span class=own>${OWNER_TXT[o]}</span></h3><p class=info>${INFO[G.node]||''}</p>`;
+  const acts=G.portActions();if(acts.length){h+='<div class=acts>'+acts.map(a=>`<button class=act data-a="${a.id}">${a.t}<small>${a.d}</small></button>`).join('')+'</div>';}}
+ routes=G.routesFrom();
+ h+='<h4>Where next, captain?</h4><div class=routes>'+routes.map((r,i)=>{const o2=G.ownerAt(r.to);return `<button class="route" data-r="${i}"><b>${NODES[r.to].name}</b>${r.via?` <i>via ${r.via}</i>`:''}<small><span class="fl fl-${o2}"></span>${OWNER_TXT[o2]} · about ${r.days} days</small></button>`;}).join('')+'</div>';
+ setPanel(h);
+ panel.querySelectorAll('.act').forEach(b=>b.onclick=()=>{sfx.bell();G.doAction(b.dataset.a);if(G.fate)return endGame();portView();toast(b.firstChild.textContent+' – done');});
+ panel.querySelectorAll('.route').forEach(b=>{b.onclick=()=>sailRoute(routes[+b.dataset.r]);b.onmouseenter=()=>hover=+b.dataset.r;b.onmouseleave=()=>hover=-1;});}
+function sailRoute(r){mode='sail';G.inLeg=1;hover=-1;sfx.splash();const leg=G.beginLeg(r);
+ const pts=r.path.map(k=>[NODES[k].x,NODES[k].y]);let L=0;const segL=[];for(let i=0;i<pts.length-1;i++){const l=Math.hypot(pts[i+1][0]-pts[i][0],pts[i+1][1]-pts[i][1]);segL.push(l);L+=l;}
+ anim={leg,pts,segL,L,pos:0,part:0,speed:Math.max(70,L/3.2)};G.trail=G.trail||[];
+ anim.panel=`<h3>Under sail</h3><p class=info>Bound for <b>${NODES[r.to].name}</b>${r.via?' via '+r.via:''}. About ${r.days} days at sea.</p><p class=hint>Hold <b>space</b> to hurry.</p>`;setPanel(anim.panel);updateSide();
+ music.region(NODES[r.path[Math.min(r.path.length-1,1)]].region);}
+function stepAnim(dt){if(!anim)return;const a=anim;const nParts=a.leg.parts.length;const stopAt=(a.part+1)/nParts*a.L;
+ a.pos=Math.min(stopAt,a.pos+a.speed*dt*(keys.fast?3:1));
+ // position on polyline
+ let d=a.pos,i=0;while(i<a.segL.length-1&&d>a.segL[i]){d-=a.segL[i];i++;}
+ const A=a.pts[i],B=a.pts[i+1],f=Math.min(1,d/a.segL[i]);const nx=A[0]+(B[0]-A[0])*f,ny=A[1]+(B[1]-A[1])*f;
+ if(Math.abs(nx-ship.x)>0.05)ship.dir=nx>ship.x?1:-1;ship.x=nx;ship.y=ny;
+ if(!G.trail.length||Math.hypot(G.trail[G.trail.length-1][0]-nx,G.trail[G.trail.length-1][1]-ny)>2)G.trail.push([nx,ny]);
+ if(a.pos>=stopAt-0.001){ // reached a stop point
+  const k=a.part;G.sail(a.leg,k);updateSide();
+  if(G.fate){anim=null;return endGame();}
+  if(k<a.leg.evs.length){const ev=a.leg.evs[k];a.paused=true;const save=anim;anim=null;showEvent(ev,a.leg.to,()=>{if(G.fate)return endGame();save.part++;anim=save;mode='sail';setPanel(save.panel);},true);}
+  else{anim=null;G.inLeg=0;G.arrive(a.leg);updateSide();if(G.fate)return endGame();sfx.bell();music.region(NODES[G.node].region);
+   const ae=G.arrivalEvent(G.node);if(ae)showEvent(ae,G.node,portView);else portView();}}}
+function showEvent(ev,n,done,atSea){mode='event';const v=G.eventView(ev,n);if(ev.id==='storm'){storm=1;sfx.thunder();}
+ music.tension(true);
+ setPanel(`<h3 class=evh>${v.title}</h3><p class=evt>${v.text}</p><div class=opts>${v.opts.map((o,i)=>`<button class=opt data-i="${i}"><span class=k>${'ABCD'[i]}</span>${o.t}</button>`).join('')}</div>`);
+ panel.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const r=G.choose(ev,v.opts,+b.dataset.i,atSea?'At sea':NODES[G.node].name);
+  if(r.sfx==='cannon'){sfx.cannon();shake=10;for(let j=0;j<8;j++)fx.push({x:ship.x+(Math.random()*30-15),y:ship.y-6+(Math.random()*8-4),t:0,life:1+Math.random()});}
+  storm=0;music.tension(false);updateSide();
+  const deltas=fmtFx(r.fx);
+  setPanel(`<h3 class=evh>${v.title}</h3><p class=evt>${r.text}</p>${deltas?`<p class=delta>${deltas}</p>`:''}<button class="opt cont" id=cont>Continue ▸</button>`);
+  $('cont').onclick=()=>{done();};$('cont').focus();});}
+function fmtFx(f){const a=[];if(f.crew)a.push((f.crew>0?'+':'')+Math.round(f.crew<0?f.crew*DMG:f.crew)+' men');if(f.hull)a.push('hull '+(f.hull>0?'+':'')+Math.round(f.hull<0?f.hull*DMG:f.hull)+'%');if(f.gold)a.push((f.gold>0?'+':'−')+fmt(Math.abs(f.gold)));if(f.food)a.push((f.food>0?'+':'')+f.food+' days of food');if(f.time>0)a.push(f.time+' days lost');if(f.time<0)a.push((-f.time)+' days saved');if(f.fresh)a.push('fresh food');return a.join(' · ');}
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),1800);}
+// ---- end ----
+function band(p){return p<15?['Kept your hands clean','You protected the cargo mostly by paying, waiting or turning away.']:p<40?['Bent the rules','You broke some rules and used some force when it suited the Company.']:p<70?['Went a long way','You often chose force, deception or other people\'s suffering to protect the trade.']:['Went all the way','You were ready to use almost any means to protect the Company\'s trade.'];}
+function endGame(){if(mode==='end')return;mode='end';timerOn=false;anim=null;music.tension(false);
+ if(G.fate==='home'){sfx.fanfare();music.region('eur');}else sfx.thunder();
+ const sc=G.score(),b=band(sc.pct),pay=G.payout(),home=G.fate==='home';
+ const cats=[['Force against others','v'],['Lies and broken rules','d'],['Forced labour and enslavement','e'],['Your own crew\'s lives','c']];
+ const summary=buildSummary(sc,b,pay);
+ try{const k='voc-fleet-log';const L=JSON.parse(localStorage.getItem(k)||'[]');L.push({ship:shipName,crew:crewNames,home,men:G.crew,pay,score:sc.pct,band:b[0],fate:G.fate});localStorage.setItem(k,JSON.stringify(L));}catch(e){}
+ $('game').classList.add('hide');$('end').classList.remove('hide');
+ $('end').innerHTML=`<div class=endbox><h2 class="${home?'win':'lose'}">${home?'Home!':'Lost'}</h2><p class=fate>${G.fateText}</p>
+ <div class=endgrid><div><h4>The voyage</h4><table>
+ <tr><td>Ship</td><td>${esc(shipName)}</td></tr><tr><td>Crew</td><td>${esc(crewNames)||'–'}</td></tr>
+ <tr><td>Sailed</td><td>${G.dateStr(G.start)}</td></tr><tr><td>${home?'Arrived':'Last seen'}</td><td>${G.dateStr()}</td></tr>
+ <tr><td>Men left</td><td>${Math.max(0,G.crew)} of ${G.crew0}${G.loaded.hands?' + 25 signed on':''}</td></tr>
+ <tr><td>Guilders delivered</td><td>${home?fmt(pay):'ƒ0 (cargo lost)'}</td></tr>
+ <tr><td>Guilders from hard choices</td><td>${fmt(G.hardGold)}</td></tr>
+ <tr><td>Route</td><td class=small>${G.route.join(' → ')}</td></tr></table></div>
+ <div><h4>How far did you go?</h4><div class=meter><div style="width:${sc.pct}%"></div></div><p class=band><b>${b[0]}</b> (${sc.pct}/100)<br>${b[1]}</p>
+ ${cats.map(([l,k])=>`<div class=cat><span>${l}</span><span class=dots>${'■'.repeat(Math.min(10,sc.t[k]))}${'□'.repeat(Math.max(0,10-Math.min(10,sc.t[k])))}</span></div>`).join('')}</div></div>
+ <h4>Your decisions</h4><ol class=dec>${G.log.map(l=>`<li><b>${l.title}</b>: ${l.choice}. <i>${l.result}</i></li>`).join('')}</ol>
+ <p class=eq>If you were on the VOC's governing council, how far would you go to protect your company's trade?</p>
+ <div class=endbtns><button id=copy>Copy summary</button><button id=dl>Download as text</button><button id=again>Next crew ▸</button></div>
+ <textarea id=sumtxt readonly>${summary}</textarea></div>`;
+ $('copy').onclick=()=>{const t=$('sumtxt');t.select();try{navigator.clipboard.writeText(t.value).then(()=>toast('Copied'),()=>{document.execCommand('copy');toast('Copied');});}catch(e){document.execCommand('copy');toast('Copied');}};
+ $('dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([summary],{type:'text/plain'}));a.download=(shipName||'voyage').replace(/\W+/g,'_')+'.txt';a.click();};
+ $('again').onclick=()=>location.reload();}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function buildSummary(sc,b,pay){const home=G.fate==='home';const L=[];
+ L.push('VOC VOYAGE LOG – '+shipName);if(crewNames)L.push('Crew: '+crewNames);
+ L.push('Sailed from Fort Zeelandia: '+G.dateStr(G.start));L.push((home?'Arrived at Texel: ':'Lost: ')+G.dateStr());
+ L.push('Outcome: '+G.fateText);L.push('Men left: '+Math.max(0,G.crew)+' of '+G.crew0);
+ L.push('Guilders delivered: '+(home?fmt(pay):'ƒ0'));L.push('Guilders gained from hard choices: '+fmt(G.hardGold));
+ L.push('Route: '+G.route.join(' -> '));L.push('');L.push('HOW FAR DID YOU GO? '+sc.pct+'/100 – '+b[0]);
+ L.push('  Force against others: '+sc.t.v+'  Lies and broken rules: '+sc.t.d+'  Forced labour and enslavement: '+sc.t.e+'  Own crew\'s lives: '+sc.t.c);
+ L.push('');L.push('DECISIONS');G.log.forEach((l,i)=>L.push((i+1)+'. '+l.title+': '+l.choice+'. '+l.result));
+ L.push('');L.push('(Numbers are game numbers, not historical figures.)');return esc(L.join('\n'));}
+// ---- input ----
+const keys={};addEventListener('keydown',e=>{if(e.code==='Space'&&mode==='sail'){keys.fast=1;e.preventDefault();}
+ if(mode==='event'&&/^[1-4a-dA-D]$/.test(e.key)){const i='abcd'.indexOf(e.key.toLowerCase());const k=i>=0?i:+e.key-1;const b=panel.querySelectorAll('.opt')[k];if(b&&!b.classList.contains('cont'))b.click();}});
+addEventListener('keyup',e=>{if(e.code==='Space')keys.fast=0;});
+cv.addEventListener('mousemove',e=>{if(mode!=='port')return;const r=cv.getBoundingClientRect();const wx=(e.clientX-r.left)/r.width*VW+cam.x,wy=(e.clientY-r.top)/r.height*VH+cam.y;
+ hover=-1;let best=14;routes.forEach((rt,i)=>{const n=NODES[rt.to];const d=Math.hypot(n.x-wx,n.y-wy);if(d<best){best=d;hover=i;}});
+ panel.querySelectorAll('.route').forEach((b,i)=>b.classList.toggle('hl',i===hover));cv.style.cursor=hover>=0?'pointer':'default';});
+cv.addEventListener('click',()=>{if(mode==='port'&&hover>=0)sailRoute(routes[hover]);});
+// ---- render loop ----
+let last=perf();
+function frame(){const now=perf(),dt=Math.min(0.05,(now-last)/1000);last=now;const t=now/1000;
+ if(mode==='sail')stepAnim(dt);
+ if(timerOn&&G&&!G.fate&&mode!=='title'){timeLeft-=dt;if(timeLeft<=60&&timeLeft+dt>60){toast('One minute left!');sfx.bell();}
+  if(timeLeft<=0){timeLeft=0;G.fate='time';G.fateText="Months pass and the ship does not arrive. In Amsterdam the Company's clerks write her name in the list of ships posted missing.";endGame();}}
+ const tl=Math.max(0,Math.ceil(timeLeft));$('timer').textContent=Math.floor(tl/60)+':'+String(tl%60).padStart(2,'0');$('timer').classList.toggle('low',tl<=60);
+ // camera
+ const tx=Math.max(0,Math.min(W-VW,ship.x-VW/2)),ty=Math.max(0,Math.min(H-VH,ship.y-VH/2));cam.x+=(tx-cam.x)*Math.min(1,dt*3);cam.y+=(ty-cam.y)*Math.min(1,dt*3);
+ let sx=0,sy=0;if(shake>0){sx=(Math.random()-.5)*shake/3;sy=(Math.random()-.5)*shake/3;shake-=dt*20;}
+ const ox=Math.round(cam.x+sx),oy=Math.round(cam.y+sy);
+ ctx.drawImage(MAP,-ox,-oy);
+ // animated wave glints
+ for(let i=0;i<40;i++){const gx=(hash(i,7)*W+t*3*(i%3+1))%W,gy=hash(i,13)*H;const X=Math.round(gx-ox),Y=Math.round(gy-oy);if(X<0||Y<0||X>VW||Y>VH||isLand(Math.round(gx),Math.round(gy)))continue;if(Math.sin(t*2+i)>0.3){ctx.fillStyle='rgba(200,230,245,.55)';ctx.fillRect(X,Y,2,1);}}
+ ctx.save();ctx.translate(-ox,-oy);
+ // trail
+ if(G&&G.trail){ctx.fillStyle='rgba(255,235,170,.5)';G.trail.forEach((p,i)=>{if(i%2===0)ctx.fillRect(Math.round(p[0]),Math.round(p[1]),1,1);});}
+ // route arrows
+ if(mode==='port'&&G){routes.forEach((r,i)=>{const hi=i===hover;ctx.fillStyle=hi?'#ffe27a':'rgba(255,240,200,.55)';
+  for(let s=0;s<r.path.length-1;s++){const A=NODES[r.path[s]],B=NODES[r.path[s+1]];const L=Math.hypot(B.x-A.x,B.y-A.y);for(let d=(t*8)%4;d<L;d+=4){ctx.fillRect(Math.round(A.x+(B.x-A.x)*d/L),Math.round(A.y+(B.y-A.y)*d/L),1,1);}}
+  const n=NODES[r.to],p=NODES[r.path[r.path.length-2]];const ang=Math.atan2(n.y-p.y,n.x-p.x);const ax=n.x-Math.cos(ang)*8,ay=n.y-Math.sin(ang)*8;
+  for(let k=0;k<5;k++){for(let w=-k;w<=k;w++){ctx.fillRect(Math.round(ax-Math.cos(ang)*k*1+Math.cos(ang+Math.PI/2)*w*0.8),Math.round(ay-Math.sin(ang)*k*1+Math.sin(ang+Math.PI/2)*w*0.8),1,1);}}});}
+ // ports
+ for(const id in NODES){const n=NODES[id];if(n.kind!=='port')continue;const o=G?G.ownerAt(id):n.owner;const hi=mode==='port'&&hover>=0&&routes[hover]&&routes[hover].to===id;drawPort(ctx,n,o,hi);
+  const nm=n.name.replace(' (home)','').replace('Cape of Good Hope','Cape').replace('Fort ','');text(ctx,nm,Math.round(n.x-tw(nm)/2),Math.round(n.y+6),hi?'#ffe27a':'#f4ecd2','#1b1408');}
+ // ship
+ drawShip(ctx,ship.x,ship.y-1,ship.dir,t);
+ // smoke / fx
+ fx=fx.filter(f=>(f.t+=dt)<f.life);for(const f of fx){const a=1-f.t/f.life;ctx.fillStyle=f.t<0.12?'rgba(255,220,120,'+a+')':'rgba(220,220,220,'+a*0.8+')';const r=Math.round(1+f.t*4);ctx.fillRect(Math.round(f.x-r),Math.round(f.y-r-f.t*6),r*2,r*2);}
+ ctx.restore();
+ if(storm){ctx.fillStyle='rgba(20,30,50,.35)';ctx.fillRect(0,0,VW,VH);ctx.fillStyle='rgba(190,210,230,.6)';for(let i=0;i<70;i++){const x=(hash(i,1)*VW+t*90)%VW,y=(hash(i,2)*VH+t*220)%VH;ctx.fillRect(Math.round(x),Math.round(y),1,3);}if(Math.random()<0.01){ctx.fillStyle='rgba(255,255,255,.5)';ctx.fillRect(0,0,VW,VH);}}
+ drawMini();requestAnimationFrame(frame);}
+// ---- music & sound (WebAudio, original tunes generated from scales) ----
+const music=(()=>{let ac=null,master=null,on=true,reg='tw',tense=false,step=0,timer=null,nextT=0;
+ const SC={tw:[62,64,67,69,71,74,76,79],scs:[62,64,67,69,71,74,76,79],sea:[62,64,67,69,71,74,76,79],bob:[64,65,68,69,71,72,74,76],io:[64,65,68,69,71,72,74,76],cape:[62,64,65,67,69,71,72,74],atl:[62,64,65,67,69,71,72,74],eur:[67,69,71,72,74,76,77,79]};
+ const TEMPO={tw:0.2,scs:0.2,sea:0.2,bob:0.22,io:0.22,cape:0.17,atl:0.17,eur:0.19};
+ let mel=[];function compose(){let s=Math.abs([...reg].reduce((a,c)=>a*31+c.charCodeAt(0),7))%997;const R=()=>(s=(s*16807)%2147483647)/2147483647;let i=3;mel=[];
+  for(let k=0;k<32;k++){i=Math.max(0,Math.min(7,i+Math.round((R()-0.5)*3.2)));mel.push(R()<0.18?-1:i);}}
+ const hz=m=>440*Math.pow(2,(m-69)/12);
+ function note(f,t,d,type,v){const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+0.01);g.gain.exponentialRampToValueAtTime(0.0008,t+d);o.connect(g);g.connect(master);o.start(t);o.stop(t+d+0.02);}
+ function tick(){if(!ac)return;while(nextT<ac.currentTime+0.25){const sc=SC[reg]||SC.tw;const T=(TEMPO[reg]||0.2)*(tense?0.75:1);const m=mel[step%32];
+   if(m>=0)note(hz(sc[m]+(tense?-12:0)),nextT,T*1.6,'square',0.045);
+   if(step%4===0)note(hz(sc[0]-24+(step%16>=8?7:0)),nextT,T*3,'triangle',0.11);
+   if(tense&&step%2===0)noise(nextT,0.05,0.05);
+   nextT+=T;step++;}}
+ function noise(t,d,v){const b=ac.createBuffer(1,ac.sampleRate*d,ac.sampleRate),c=b.getChannelData(0);for(let i=0;i<c.length;i++)c[i]=Math.random()*2-1;const s=ac.createBufferSource(),g=ac.createGain();s.buffer=b;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.001,t+d);s.connect(g);g.connect(master);s.start(t);}
+ return{init(){if(ac)return;try{ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=on?0.7:0;master.connect(ac.destination);compose();nextT=ac.currentTime+0.1;timer=setInterval(tick,60);}catch(e){}},
+  region(r){if(r!==reg){reg=r;compose();step=0;}},tension(b){tense=b;},toggle(){on=!on;if(master)master.gain.value=on?0.7:0;return on;},
+  get ac(){return ac},noise(t,d,v){if(ac)noise(t,d,v);},note(f,t,d,ty,v){if(ac)note(f,t,d,ty,v);},hz};})();
+const sfx={cannon(){const a=music.ac;if(!a)return;const t=a.currentTime;music.noise(t,0.6,0.5);music.note(70,t,0.5,'sine',0.5);music.noise(t+0.25,0.5,0.3);},
+ splash(){const a=music.ac;if(a)music.noise(a.currentTime,0.35,0.12);},thunder(){const a=music.ac;if(a){music.noise(a.currentTime,1.4,0.35);}},
+ bell(){const a=music.ac;if(!a)return;const t=a.currentTime;music.note(880,t,0.8,'sine',0.12);music.note(1320,t,0.6,'sine',0.05);},
+ fanfare(){const a=music.ac;if(!a)return;const t=a.currentTime;[67,72,76,79,84].forEach((m,i)=>music.note(music.hz(m),t+i*0.14,0.5,'square',0.08));}};
+// ---- fleet log on title ----
+function fleetLog(){let L=[];try{L=JSON.parse(localStorage.getItem('voc-fleet-log')||'[]');}catch(e){}
+ if(!L.length){$('fleet').innerHTML='';return;}
+ $('fleet').innerHTML='<h4>This lesson\'s fleet</h4><table><tr><th>Ship</th><th>Crew</th><th>Result</th><th>Men</th><th>Guilders</th><th>How far</th></tr>'+L.map(r=>`<tr><td>${esc(r.ship)}</td><td>${esc(r.crew)}</td><td>${r.home?'Home':'Lost'}</td><td>${r.men}</td><td>${fmt(r.pay)}</td><td>${r.score} (${r.band})</td></tr>`).join('')+'</table><button id=clearlog>Clear fleet log</button>';
+ $('clearlog').onclick=()=>{if(confirmClear()){try{localStorage.removeItem('voc-fleet-log');}catch(e){}fleetLog();}};}
+function confirmClear(){const b=$('clearlog');if(b.dataset.sure){return true;}b.dataset.sure=1;b.textContent='Click again to clear';return false;}
+$('go').onclick=()=>{music.init();$('title').classList.add('hide');$('game').classList.remove('hide');fit();startGame();};
+$('mute').onclick=()=>{music.init();$('mute').textContent=music.toggle()?'♪ Music on':'♪ Music off';};
+fleetLog();
+// title backdrop: show ship at Zeelandia
+ship.x=NODES.zeel.x;ship.y=NODES.zeel.y;cam.x=ship.x-VW/2;cam.y=ship.y-VH/2;
+requestAnimationFrame(frame);
+
+document.getElementById('mins').textContent=MINUTES;
+</script></body></html>
